@@ -356,7 +356,7 @@ class fabba_model(Aggregation2D):
         self.verbose = verbose
         self.max_len = max_len
         self.string_form = string_form
-        self.n_jobs = n_jobs
+        self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         self.compress = compress
         
     
@@ -366,6 +366,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
 
     
@@ -376,6 +377,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
     
     
