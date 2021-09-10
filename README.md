@@ -34,7 +34,7 @@ pip install fABBA
 >>> ts = [np.sin(i) for i in range(N)]
 >>> fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=1, max_len=np.inf, string_form=True)
 >>> print(fabba)
-fABBA({'_alpha': 0.5, '_sorting': '2-norm', '_tol': 0.1, '_scl': 1, '_verbose': 1, '_max_len': inf, '_string_form': True, '_n_jobs': 1})
+fABBA({'_alpha': 0.1, '_sorting': '2-norm', '_tol': 0.1, '_scl': 1, '_verbose': 1, '_max_len': inf, '_string_form': True})
 
 >>> string = fabba.fit_transform(ts)
 >>> print(string)
