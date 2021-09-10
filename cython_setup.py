@@ -25,6 +25,6 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url="https://github.com/nla-group/fABBA",
     # packages=setuptools.find_packages(),
-    install_requires=['numpy', 'cv2'],
+    install_requires=['numpy'],
     license='BSD 3-Clause'
 )
