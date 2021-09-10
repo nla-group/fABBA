@@ -17,7 +17,7 @@ long_description = (this_directory / "README.md").read_text()
 setuptools.setup(
     name="fABBA",
     packages=['fABBA'],
-    version="0.0.3",
+    version="0.3.4",
     long_description=long_description,
     author="Stefan Guettel, Xinye Chen",
     author_email="stefan.guettel@manchester.ac.uk",
