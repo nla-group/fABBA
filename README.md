@@ -118,12 +118,12 @@ Plot the reconstructed image
 
 ## Experiment
 
-This repository named "experiments" contains all code required to reproduce the experiments in the manuscript 
+The folder named "experiments" contains all code required to reproduce the experiments in the manuscript 
 "An efficient aggregation method for the symbolic representation of temporal data".
 
 #### Overview and dependencies
 
-The "experiments" folder is self-contained, covering all scripts to reproduce the experimental data except UCRArchive2018 in the paper.
+The "experiments" folder is self-contained, covering all scripts to reproduce the experimental data except UCRArchive2018 datasets in the paper.
 
 The UCRArchive2018 datasets can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
 
