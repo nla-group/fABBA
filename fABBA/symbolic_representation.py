@@ -535,12 +535,14 @@ class fabba_model(Aggregation2D):
             npieces[:,1] = npieces[:,1] / self._std[1]
         
         if self.sorting in ["lexi", "2-norm", "1-norm"]:
-            warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", 
-                          FutureWarning)
+            # warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", FutureWarning)
             splist, labels = self.aggregate(npieces)
         else:
-            labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
-            
+            try:
+               labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
+            except:
+               raise ValueError(f"Cython initialization fails, will be fixed in the future version.)
+
         centers = np.zeros((0,2))
         
         for c in range(len(splist)):
