@@ -53,7 +53,7 @@ Plot the image
 >>> plt.show()
 ```
 
-![reconstruction](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/img.png)
+![reconstruction](https://raw.githubusercontent.com/umtsd/C_temp_img/main/fABBAdemo/demo.png)
 
 
 #### *Apply adaptively polygonal chian approximation*
