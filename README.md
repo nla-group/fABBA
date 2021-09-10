@@ -112,6 +112,7 @@ Plot the reconstructed image
 >>> plt.show()
 ```
 
+
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/inverse_img.png?token=AKE3UMS7KL6DK6CK4X5A2QLBHOE7E)
 
 ## Experiment
