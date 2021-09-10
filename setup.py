@@ -9,7 +9,7 @@ with open("README.md", 'r') as f:
 setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
-    version="0.3.1",
+    version="0.3.4",
     setup_requires=["numpy"],
     include_dirs=[numpy.get_include()],
     long_description=long_description,
