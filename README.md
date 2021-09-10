@@ -53,7 +53,7 @@ Plot the image
 >>> plt.show()
 ```
 
-![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/demo.png?token=AKE3UMQFBJ7W4ML3N4LQ3KDBHOFE6)
+![reconstruction](https://github.com/nla-group/fABBA/raw/master/fig/demo.png)
 
 
 #### *Apply adaptively polygonal chian approximation*
@@ -104,7 +104,7 @@ Plot the original image
 >>> plt.show()
 ```
 
-![original image](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/img.png?token=AKE3UMVCUIERBFTZJDJKZCTBHOE6K)
+![original image](https://github.com/nla-group/fABBA/raw/master/fig/img.png)
 
 
 Plot the reconstructed image
@@ -114,7 +114,7 @@ Plot the reconstructed image
 ```
 
 
-![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/inverse_img.png?token=AKE3UMS7KL6DK6CK4X5A2QLBHOE7E)
+![reconstruction](https://github.com/nla-group/fABBA/raw/master/fig/inverse_img.png)
 
 ## Experiment
 
