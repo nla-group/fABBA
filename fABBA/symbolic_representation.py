@@ -539,9 +539,9 @@ class fabba_model(Aggregation2D):
             splist, labels = self.aggregate(npieces)
         else:
             try:
-               labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
+                labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
             except:
-               raise ValueError(f"Cython initialization fails, will be fixed in the future version.)
+                raise ValueError(f"Cython initialization fails, will be fixed in the future version.")
 
         centers = np.zeros((0,2))
         
