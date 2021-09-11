@@ -1,12 +1,16 @@
+LICENSE
 README.md
 pyproject.toml
 setup.py
 fABBA/__init__.py
 fABBA/aggregation.py
 fABBA/caggregation.c
+fABBA/caggregation.pyx
 fABBA/caggregation_memview.c
+fABBA/caggregation_memview.pyx
 fABBA/chainApproximation.py
 fABBA/chainApproximation_c.c
+fABBA/chainApproximation_c.pyx
 fABBA/digitization.py
 fABBA/load_datasets.py
 fABBA/symbolic_representation.py

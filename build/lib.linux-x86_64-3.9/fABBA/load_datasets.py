@@ -4,6 +4,7 @@
 
 import os
 import requests
+import matplotlib.pyplot as plt
 import sys
 
 def get_img(file, store_dir):

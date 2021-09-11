@@ -9,9 +9,11 @@ with open("README.md", 'r') as f:
 setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
-    version="0.3.5",
-    setup_requires=["numpy"],
-    ext_modules=cythonize("fABBA/*.pyx", include_path=['fABBA/']),
+    version="0.4.6",
+    setup_requires=["cython>0.29.4", "numpy>=1.21.1", "scipy>1.6.0"],
+    install_requires=["numpy>=1.21.1"],
+    ext_modules=cythonize(["fABBA/*.pyx"], include_path=["fABBA"]),
+    package_data={"fABBA": ["chainApproximation_c.pyx", "caggregation.pyx", "caggregation_memview.pyx"]},
     include_dirs=[numpy.get_include()],
     long_description=long_description,
     author="Stefan Guettel, Xinye Chen",
@@ -19,6 +21,5 @@ setuptools.setup(
     description="An efficient aggregation based symbolic representation",
     long_description_content_type='text/markdown',
     url="https://github.com/nla-group/fABBA",
-    install_requires=['numpy'],
     license='BSD 3-Clause'
 )
