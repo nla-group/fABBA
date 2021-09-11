@@ -356,7 +356,7 @@ class fabba_model(Aggregation2D):
         self.verbose = verbose
         self.max_len = max_len
         self.string_form = string_form
-        self.n_jobs = n_jobs
+        self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         self.compress = compress
         
     
@@ -366,6 +366,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
 
     
@@ -376,6 +377,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
     
     
@@ -394,11 +396,11 @@ class fabba_model(Aggregation2D):
         string (str): The string transformed by fABBA
         """
         
-        if self.n_jobs > 1 and self.max_len == 1:
-            pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
-        else:
-            # pieces = self.compress(ts=series)
-            pieces = self.compress(ts=series, tol=self.tol, max_len=self.max_len)
+        # if self.n_jobs > 1 and self.max_len == 1:
+        #     pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
+        # else:
+        #     # pieces = self.compress(ts=series)
+        pieces = self.compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
             
         string, parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2])
@@ -461,39 +463,41 @@ class fabba_model(Aggregation2D):
 
     
 
-    def parallel_compress(self, ts, n_jobs=-1):
-        """
-        Approximate a time series using a continuous piecewise linear function in a parallel way.
-        Each piece is of length 1. 
-        
-        Parameters
-        ----------
-        ts - numpy ndarray
-            Time series as input of numpy array
+    # def parallel_compress(self, ts, n_jobs=-1):
+    #     """
+    #     Approximate a time series using a continuous piecewise linear function in a parallel way.
+    #     Each piece is of length 1. 
+    #     
+    #     Parameters
+    #     ----------
+    #     ts - numpy ndarray
+    #         Time series as input of numpy array
+    #     
+    #         
+    #     Returns
+    #     -------
+    #     pieces - numpy array
+    #         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
+    #     """
+    #     from joblib import Parallel, delayed
+    #     x = np.arange(0, len(ts))
+    # 
+    #     def construct_piece(i):
+    #         inc = ts[i+1] - ts[i]
+    #         err = np.linalg.norm((ts[i] + (inc)*x[0:2]) - ts[i:i+2])**2
+    #         return [1, inc, err]
+    # 
+    #     pieces = Parallel(n_jobs=n_jobs)(
+    #         delayed(construct_piece)(i) for i in range(len(ts) - 1))
+    # 
+    #     if self.verbose:
+    #         self.logger = logging.getLogger("fABBA")
+    #         self.logger.info(
+    #             "Compression: Reduced time series of length "  
+    #             + str(len(ts)) + " to " + str(len(pieces)) + " segments")
+    # 
+    #     return np.array(pieces)
 
-            
-        Returns
-        -------
-        pieces - numpy array
-            Numpy ndarray with three columns, each row contains length, increment, error for the segment.
-        """
-        x = np.arange(0, len(ts))
-
-        def construct_piece(i):
-            inc = ts[i+1] - ts[i]
-            err = np.linalg.norm((ts[i] + (inc)*x[0:2]) - ts[i:i+2])**2
-            return [1, inc, err]
-
-        pieces = Parallel(n_jobs=n_jobs)(
-            delayed(construct_piece)(i) for i in range(len(ts) - 1))
-
-        if self.verbose:
-            self.logger = logging.getLogger("fABBA")
-            self.logger.info(
-                "Compression: Reduced time series of length "  
-                + str(len(ts)) + " to " + str(len(pieces)) + " segments")
-
-        return np.array(pieces)
 
 
     
@@ -533,12 +537,14 @@ class fabba_model(Aggregation2D):
             npieces[:,1] = npieces[:,1] / self._std[1]
         
         if self.sorting in ["lexi", "2-norm", "1-norm"]:
-            warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", 
-                          FutureWarning)
+            # warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", FutureWarning)
             splist, labels = self.aggregate(npieces)
         else:
-            labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
-            
+            try:
+                labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
+            except:
+                raise ValueError(f"Cython initialization fails, will be fixed in the future version.")
+
         centers = np.zeros((0,2))
         
         for c in range(len(splist)):

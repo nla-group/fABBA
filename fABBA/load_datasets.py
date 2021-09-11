@@ -3,9 +3,8 @@
 # load demo image samples
 
 import os
-import matplotlib.pyplot as plt
-import numpy as np
 import requests
+import sys
 
 def get_img(file, store_dir):
     url_parent = "https://raw.githubusercontent.com/umtsd/C_temp_img/main/Stanford%20Dogs%20Dataset/"
@@ -41,11 +40,19 @@ def load_images():
                    ]
     
     store_dir = "samples/img"
+    
     if not os.path.isdir(store_dir):
         os.makedirs(store_dir)
+        sys.stdout.write("Progress: [ %s" % ("" * toolbar_width))
+        sys.stdout.flush()
+        sys.stdout.write("\b" * (toolbar_width+1)) 
+
         for img in samples_list:
             get_img(img, store_dir)
-    
+            sys.stdout.write("=")
+            sys.stdout.flush()
+        sys.stdout.write("]\n") 
+        
     images = list()
     figs = os.listdir(store_dir)
     for filename in figs:
