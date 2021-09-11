@@ -8,9 +8,9 @@ with open("README.md", 'r') as f:
 setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
-    version="0.5.6",
-    setup_requires=["cython>=0.29.4", "numpy>=1.16.4", "scipy>1.6.0"],
-    install_requires=["numpy>=1.21.1", "tqdm", "pandas", "matplotlib"],
+    version="0.6.0",
+    setup_requires=["cython>=0.29.4", "numpy>=1.20.0", "scipy>1.6.0"],
+    install_requires=["numpy>=1.20.0", "tqdm", "pandas", "matplotlib"],
     ext_modules=cythonize(["fABBA/*.pyx"], include_path=["fABBA"]),
     package_data={"fABBA": ["chainApproximation_c.pyx", "aggregation_c.pyx", "aggregation_memview.pyx", "fabba_agg_memview.pyx"]},
     include_dirs=[numpy.get_include()],
