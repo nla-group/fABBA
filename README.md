@@ -113,7 +113,7 @@ plt.show()
 
 ## Experiments
 
-The folder !["experiments"](https://github.com/nla-group/fABBA/tree/master/experiments) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
+The folder ["experiments"](https://github.com/nla-group/fABBA/tree/master/experiments) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
 Some of the experiments also require the UCRArchive2018 datasets which can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
 
