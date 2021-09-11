@@ -21,7 +21,9 @@ pip install fABBA
 
 #### *Compress and reconstruct a time series*
 
-The following example approximately transforms a time series into a symbolic string representation (`transform`) and then converts the string back into a numerical format (`inverse_transform`). In this example the time series is a sine wave and its symbolic representation is `#$!"!"!"!"!"!"!"%`. Note how the periodicity in the time series is reflected in repetitions in its string representation.
+The following example approximately transforms a time series into a symbolic string representation (`transform`) and then converts the string back into a numerical format (`inverse_transform`). fABBA essentially requires two parameters `tol` and `alpha`. The tolerance `tol` determines how closely the polygonal chain approximation follows the original time series. The parameter `alpha` controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller `tol` means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. A smaller `alpha` typically results in a larger number of symbols. 
+
+The choice of parameters depends on the application, but in practice, one often just wants the polygonal chain to mimic the key features in time series and not to approximate any noise. In this example the time series is a sine wave and the chosen parameters result in the symbolic representation `#$!"!"!"!"!"!"!"%`. Note how the periodicity in the time series is nicely reflected in repetitions in its string representation.
 
 ```python
 import numpy as np
@@ -29,7 +31,7 @@ import matplotlib.pyplot as plt
 from fABBA.symbolic_representation import fabba_model
 
 ts = [np.sin(0.05*i) for i in range(1000)]          # original time series
-fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0, max_len=np.inf, string_form=True)
+fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
 
 string = fabba.fit_transform(ts)                    # string representation of the time series
 print(string)                                       # prints #$!"!"!"!"!"!"!"%
@@ -88,7 +90,7 @@ from cv2 import resize
 img_samples = load_images() # load test images
 img = resize(img_samples[0], (100, 100)) # select the first image for test
 
-fabba = fabba_model(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1, max_len=np.inf, string_form=True)
+fabba = fabba_model(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1)
 string = image_compress(fabba, img)
 inverse_img = image_decompress(fabba, string)
 ```
@@ -101,13 +103,11 @@ Plot the original image:
 
 ![original image](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/img.png)
 
-
 Plot the reconstructed image:
 ```python
 >>> plt.imshow(inverse_img)
 >>> plt.show()
 ```
-
 
 ![reconstruction](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/inverse_img.png)
 
