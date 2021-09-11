@@ -124,6 +124,10 @@ There are a number of dependencies listed below. Most of these modules, except p
 
 Please ensure that these modules are available before running the codes.
 
+Download this repo:
+```
+$ git clone https://github.com/nla-group/fABBA.git
+```
 
 To compile the Cython extension for use in the [current directory](https://github.com/nla-group/fABBA/tree/master/experiments/src)  use:
 ```
