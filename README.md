@@ -149,20 +149,5 @@ Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
-
-## Reference
-
-If you wish to cite fABBA, please use the following bib entry.
-
-```bibtex
-@article{fABBAarticle,
-  title={An efficient aggregation method for the symbolic representation of temporal data},
-  author={Xinye, Chen and G\"{u}ttel, Stefan},
-  journal={},
-  volume={},
-  number={},
-  pages={},
-  year={2021}
-}
 ```
 
