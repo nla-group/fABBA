@@ -122,16 +122,15 @@ plt.show()
 
 The folder ["experiments"](https://github.com/nla-group/fABBA/tree/master/experiments) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
-Some of the experiments also require the UCRArchive2018 datasets which can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
+Some of the experiments also require the UCR Archive 2018 datasets which can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
 
 There are a number of dependencies listed below. Most of these modules, except perhaps the final ones, are part of any standard Python installation. We list them for completeness:
 
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
-Please ensure that these modules are available before running the codes.
+Please ensure that these modules are available before running the codes. A `numpy` version newer than 1.19.0 is required.
 
-
-You're required to compile Cython in the experiments code (though it already compiled in the formal software, but experiments code in the papaer is separated), to compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) for use:
+It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) use:
 ```
 $ cd experiments/src
 $ python3 setup.py build_ext --inplace
