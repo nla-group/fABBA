@@ -1,20 +1,15 @@
-fABBA
-======================================
+# fABBA
 
-> An efficient aggregation based symbolic representation for temporal data
-
+### An efficient aggregation method for the symbolicrepresentation of temporal data
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
 
-
-fABBA is a fast and accurate symbolic representation methods, which allows for data compression and mining. 
-By replacing the k-means clustering used in ABBA with a sorting-based aggregation technique, fABBA thereby
-avoid repeated within-cluster-sum-of-squares computations, and the computational complexity is significantly reduced.
-Also, in contrast to the ABBA, fABBA does not require the number of time series symbols to be specified in
-advance while achieves competing performance against ABBA and other symbolic methods. 
-
-
+fABBA is a fast and accurate symbolic representation method for temporal data. 
+It is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. 
+The aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions. 
+In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
+Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## Install
 To install the current release
@@ -22,64 +17,60 @@ To install the current release
 pip install fABBA
 ```
 
+## Examples 
 
-#### *Apply series compression*
+#### *Compress and reconstruct a time series*
+
+The following example approximately transforms a time series into a symbolic string representation (`transform`) and then converts the string back into a numerical format (`inverse_transform`). In this example the time series is a sine wave and its symbolic representation is `#$!"!"!"!"!"!"!"%`. Note how the periodicity in the time series is reflected in repetitions in its string representation.
 
 ```python
->>> import numpy as np
->>> import matplotlib.pyplot as plt
->>> from fABBA.symbolic_representation import fabba_model
->>> np.random.seed(1)
->>> N = 100
->>> ts = [np.sin(i) for i in range(N)]
->>> fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=1, max_len=np.inf, string_form=True)
->>> print(fabba)
-fABBA({'_alpha': 0.1, '_sorting': '2-norm', '_tol': 0.1, '_scl': 1, '_verbose': 1, '_max_len': inf, '_string_form': True})
+import numpy as np
+import matplotlib.pyplot as plt
+from fABBA.symbolic_representation import fabba_model
 
->>> string = fabba.fit_transform(ts)
->>> print(string)
-(!"#"#"'$!%!$'"#"#&%!$!%&#"#"'$!%!$!"#"#&%!$!%&#"
+ts = [np.sin(0.05*i) for i in range(1000)]          # original time series
+fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0, max_len=np.inf, string_form=True)
 
->>> inverse_ts = fabba.inverse_transform(string, ts[0]) # reconstructed time series
+string = fabba.fit_transform(ts)                    # string representation of the time series
+print(string)                                       # prints #$!"!"!"!"!"!"!"%
 
+inverse_ts = fabba.inverse_transform(string, ts[0]) # numerical time series reconstruction
 ```
 
-Plot the image
+Plot the time series and its polygonal chain reconstruction:
 ```python
->>> plt.plot(ts, label='time series', c='olive')
->>> plt.plot(inverse_ts, label='reconstruction', c='darkblue')
->>> plt.legend()
->>> plt.grid(True, axis='y')
->>> plt.show()
+plt.plot(ts, label='time series', c='olive')
+plt.plot(inverse_ts, label='reconstruction', c='darkblue')
+plt.legend()
+plt.grid(True, axis='y')
+plt.show()
 ```
 
 ![reconstruction](https://raw.githubusercontent.com/umtsd/C_temp_img/main/fABBAdemo/demo.png)
 
 
-#### *Apply adaptively polygonal chian approximation*
+#### *Adaptive polygonal chain approximation*
+
+Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. This is the first step.
 
 ```python
->>> from fABBA.chainApproximation import compress
->>> from fABBA.chainApproximation import inverse_compress
->>> np.random.seed(1)
->>> N = 100
->>> ts = [np.sin(i) for i in range(N)]
->>> pieces = compress(ts, tol=0.1)
->>> inverse_ts = inverse_compress(pieces, ts[0])
+from fABBA.chainApproximation import compress
+from fABBA.chainApproximation import inverse_compress
+ts = [np.sin(0.05*i) for i in range(1000)]
+pieces = compress(ts, tol=0.1)                      # pieces is a list of the polygonal chain pieces
+inverse_ts = inverse_compress(pieces, ts[0])        # reconstruct polygonal chain from pieces
 ```
 
-
-#### *Apply aggregated digitization*
+And this is the second.
 
 ```python
->>> from fABBA.digitization import digitize
->>> from fABBA.digitization import inverse_digitize
->>> string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # pieces from aforementioned compression
->>> print(''.join(string))
-(!"#"#"'$!%!$'"#"#&%!$!%&#"#"'$!%!$!"#"#&%!$!%&#"
+from fABBA.digitization import digitize
+from fABBA.digitization import inverse_digitize
+string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon into few symbols
+print(''.join(string))                              # string representation 
 
->>> inverse_pieces = inverse_digitize(string, parameters)
->>> inverse_ts = inverse_compress(inverse_pieces, ts[0])
+inverse_pieces = inverse_digitize(string, parameters)
+inverse_ts = inverse_compress(inverse_pieces, ts[0])
 ```
 
 
