@@ -17,6 +17,7 @@ To install the current release
 pip install fABBA
 ```
 
+
 ## Examples 
 
 #### *Compress and reconstruct a time series*
@@ -122,6 +123,16 @@ There are a number of dependencies listed below. Most of these modules, except p
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
 Please ensure that these modules are available before running the codes.
+
+
+To compile the Cython extension for use in the [current directory](https://github.com/nla-group/fABBA/tree/master/experiments/src)  use:
+```
+$ python3 setup.py build_ext --inplace
+```
+or 
+```
+$ python setup.py build_ext --inplace
+```
 
 
 ## Software contributors
