@@ -1,6 +1,6 @@
 import setuptools
 from pathlib import Path
-from setuptools import Extension
+from Cython.Build import cythonize
 import numpy
 
 with open("README.md", 'r') as f:
@@ -9,8 +9,9 @@ with open("README.md", 'r') as f:
 setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
-    version="0.3.4",
+    version="0.3.5",
     setup_requires=["numpy"],
+    ext_modules=cythonize("fABBA/*.pyx", include_path=['fABBA/']),
     include_dirs=[numpy.get_include()],
     long_description=long_description,
     author="Stefan Guettel, Xinye Chen",
