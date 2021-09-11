@@ -44,9 +44,20 @@ def load_images():
     
     if not os.path.isdir(store_dir):
         os.makedirs(store_dir)
-        sys.stdout.write("Progress: [ %s" % ("" * toolbar_width))
+        sys.stdout.write("Progress: [ %s" % ("" * len(samples_list)))
         sys.stdout.flush()
-        sys.stdout.write("\b" * (toolbar_width+1)) 
+        sys.stdout.write("\b" * (len(samples_list)+1)) 
+
+        for img in samples_list:
+            get_img(img, store_dir)
+            sys.stdout.write("=")
+            sys.stdout.flush()
+        sys.stdout.write("]\n") 
+        
+    elif len(os.listdir(store_dir)) == 0:
+        sys.stdout.write("Progress: [ %s" % ("" * len(samples_list)))
+        sys.stdout.flush()
+        sys.stdout.write("\b" * (len(samples_list)+1)) 
 
         for img in samples_list:
             get_img(img, store_dir)
