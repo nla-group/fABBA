@@ -97,16 +97,16 @@ inverse_img = image_decompress(fabba, string)
 
 Plot the original image:
 ```python
->>> plt.imshow(img)
->>> plt.show()
+plt.imshow(img)
+plt.show()
 ```
 
 ![original image](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/img.png)
 
 Plot the reconstructed image:
 ```python
->>> plt.imshow(inverse_img)
->>> plt.show()
+plt.imshow(inverse_img)
+plt.show()
 ```
 
 ![reconstruction](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/inverse_img.png)
