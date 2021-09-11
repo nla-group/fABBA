@@ -10,7 +10,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     version="0.5.0",
     setup_requires=["cython>=0.29.4", "numpy>=1.21.1", "scipy>1.6.0"],
-    install_requires=["numpy>=1.21.1"],
+    install_requires=["numpy>=1.21.1", "warnings", "tqdm", "pickle", "pandas", "collections", "logging"],
     ext_modules=cythonize(["fABBA/*.pyx"], include_path=["fABBA"]),
     package_data={"fABBA": ["chainApproximation_c.pyx", "caggregation.pyx", "caggregation_memview.pyx"]},
     include_dirs=[numpy.get_include()],
