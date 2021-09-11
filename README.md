@@ -147,6 +147,3 @@ $ python setup.py build_ext --inplace
 Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
-
-```
-
