@@ -3,7 +3,6 @@
 #cython: profile=True
 #cython: linetrace=True
 
-# CLASSIX: Fast and explainable clustering based on sorting
 
 # License: BSD 3 clause
 
@@ -52,8 +51,7 @@ np.import_array()
 @cython.wraparound(False)
 @cython.binding(True)
 
-
-cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
+cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):
     """aggregate the data
 
     Parameters
@@ -62,7 +60,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
         the input that is array-like of shape (n_samples,).
 
     sorting : str
-        the sorting way refered for aggregation, default='pca', alternative option: 'pca'.
+        the sorting way refered for aggregation, default='norm', alternative option: 'pca'.
 
     tol : float
         the tolerance to control the aggregation, if the distance between the starting point 
@@ -80,25 +78,25 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     nr_dist (int) :
         distance computation calculations
     """
-    cdef Py_ssize_t fdim = data.shape[1] # feature dimension
-    cdef Py_ssize_t len_ind = data.shape[0] # size of data
-    cdef double[:] sort_vals
-    # cdef double[:] s1
-    cdef double[:, :] cdata = np.empty((len_ind, fdim), dtype=np.float64)
-    cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
-    cdef long[:] ind # = np.empty((len_ind, ), dtype=int)
-    cdef Py_ssize_t sp # starting point index
-    cdef unsigned int lab=0, num_group #, nr_dist=0
-    cdef double[:] clustc # starting point coordinates
-    cdef double dist
-    cdef long[:] labels = np.full(len_ind, -1, dtype=int) 
-    cdef list splist = list() # list of starting points
-    cdef Py_ssize_t i, ii, j, coord
     
+    cdef unsigned int num_group
+    cdef unsigned int fdim = data.shape[1] # feature dimension
+    cdef unsigned int len_ind = data.shape[0] # size of data
+    cdef unsigned int sp # sp: starting point
+    # cdef unsigned int nr_dist = 0 # nr_dist:if necessary, count the distance computation
+    cdef unsigned int lab = 0 # lab: class
+    cdef double dist # distance 
+    cdef np.ndarray[np.int64_t, ndim=1] labels = np.zeros(len_ind, dtype=int) - 1
+    # cdef list labels = [-1]*len_ind
+    cdef list splist = list() # store the starting points
+    cdef np.ndarray[np.float64_t, ndim=1] sort_vals = np.empty((len_ind, ), dtype=float)
+    cdef np.ndarray[np.float64_t, ndim=1] clustc = np.empty((fdim, ), dtype=float)
+    cdef np.ndarray[np.int64_t, ndim=1] ind = np.empty((len_ind, ), dtype=int)
+    cdef unsigned int i, j, coord, c
     
-    if sorting == "norm":
-        cdata[...] = data
-        sort_vals = np.linalg.norm(cdata, ord=2, axis=1)
+    if sorting == "norm": 
+        cdata = data
+        sort_vals = np.linalg.norm(data, ord=2, axis=1)
         ind = np.argsort(sort_vals)
 
     else: # sorting == "pca":
@@ -120,41 +118,49 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     # else: # no sorting
     #     ind = np.arange(len_ind)
 
-
-    for i in range(len_ind): 
-        sp = ind[i] # starting point
-        
+    for i in range(len_ind):
+        sp = ind[i] 
         if labels[sp] >= 0:
             continue
-        
-        clustc = cdata[sp,:] 
-        labels[sp] = lab
-        num_group = 1
-            
-        for ii in range(i, len_ind): 
-            j = ind[ii]
-                    
-            if labels[j] != -1:
+        else:
+            clustc = cdata[sp,:] 
+            labels[sp] = lab
+            num_group = 1
+
+        for j in ind[i:]:
+            if labels[j] >= 0:
                 continue
-                
+            
             if (sort_vals[j] - sort_vals[sp] > tol):
                 break       
+            
+            # dist = cnorm(clustc, data[j,:], fdim)
+            # dat = clustc - cdata[j,:]
+            # dist = np.inner(dat, dat) 
             
             dist = 0
             for coord in range(fdim):
                 dist += (clustc[coord] - cdata[j,coord])**2
+            
             # nr_dist += 1
-
+            
             if dist <= tol**2:
-                num_group += 1
+                num_group = num_group + 1
                 labels[j] = lab
-                
-        splist.append( [sp, lab] + [num_group] + list(data[sp,:] ) ) # respectively store starting point
-                                                               # index, label, number of neighbor objects, center (starting point).
-        
+
+        splist.append( [sp, lab] + [num_group] + list(data[sp,:]) ) # respectively store starting point
+                                                                # index, label, number of neighbor objects, center (starting point).
         lab += 1
-        
-    return np.asarray(labels), splist #, nr_dist
+
+    # cdef np.ndarray[np.float64_t, ndim=2] agg_centers = np.empty((lab, 2 + fdim), dtype=float)
+    # for c in range(lab):
+    #     indc = [i for i in range(len_ind) if labels[i] == c]
+    #     agg_centers[c] = np.concatenate(([-1, c], np.mean(data[indc,:], axis=0)), axis=None)
+
+    return labels, splist #, nr_dist, agg_centers
+
+
+
 
 
 # move to lite_func.py

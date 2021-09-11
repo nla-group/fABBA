@@ -45,10 +45,14 @@ try:
     # !python3 setup.py build_ext --inplace
     # from .cagg import aggregate
     from .chainApproximation_c import compress
-    from .caggregation_memview import aggregate as aggregate_fc # cython with memory view
+    from .fabba_agg_memview import aggregate as aggregate_fabba 
+    # cython with memory view
+    from .aggregation_memview import aggregate as aggregate_fc 
+    # cython with memory view
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
     from .chainApproximation import compress
+    from .fabba_agg import aggregate as aggregate_fabba 
     from .aggregation import aggregate as aggregate_fc
 
     
@@ -169,7 +173,7 @@ class Aggregation2D:
             
             lab += 1
 
-        return np.array(splist), labels
+        return labels, np.array(splist)
 
     
     
@@ -294,8 +298,8 @@ class fabba_model(Aggregation2D):
     max_len - int, default=1
         The max length for each segment, optional choice for compression
     
-    string_form - boolean, default=True
-        Whether to return with string form
+    return_list - boolean, default=True
+        Whether to return with list or not, "False" means return string.
     
     n_jobs - int, default=-1 
         The number of threads to use for the computation.
@@ -327,11 +331,11 @@ class fabba_model(Aggregation2D):
     >>> N = 100
     >>> x = np.random.rand(N)
     
-    >>> fabba = model(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=np.inf, string_form=True) 
+    >>> fabba = model(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=np.inf, return_list=True) 
     >>> print(fabba)
-    fABBA(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=inf, string_form=True)
-    >>> symbolic_tsf = fabba.fit_transform(x)
-    >>> inverse_ts = fabba.inverse_transform(symbolic_tsf, x[0])
+    fABBA(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=inf, return_list=True)
+    >>> string = fabba.fit_transform(x)
+    >>> inverse_ts = fabba.inverse_transform(string, x[0])
     
     >>> import matplotlib.pyplot as plt
     >>> plt.plot(x, label='time series', c='olive')
@@ -345,8 +349,8 @@ class fabba_model(Aggregation2D):
     """    
     
     def __init__ (self, tol=0.1, alpha=0.5, 
-                  sorting='norm', scl=1, verbose=1,
-                  max_len=np.inf, string_form=True, n_jobs=1):
+                  sorting='2-norm', scl=1, verbose=1,
+                  max_len=np.inf, return_list=False, n_jobs=1):
         
         super().__init__()
         self.tol = tol
@@ -355,7 +359,7 @@ class fabba_model(Aggregation2D):
         self.scl = scl
         self.verbose = verbose
         self.max_len = max_len
-        self.string_form = string_form
+        self.return_list = return_list
         self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         self.compress = compress
         
@@ -412,7 +416,7 @@ class fabba_model(Aggregation2D):
                 len(string)) + " to {} ".format(len(self.parameters.centers)) + " symbols"
             self.logger.info(_info)
 
-        if self.string_form:
+        if not self.return_list:
             string = "".join(string)
             
         return string
@@ -538,12 +542,9 @@ class fabba_model(Aggregation2D):
         
         if self.sorting in ["lexi", "2-norm", "1-norm"]:
             # warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", FutureWarning)
-            splist, labels = self.aggregate(npieces)
+            labels, splist = aggregate_fabba(npieces, self.sorting, self.alpha)
         else:
-            try:
-                labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
-            except:
-                raise ValueError(f"Cython initialization fails, will be fixed in the future version.")
+            labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
 
         centers = np.zeros((0,2))
         
@@ -859,16 +860,16 @@ class fabba_model(Aggregation2D):
 
 
     @property
-    def string_form(self):
-        return self._string_form
+    def return_list(self):
+        return self._return_list
 
 
 
-    @string_form.setter
-    def string_form(self, value):
+    @return_list.setter
+    def return_list(self, value):
         if not isinstance(value, bool):
             raise TypeError("Expected a boolean type.")
-        self._string_form = value
+        self._return_list = value
 
 
     @property

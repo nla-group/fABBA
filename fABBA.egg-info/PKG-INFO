@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 0.5.0
+Version: 0.5.6
 Summary: An efficient aggregation based symbolic representation
 Home-page: https://github.com/nla-group/fABBA
 Author: Stefan Guettel, Xinye Chen
@@ -34,14 +34,6 @@ Download this repository:
 $ git clone https://github.com/nla-group/fABBA.git
 ```
 
-To compile the Cython extension for use in the current directory type:
-```
-$ python3 setup.py build_ext --inplace
-```
-or 
-```
-$ python setup.py build_ext --inplace
-```
 
 
 ## Examples 
@@ -149,6 +141,18 @@ There are a number of dependencies listed below. Most of these modules, except p
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
 Please ensure that these modules are available before running the codes.
+
+
+You're required to compile Cython in the experiments code (though it already compiled in the formal software, but experiments code in the papaer is separated), to compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) for use:
+```
+$ cd experiments/src
+$ python3 setup.py build_ext --inplace
+```
+or 
+```
+$ cd experiments/src
+$ python setup.py build_ext --inplace
+```
 
 
 ## Software contributors

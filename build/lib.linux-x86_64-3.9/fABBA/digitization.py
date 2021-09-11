@@ -33,16 +33,18 @@
 import warnings
 
 try:
-    from .caggregation_memview import aggregate as aggregate_fc # cython with memory view
+    from .fabba_agg_memview import aggregate as aggregate_fabba 
+    from .aggregation_memview import aggregate as aggregate_fc # cython with memory view
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
+    from .fabba_agg import aggregate as aggregate_fabba 
     from .aggregation import aggregate as aggregate_fc
-
+    
 import collections
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
-from .symbolic_representation import Aggregation2D
+
 
 @dataclass
 class Model:
@@ -89,12 +91,11 @@ def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
         npieces[:,1] = npieces[:,1] / _std[1]
 
     if sorting in ["lexi", "2-norm", "1-norm"]:
-        warnings.warn(f"Pass {sorting} as keyword args. From the next version "
-              f"passing these as positional arguments "
-              "will result in an error. Additionally, cython implementation will be impossible for this sorting.", 
-                      FutureWarning)
-        agg = Aggregation2D(sorting=sorting, alpha=alpha)
-        splist, labels = agg.aggregate(npieces)
+        # warnings.warn(f"Pass {sorting} as keyword args. From the next version "
+        #      f"passing these as positional arguments "
+        #      "will result in an error. Additionally, cython implementation will be impossible for this sorting.", 
+        #              FutureWarning)
+        labels, splist = aggregate_fabba(npieces, sorting, alpha)
     else:
         labels, splist = aggregate_fc(npieces, sorting, alpha)
 

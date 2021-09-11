@@ -4,12 +4,12 @@
 {
     "distutils": {
         "depends": [],
-        "name": "fABBA.caggregation",
+        "name": "fABBA.aggregation_c",
         "sources": [
-            "fABBA/caggregation.pyx"
+            "fABBA/aggregation_c.pyx"
         ]
     },
-    "module_name": "fABBA.caggregation"
+    "module_name": "fABBA.aggregation_c"
 }
 END: Cython Metadata */
 
@@ -625,8 +625,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__fABBA__caggregation
-#define __PYX_HAVE_API__fABBA__caggregation
+#define __PYX_HAVE__fABBA__aggregation_c
+#define __PYX_HAVE_API__fABBA__aggregation_c
 /* Early includes */
 #include <string.h>
 #include <stdio.h>
@@ -868,7 +868,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "fABBA/caggregation.pyx",
+  "fABBA/aggregation_c.pyx",
   "__init__.pxd",
   "type.pxd",
 };
@@ -1159,16 +1159,16 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-struct __pyx_opt_args_5fABBA_12caggregation_aggregate;
+struct __pyx_opt_args_5fABBA_13aggregation_c_aggregate;
 
-/* "fABBA/caggregation.pyx":54
+/* "fABBA/aggregation_c.pyx":54
  * @cython.binding(True)
  * 
  * cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):             # <<<<<<<<<<<<<<
  *     """aggregate the data
  * 
  */
-struct __pyx_opt_args_5fABBA_12caggregation_aggregate {
+struct __pyx_opt_args_5fABBA_13aggregation_c_aggregate {
   int __pyx_n;
   PyObject *sorting;
   float tol;
@@ -2061,15 +2061,15 @@ static PyTypeObject *__pyx_ptype_5numpy_character = 0;
 static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE int __pyx_f_5numpy_import_array(void); /*proto*/
 
-/* Module declarations from 'fABBA.caggregation' */
-static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_12caggregation_aggregate *__pyx_optional_args); /*proto*/
+/* Module declarations from 'fABBA.aggregation_c' */
+static PyObject *__pyx_f_5fABBA_13aggregation_c_aggregate(PyArrayObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_13aggregation_c_aggregate *__pyx_optional_args); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t", NULL, sizeof(__pyx_t_5numpy_float64_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t = { "int64_t", NULL, sizeof(__pyx_t_5numpy_int64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int64_t), 0 };
-#define __Pyx_MODULE_NAME "fABBA.caggregation"
-extern int __pyx_module_is_main_fABBA__caggregation;
-int __pyx_module_is_main_fABBA__caggregation = 0;
+#define __Pyx_MODULE_NAME "fABBA.aggregation_c"
+extern int __pyx_module_is_main_fABBA__aggregation_c;
+int __pyx_module_is_main_fABBA__aggregation_c = 0;
 
-/* Implementation of 'fABBA.caggregation' */
+/* Implementation of 'fABBA.aggregation_c' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ImportError;
 static const char __pyx_k_k[] = "k";
@@ -2098,9 +2098,9 @@ static const char __pyx_k_sorting[] = "sorting";
 static const char __pyx_k_aggregate[] = "aggregate";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_fABBA_caggregation[] = "fABBA.caggregation";
+static const char __pyx_k_fABBA_aggregation_c[] = "fABBA.aggregation_c";
 static const char __pyx_k_scipy_sparse_linalg[] = "scipy.sparse.linalg";
-static const char __pyx_k_fABBA_caggregation_pyx[] = "fABBA/caggregation.pyx";
+static const char __pyx_k_fABBA_aggregation_c_pyx[] = "fABBA/aggregation_c.pyx";
 static const char __pyx_k_return_singular_vectors[] = "return_singular_vectors";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_numpy_core_umath_failed_to_impor[] = "numpy.core.umath failed to import";
@@ -2112,8 +2112,8 @@ static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_data;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_empty;
-static PyObject *__pyx_n_s_fABBA_caggregation;
-static PyObject *__pyx_kp_s_fABBA_caggregation_pyx;
+static PyObject *__pyx_n_s_fABBA_aggregation_c;
+static PyObject *__pyx_kp_s_fABBA_aggregation_c_pyx;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_k;
 static PyObject *__pyx_n_s_linalg;
@@ -2137,7 +2137,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_tol;
 static PyObject *__pyx_n_u_u;
 static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_5fABBA_12caggregation_aggregate(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_data, PyObject *__pyx_v_sorting, float __pyx_v_tol); /* proto */
+static PyObject *__pyx_pf_5fABBA_13aggregation_c_aggregate(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_data, PyObject *__pyx_v_sorting, float __pyx_v_tol); /* proto */
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -2149,7 +2149,7 @@ static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_tuple__6;
 /* Late includes */
 
-/* "fABBA/caggregation.pyx":54
+/* "fABBA/aggregation_c.pyx":54
  * @cython.binding(True)
  * 
  * cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):             # <<<<<<<<<<<<<<
@@ -2157,8 +2157,8 @@ static PyObject *__pyx_tuple__6;
  * 
  */
 
-static PyObject *__pyx_pw_5fABBA_12caggregation_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_data, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_12caggregation_aggregate *__pyx_optional_args) {
+static PyObject *__pyx_pw_5fABBA_13aggregation_c_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_5fABBA_13aggregation_c_aggregate(PyArrayObject *__pyx_v_data, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_13aggregation_c_aggregate *__pyx_optional_args) {
   PyObject *__pyx_v_sorting = ((PyObject*)__pyx_n_u_norm);
   float __pyx_v_tol = ((float)0.5);
   unsigned int __pyx_v_num_group;
@@ -2262,7 +2262,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   }
   __pyx_pybuffernd_data.diminfo[0].strides = __pyx_pybuffernd_data.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_data.diminfo[0].shape = __pyx_pybuffernd_data.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_data.diminfo[1].strides = __pyx_pybuffernd_data.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_data.diminfo[1].shape = __pyx_pybuffernd_data.rcbuffer->pybuffer.shape[1];
 
-  /* "fABBA/caggregation.pyx":83
+  /* "fABBA/aggregation_c.pyx":83
  * 
  *     cdef unsigned int num_group
  *     cdef unsigned int fdim = data.shape[1] # feature dimension             # <<<<<<<<<<<<<<
@@ -2272,7 +2272,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __Pyx_TraceLine(83,0,__PYX_ERR(0, 83, __pyx_L1_error))
   __pyx_v_fdim = (__pyx_v_data->dimensions[1]);
 
-  /* "fABBA/caggregation.pyx":84
+  /* "fABBA/aggregation_c.pyx":84
  *     cdef unsigned int num_group
  *     cdef unsigned int fdim = data.shape[1] # feature dimension
  *     cdef unsigned int len_ind = data.shape[0] # size of data             # <<<<<<<<<<<<<<
@@ -2282,7 +2282,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __Pyx_TraceLine(84,0,__PYX_ERR(0, 84, __pyx_L1_error))
   __pyx_v_len_ind = (__pyx_v_data->dimensions[0]);
 
-  /* "fABBA/caggregation.pyx":87
+  /* "fABBA/aggregation_c.pyx":87
  *     cdef unsigned int sp # sp: starting point
  *     # cdef unsigned int nr_dist = 0 # nr_dist:if necessary, count the distance computation
  *     cdef unsigned int lab = 0 # lab: class             # <<<<<<<<<<<<<<
@@ -2292,7 +2292,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __Pyx_TraceLine(87,0,__PYX_ERR(0, 87, __pyx_L1_error))
   __pyx_v_lab = 0;
 
-  /* "fABBA/caggregation.pyx":89
+  /* "fABBA/aggregation_c.pyx":89
  *     cdef unsigned int lab = 0 # lab: class
  *     cdef double dist # distance
  *     cdef np.ndarray[np.int64_t, ndim=1] labels = np.zeros(len_ind, dtype=int) - 1             # <<<<<<<<<<<<<<
@@ -2337,7 +2337,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_v_labels = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "fABBA/caggregation.pyx":91
+  /* "fABBA/aggregation_c.pyx":91
  *     cdef np.ndarray[np.int64_t, ndim=1] labels = np.zeros(len_ind, dtype=int) - 1
  *     # cdef list labels = [-1]*len_ind
  *     cdef list splist = list() # store the starting points             # <<<<<<<<<<<<<<
@@ -2350,7 +2350,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_v_splist = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "fABBA/caggregation.pyx":92
+  /* "fABBA/aggregation_c.pyx":92
  *     # cdef list labels = [-1]*len_ind
  *     cdef list splist = list() # store the starting points
  *     cdef np.ndarray[np.float64_t, ndim=1] sort_vals = np.empty((len_ind, ), dtype=float)             # <<<<<<<<<<<<<<
@@ -2397,7 +2397,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_v_sort_vals = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "fABBA/caggregation.pyx":93
+  /* "fABBA/aggregation_c.pyx":93
  *     cdef list splist = list() # store the starting points
  *     cdef np.ndarray[np.float64_t, ndim=1] sort_vals = np.empty((len_ind, ), dtype=float)
  *     cdef np.ndarray[np.float64_t, ndim=1] clustc = np.empty((fdim, ), dtype=float)             # <<<<<<<<<<<<<<
@@ -2444,7 +2444,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_v_clustc = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "fABBA/caggregation.pyx":94
+  /* "fABBA/aggregation_c.pyx":94
  *     cdef np.ndarray[np.float64_t, ndim=1] sort_vals = np.empty((len_ind, ), dtype=float)
  *     cdef np.ndarray[np.float64_t, ndim=1] clustc = np.empty((fdim, ), dtype=float)
  *     cdef np.ndarray[np.int64_t, ndim=1] ind = np.empty((len_ind, ), dtype=int)             # <<<<<<<<<<<<<<
@@ -2491,7 +2491,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_v_ind = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "fABBA/caggregation.pyx":97
+  /* "fABBA/aggregation_c.pyx":97
  *     cdef unsigned int i, j, coord, c
  * 
  *     if sorting == "norm":             # <<<<<<<<<<<<<<
@@ -2503,7 +2503,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_t_10 = (__pyx_t_9 != 0);
   if (__pyx_t_10) {
 
-    /* "fABBA/caggregation.pyx":98
+    /* "fABBA/aggregation_c.pyx":98
  * 
  *     if sorting == "norm":
  *         cdata = data             # <<<<<<<<<<<<<<
@@ -2514,7 +2514,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __Pyx_INCREF(((PyObject *)__pyx_v_data));
     __pyx_v_cdata = ((PyObject *)__pyx_v_data);
 
-    /* "fABBA/caggregation.pyx":99
+    /* "fABBA/aggregation_c.pyx":99
  *     if sorting == "norm":
  *         cdata = data
  *         sort_vals = np.linalg.norm(data, ord=2, axis=1)             # <<<<<<<<<<<<<<
@@ -2567,7 +2567,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __Pyx_DECREF_SET(__pyx_v_sort_vals, ((PyArrayObject *)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "fABBA/caggregation.pyx":100
+    /* "fABBA/aggregation_c.pyx":100
  *         cdata = data
  *         sort_vals = np.linalg.norm(data, ord=2, axis=1)
  *         ind = np.argsort(sort_vals)             # <<<<<<<<<<<<<<
@@ -2618,7 +2618,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __Pyx_DECREF_SET(__pyx_v_ind, ((PyArrayObject *)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "fABBA/caggregation.pyx":97
+    /* "fABBA/aggregation_c.pyx":97
  *     cdef unsigned int i, j, coord, c
  * 
  *     if sorting == "norm":             # <<<<<<<<<<<<<<
@@ -2628,7 +2628,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     goto __pyx_L3;
   }
 
-  /* "fABBA/caggregation.pyx":109
+  /* "fABBA/aggregation_c.pyx":109
  *         # change to svd
  *         # cdata = data - data.mean(axis=0) -- already done in the clustering.fit_transform
  *         cdata = data - np.mean(data, axis=0)             # <<<<<<<<<<<<<<
@@ -2661,7 +2661,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_v_cdata = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "fABBA/caggregation.pyx":110
+    /* "fABBA/aggregation_c.pyx":110
  *         # cdata = data - data.mean(axis=0) -- already done in the clustering.fit_transform
  *         cdata = data - np.mean(data, axis=0)
  *         if data.shape[1]>1:             # <<<<<<<<<<<<<<
@@ -2672,7 +2672,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_t_10 = (((__pyx_v_data->dimensions[1]) > 1) != 0);
     if (__pyx_t_10) {
 
-      /* "fABBA/caggregation.pyx":111
+      /* "fABBA/aggregation_c.pyx":111
  *         cdata = data - np.mean(data, axis=0)
  *         if data.shape[1]>1:
  *             U1, s1, _ = svds(cdata, k=1, return_singular_vectors="u")             # <<<<<<<<<<<<<<
@@ -2756,7 +2756,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_v__ = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "fABBA/caggregation.pyx":112
+      /* "fABBA/aggregation_c.pyx":112
  *         if data.shape[1]>1:
  *             U1, s1, _ = svds(cdata, k=1, return_singular_vectors="u")
  *             sort_vals = U1[:,0]*s1[0]             # <<<<<<<<<<<<<<
@@ -2795,7 +2795,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __Pyx_DECREF_SET(__pyx_v_sort_vals, ((PyArrayObject *)__pyx_t_3));
       __pyx_t_3 = 0;
 
-      /* "fABBA/caggregation.pyx":110
+      /* "fABBA/aggregation_c.pyx":110
  *         # cdata = data - data.mean(axis=0) -- already done in the clustering.fit_transform
  *         cdata = data - np.mean(data, axis=0)
  *         if data.shape[1]>1:             # <<<<<<<<<<<<<<
@@ -2805,7 +2805,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       goto __pyx_L4;
     }
 
-    /* "fABBA/caggregation.pyx":114
+    /* "fABBA/aggregation_c.pyx":114
  *             sort_vals = U1[:,0]*s1[0]
  *         else:
  *             sort_vals = cdata[:,0]             # <<<<<<<<<<<<<<
@@ -2841,7 +2841,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     }
     __pyx_L4:;
 
-    /* "fABBA/caggregation.pyx":115
+    /* "fABBA/aggregation_c.pyx":115
  *         else:
  *             sort_vals = cdata[:,0]
  *         sort_vals = sort_vals*np.sign(-sort_vals[0]) # flip to enforce deterministic output             # <<<<<<<<<<<<<<
@@ -2899,7 +2899,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __Pyx_DECREF_SET(__pyx_v_sort_vals, ((PyArrayObject *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "fABBA/caggregation.pyx":116
+    /* "fABBA/aggregation_c.pyx":116
  *             sort_vals = cdata[:,0]
  *         sort_vals = sort_vals*np.sign(-sort_vals[0]) # flip to enforce deterministic output
  *         ind = np.argsort(sort_vals)             # <<<<<<<<<<<<<<
@@ -2952,7 +2952,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   }
   __pyx_L3:;
 
-  /* "fABBA/caggregation.pyx":121
+  /* "fABBA/aggregation_c.pyx":121
  *     #     ind = np.arange(len_ind)
  * 
  *     for i in range(len_ind):             # <<<<<<<<<<<<<<
@@ -2965,7 +2965,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_19; __pyx_t_20+=1) {
     __pyx_v_i = __pyx_t_20;
 
-    /* "fABBA/caggregation.pyx":122
+    /* "fABBA/aggregation_c.pyx":122
  * 
  *     for i in range(len_ind):
  *         sp = ind[i]             # <<<<<<<<<<<<<<
@@ -2976,7 +2976,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_t_21 = __pyx_v_i;
     __pyx_v_sp = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int64_t *, __pyx_pybuffernd_ind.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_ind.diminfo[0].strides));
 
-    /* "fABBA/caggregation.pyx":123
+    /* "fABBA/aggregation_c.pyx":123
  *     for i in range(len_ind):
  *         sp = ind[i]
  *         if labels[sp] >= 0:             # <<<<<<<<<<<<<<
@@ -2988,7 +2988,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_t_10 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_labels.diminfo[0].strides)) >= 0) != 0);
     if (__pyx_t_10) {
 
-      /* "fABBA/caggregation.pyx":124
+      /* "fABBA/aggregation_c.pyx":124
  *         sp = ind[i]
  *         if labels[sp] >= 0:
  *             continue             # <<<<<<<<<<<<<<
@@ -2998,7 +2998,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __Pyx_TraceLine(124,0,__PYX_ERR(0, 124, __pyx_L1_error))
       goto __pyx_L7_continue;
 
-      /* "fABBA/caggregation.pyx":123
+      /* "fABBA/aggregation_c.pyx":123
  *     for i in range(len_ind):
  *         sp = ind[i]
  *         if labels[sp] >= 0:             # <<<<<<<<<<<<<<
@@ -3007,7 +3007,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
  */
     }
 
-    /* "fABBA/caggregation.pyx":126
+    /* "fABBA/aggregation_c.pyx":126
  *             continue
  *         else:
  *             clustc = cdata[sp,:]             # <<<<<<<<<<<<<<
@@ -3052,7 +3052,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __Pyx_DECREF_SET(__pyx_v_clustc, ((PyArrayObject *)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "fABBA/caggregation.pyx":127
+      /* "fABBA/aggregation_c.pyx":127
  *         else:
  *             clustc = cdata[sp,:]
  *             labels[sp] = lab             # <<<<<<<<<<<<<<
@@ -3063,7 +3063,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_t_21 = __pyx_v_sp;
       *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_labels.diminfo[0].strides) = __pyx_v_lab;
 
-      /* "fABBA/caggregation.pyx":128
+      /* "fABBA/aggregation_c.pyx":128
  *             clustc = cdata[sp,:]
  *             labels[sp] = lab
  *             num_group = 1             # <<<<<<<<<<<<<<
@@ -3074,7 +3074,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_v_num_group = 1;
     }
 
-    /* "fABBA/caggregation.pyx":130
+    /* "fABBA/aggregation_c.pyx":130
  *             num_group = 1
  * 
  *         for j in ind[i:]:             # <<<<<<<<<<<<<<
@@ -3134,7 +3134,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_v_j = __pyx_t_24;
 
-      /* "fABBA/caggregation.pyx":131
+      /* "fABBA/aggregation_c.pyx":131
  * 
  *         for j in ind[i:]:
  *             if labels[j] >= 0:             # <<<<<<<<<<<<<<
@@ -3146,7 +3146,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_t_10 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_labels.diminfo[0].strides)) >= 0) != 0);
       if (__pyx_t_10) {
 
-        /* "fABBA/caggregation.pyx":132
+        /* "fABBA/aggregation_c.pyx":132
  *         for j in ind[i:]:
  *             if labels[j] >= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -3156,7 +3156,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
         __Pyx_TraceLine(132,0,__PYX_ERR(0, 132, __pyx_L1_error))
         goto __pyx_L10_continue;
 
-        /* "fABBA/caggregation.pyx":131
+        /* "fABBA/aggregation_c.pyx":131
  * 
  *         for j in ind[i:]:
  *             if labels[j] >= 0:             # <<<<<<<<<<<<<<
@@ -3165,7 +3165,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
  */
       }
 
-      /* "fABBA/caggregation.pyx":134
+      /* "fABBA/aggregation_c.pyx":134
  *                 continue
  * 
  *             if (sort_vals[j] - sort_vals[sp] > tol):             # <<<<<<<<<<<<<<
@@ -3178,7 +3178,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_t_10 = ((((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_sort_vals.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_sort_vals.diminfo[0].strides)) - (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_sort_vals.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_sort_vals.diminfo[0].strides))) > __pyx_v_tol) != 0);
       if (__pyx_t_10) {
 
-        /* "fABBA/caggregation.pyx":135
+        /* "fABBA/aggregation_c.pyx":135
  * 
  *             if (sort_vals[j] - sort_vals[sp] > tol):
  *                 break             # <<<<<<<<<<<<<<
@@ -3188,7 +3188,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
         __Pyx_TraceLine(135,0,__PYX_ERR(0, 135, __pyx_L1_error))
         goto __pyx_L11_break;
 
-        /* "fABBA/caggregation.pyx":134
+        /* "fABBA/aggregation_c.pyx":134
  *                 continue
  * 
  *             if (sort_vals[j] - sort_vals[sp] > tol):             # <<<<<<<<<<<<<<
@@ -3197,7 +3197,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
  */
       }
 
-      /* "fABBA/caggregation.pyx":141
+      /* "fABBA/aggregation_c.pyx":141
  *             # dist = np.inner(dat, dat)
  * 
  *             dist = 0             # <<<<<<<<<<<<<<
@@ -3207,7 +3207,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __Pyx_TraceLine(141,0,__PYX_ERR(0, 141, __pyx_L1_error))
       __pyx_v_dist = 0.0;
 
-      /* "fABBA/caggregation.pyx":142
+      /* "fABBA/aggregation_c.pyx":142
  * 
  *             dist = 0
  *             for coord in range(fdim):             # <<<<<<<<<<<<<<
@@ -3220,7 +3220,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       for (__pyx_t_27 = 0; __pyx_t_27 < __pyx_t_26; __pyx_t_27+=1) {
         __pyx_v_coord = __pyx_t_27;
 
-        /* "fABBA/caggregation.pyx":143
+        /* "fABBA/aggregation_c.pyx":143
  *             dist = 0
  *             for coord in range(fdim):
  *                 dist += (clustc[coord] - cdata[j,coord])**2             # <<<<<<<<<<<<<<
@@ -3264,7 +3264,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
         __pyx_v_dist = __pyx_t_29;
       }
 
-      /* "fABBA/caggregation.pyx":147
+      /* "fABBA/aggregation_c.pyx":147
  *             # nr_dist += 1
  * 
  *             if dist <= tol**2:             # <<<<<<<<<<<<<<
@@ -3275,7 +3275,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
       __pyx_t_10 = ((__pyx_v_dist <= powf(__pyx_v_tol, 2.0)) != 0);
       if (__pyx_t_10) {
 
-        /* "fABBA/caggregation.pyx":148
+        /* "fABBA/aggregation_c.pyx":148
  * 
  *             if dist <= tol**2:
  *                 num_group = num_group + 1             # <<<<<<<<<<<<<<
@@ -3285,7 +3285,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
         __Pyx_TraceLine(148,0,__PYX_ERR(0, 148, __pyx_L1_error))
         __pyx_v_num_group = (__pyx_v_num_group + 1);
 
-        /* "fABBA/caggregation.pyx":149
+        /* "fABBA/aggregation_c.pyx":149
  *             if dist <= tol**2:
  *                 num_group = num_group + 1
  *                 labels[j] = lab             # <<<<<<<<<<<<<<
@@ -3296,7 +3296,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
         __pyx_t_25 = __pyx_v_j;
         *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_labels.diminfo[0].strides) = __pyx_v_lab;
 
-        /* "fABBA/caggregation.pyx":147
+        /* "fABBA/aggregation_c.pyx":147
  *             # nr_dist += 1
  * 
  *             if dist <= tol**2:             # <<<<<<<<<<<<<<
@@ -3305,7 +3305,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
  */
       }
 
-      /* "fABBA/caggregation.pyx":130
+      /* "fABBA/aggregation_c.pyx":130
  *             num_group = 1
  * 
  *         for j in ind[i:]:             # <<<<<<<<<<<<<<
@@ -3318,7 +3318,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_L11_break:;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "fABBA/caggregation.pyx":151
+    /* "fABBA/aggregation_c.pyx":151
  *                 labels[j] = lab
  * 
  *         splist.append( [sp, lab] + [num_group] + list(data[sp,:]) ) # respectively store starting point             # <<<<<<<<<<<<<<
@@ -3372,7 +3372,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_t_30 = __Pyx_PyList_Append(__pyx_v_splist, __pyx_t_4); if (unlikely(__pyx_t_30 == ((int)-1))) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "fABBA/caggregation.pyx":153
+    /* "fABBA/aggregation_c.pyx":153
  *         splist.append( [sp, lab] + [num_group] + list(data[sp,:]) ) # respectively store starting point
  *                                                                 # index, label, number of neighbor objects, center (starting point).
  *         lab += 1             # <<<<<<<<<<<<<<
@@ -3384,7 +3384,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __pyx_L7_continue:;
   }
 
-  /* "fABBA/caggregation.pyx":160
+  /* "fABBA/aggregation_c.pyx":160
  *     #     agg_centers[c] = np.concatenate(([-1, c], np.mean(data[indc,:], axis=0)), axis=None)
  * 
  *     return labels, splist #, nr_dist, agg_centers             # <<<<<<<<<<<<<<
@@ -3405,7 +3405,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "fABBA/caggregation.pyx":54
+  /* "fABBA/aggregation_c.pyx":54
  * @cython.binding(True)
  * 
  * cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):             # <<<<<<<<<<<<<<
@@ -3431,7 +3431,7 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_labels.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_sort_vals.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("fABBA.caggregation.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("fABBA.aggregation_c.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   goto __pyx_L2;
   __pyx_L0:;
@@ -3457,10 +3457,10 @@ static PyObject *__pyx_f_5fABBA_12caggregation_aggregate(PyArrayObject *__pyx_v_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5fABBA_12caggregation_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5fABBA_12caggregation_aggregate[] = "aggregate the data\n\n    Parameters\n    ----------\n    data : numpy.ndarray\n        the input that is array-like of shape (n_samples,).\n\n    sorting : str\n        the sorting way refered for aggregation, default='norm', alternative option: 'pca'.\n\n    tol : float\n        the tolerance to control the aggregation, if the distance between the starting point \n        and the object is less than or equal than the tolerance,\n        the object should allocated to the group which starting point belongs to.  \n\n    Returns\n    -------\n    labels (numpy.ndarray) : \n        the group category of the data after aggregation\n    \n    splist (list) : \n        the list of the starting points\n    \n    nr_dist (int) :\n        distance computation calculations\n    ";
-static PyMethodDef __pyx_mdef_5fABBA_12caggregation_1aggregate = {"aggregate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_12caggregation_1aggregate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_12caggregation_aggregate};
-static PyObject *__pyx_pw_5fABBA_12caggregation_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5fABBA_13aggregation_c_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5fABBA_13aggregation_c_aggregate[] = "aggregate the data\n\n    Parameters\n    ----------\n    data : numpy.ndarray\n        the input that is array-like of shape (n_samples,).\n\n    sorting : str\n        the sorting way refered for aggregation, default='norm', alternative option: 'pca'.\n\n    tol : float\n        the tolerance to control the aggregation, if the distance between the starting point \n        and the object is less than or equal than the tolerance,\n        the object should allocated to the group which starting point belongs to.  \n\n    Returns\n    -------\n    labels (numpy.ndarray) : \n        the group category of the data after aggregation\n    \n    splist (list) : \n        the list of the starting points\n    \n    nr_dist (int) :\n        distance computation calculations\n    ";
+static PyMethodDef __pyx_mdef_5fABBA_13aggregation_c_1aggregate = {"aggregate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_13aggregation_c_1aggregate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_13aggregation_c_aggregate};
+static PyObject *__pyx_pw_5fABBA_13aggregation_c_1aggregate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_data = 0;
   PyObject *__pyx_v_sorting = 0;
   float __pyx_v_tol;
@@ -3531,13 +3531,13 @@ static PyObject *__pyx_pw_5fABBA_12caggregation_1aggregate(PyObject *__pyx_self,
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("aggregate", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 54, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("fABBA.caggregation.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("fABBA.aggregation_c.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_data), __pyx_ptype_5numpy_ndarray, 1, "data", 0))) __PYX_ERR(0, 54, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_sorting), (&PyUnicode_Type), 1, "sorting", 1))) __PYX_ERR(0, 54, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5fABBA_12caggregation_aggregate(__pyx_self, __pyx_v_data, __pyx_v_sorting, __pyx_v_tol);
+  __pyx_r = __pyx_pf_5fABBA_13aggregation_c_aggregate(__pyx_self, __pyx_v_data, __pyx_v_sorting, __pyx_v_tol);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3548,14 +3548,14 @@ static PyObject *__pyx_pw_5fABBA_12caggregation_1aggregate(PyObject *__pyx_self,
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5fABBA_12caggregation_aggregate(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_data, PyObject *__pyx_v_sorting, float __pyx_v_tol) {
+static PyObject *__pyx_pf_5fABBA_13aggregation_c_aggregate(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_data, PyObject *__pyx_v_sorting, float __pyx_v_tol) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_data;
   __Pyx_Buffer __pyx_pybuffer_data;
   PyObject *__pyx_r = NULL;
   __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_5fABBA_12caggregation_aggregate __pyx_t_2;
+  struct __pyx_opt_args_5fABBA_13aggregation_c_aggregate __pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3575,7 +3575,7 @@ static PyObject *__pyx_pf_5fABBA_12caggregation_aggregate(CYTHON_UNUSED PyObject
   __pyx_t_2.__pyx_n = 2;
   __pyx_t_2.sorting = __pyx_v_sorting;
   __pyx_t_2.tol = __pyx_v_tol;
-  __pyx_t_1 = __pyx_f_5fABBA_12caggregation_aggregate(__pyx_v_data, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5fABBA_13aggregation_c_aggregate(__pyx_v_data, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3590,7 +3590,7 @@ static PyObject *__pyx_pf_5fABBA_12caggregation_aggregate(CYTHON_UNUSED PyObject
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_data.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("fABBA.caggregation.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("fABBA.aggregation_c.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -4748,24 +4748,24 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
 }
 
 static PyMethodDef __pyx_methods[] = {
-  {"aggregate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_12caggregation_1aggregate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_12caggregation_aggregate},
+  {"aggregate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_13aggregation_c_1aggregate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_13aggregation_c_aggregate},
   {0, 0, 0, 0}
 };
 
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_caggregation(PyObject* module); /*proto*/
+static int __pyx_pymod_exec_aggregation_c(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_caggregation},
+  {Py_mod_exec, (void*)__pyx_pymod_exec_aggregation_c},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "caggregation",
+    "aggregation_c",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -4802,8 +4802,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_data, __pyx_k_data, sizeof(__pyx_k_data), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_empty, __pyx_k_empty, sizeof(__pyx_k_empty), 0, 0, 1, 1},
-  {&__pyx_n_s_fABBA_caggregation, __pyx_k_fABBA_caggregation, sizeof(__pyx_k_fABBA_caggregation), 0, 0, 1, 1},
-  {&__pyx_kp_s_fABBA_caggregation_pyx, __pyx_k_fABBA_caggregation_pyx, sizeof(__pyx_k_fABBA_caggregation_pyx), 0, 0, 1, 0},
+  {&__pyx_n_s_fABBA_aggregation_c, __pyx_k_fABBA_aggregation_c, sizeof(__pyx_k_fABBA_aggregation_c), 0, 0, 1, 1},
+  {&__pyx_kp_s_fABBA_aggregation_c_pyx, __pyx_k_fABBA_aggregation_c_pyx, sizeof(__pyx_k_fABBA_aggregation_c_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
   {&__pyx_n_s_linalg, __pyx_k_linalg, sizeof(__pyx_k_linalg), 0, 0, 1, 1},
@@ -4841,7 +4841,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "fABBA/caggregation.pyx":112
+  /* "fABBA/aggregation_c.pyx":112
  *         if data.shape[1]>1:
  *             U1, s1, _ = svds(cdata, k=1, return_singular_vectors="u")
  *             sort_vals = U1[:,0]*s1[0]             # <<<<<<<<<<<<<<
@@ -4877,7 +4877,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "fABBA/caggregation.pyx":54
+  /* "fABBA/aggregation_c.pyx":54
  * @cython.binding(True)
  * 
  * cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):             # <<<<<<<<<<<<<<
@@ -4887,7 +4887,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__6 = PyTuple_Pack(3, __pyx_n_s_data, __pyx_n_s_sorting, __pyx_n_s_tol); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_fABBA_caggregation_pyx, __pyx_n_s_aggregate, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_fABBA_aggregation_c_pyx, __pyx_n_s_aggregate, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5040,11 +5040,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC initcaggregation(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC initcaggregation(void)
+__Pyx_PyMODINIT_FUNC initaggregation_c(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC initaggregation_c(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit_caggregation(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit_caggregation(void)
+__Pyx_PyMODINIT_FUNC PyInit_aggregation_c(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit_aggregation_c(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -5111,7 +5111,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec_caggregation(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec_aggregation_c(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -5126,7 +5126,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_caggregation(PyObject *__pyx_pyini
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module 'caggregation' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module 'aggregation_c' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -5141,7 +5141,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_caggregation(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_aggregation_c(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -5178,7 +5178,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("caggregation", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("aggregation_c", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -5196,14 +5196,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_fABBA__caggregation) {
+  if (__pyx_module_is_main_fABBA__aggregation_c) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "fABBA.caggregation")) {
-      if (unlikely(PyDict_SetItemString(modules, "fABBA.caggregation", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "fABBA.aggregation_c")) {
+      if (unlikely(PyDict_SetItemString(modules, "fABBA.aggregation_c", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -5223,9 +5223,9 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  __Pyx_TraceCall("__Pyx_PyMODINIT_FUNC PyInit_caggregation(void)", __pyx_f[0], 1, 0, __PYX_ERR(0, 1, __pyx_L1_error));
+  __Pyx_TraceCall("__Pyx_PyMODINIT_FUNC PyInit_aggregation_c(void)", __pyx_f[0], 1, 0, __PYX_ERR(0, 1, __pyx_L1_error));
 
-  /* "fABBA/caggregation.pyx":42
+  /* "fABBA/aggregation_c.pyx":42
  * 
  * cimport cython
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -5238,7 +5238,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "fABBA/caggregation.pyx":46
+  /* "fABBA/aggregation_c.pyx":46
  * # from cython.parallel import prange
  * # from sklearn.decomposition import PCA
  * from scipy.sparse.linalg import svds             # <<<<<<<<<<<<<<
@@ -5260,7 +5260,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fABBA/caggregation.pyx":48
+  /* "fABBA/aggregation_c.pyx":48
  * from scipy.sparse.linalg import svds
  * # from libc.string cimport strcmp
  * np.import_array()             # <<<<<<<<<<<<<<
@@ -5270,7 +5270,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_TraceLine(48,0,__PYX_ERR(0, 48, __pyx_L1_error))
   __pyx_t_3 = __pyx_f_5numpy_import_array(); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 48, __pyx_L1_error)
 
-  /* "fABBA/caggregation.pyx":54
+  /* "fABBA/aggregation_c.pyx":54
  * @cython.binding(True)
  * 
  * cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):             # <<<<<<<<<<<<<<
@@ -5279,12 +5279,12 @@ if (!__Pyx_RefNanny) {
  */
   __Pyx_TraceLine(54,0,__PYX_ERR(0, 54, __pyx_L1_error))
 
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5fABBA_12caggregation_1aggregate, 0, __pyx_n_s_aggregate, NULL, __pyx_n_s_fABBA_caggregation, __pyx_d, ((PyObject *)__pyx_codeobj_)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5fABBA_13aggregation_c_1aggregate, 0, __pyx_n_s_aggregate, NULL, __pyx_n_s_fABBA_aggregation_c, __pyx_d, ((PyObject *)__pyx_codeobj_)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_aggregate, __pyx_t_2) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fABBA/caggregation.pyx":1
+  /* "fABBA/aggregation_c.pyx":1
  * #!python             # <<<<<<<<<<<<<<
  * #cython: language_level=3
  * #cython: profile=True
@@ -5464,11 +5464,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init fABBA.caggregation", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init fABBA.aggregation_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init fABBA.caggregation");
+    PyErr_SetString(PyExc_ImportError, "init fABBA.aggregation_c");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
