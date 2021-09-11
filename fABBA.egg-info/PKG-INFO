@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 0.6.3
+Version: 0.6.4
 Summary: An efficient aggregation based symbolic representation
 Home-page: https://github.com/nla-group/fABBA
 Author: Stefan Guettel, Xinye Chen
@@ -12,7 +12,7 @@ License-File: LICENSE
 
 # fABBA
 
-### An efficient aggregation method for the symbolicrepresentation of temporal data
+### An efficient aggregation method for the symbolic representation of temporal data
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
