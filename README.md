@@ -124,7 +124,7 @@ There are a number of dependencies listed below. Most of these modules, except p
 
 Please ensure that these modules are available before running the codes.
 
-Download this repo:
+Download this repository:
 ```
 $ git clone https://github.com/nla-group/fABBA.git
 ```
