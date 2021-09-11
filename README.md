@@ -12,9 +12,23 @@ In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Know
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## Install
-To install the current release
+To install the current release via PIP use:
 ```
 pip install fABBA
+```
+
+Download this repository:
+```
+$ git clone https://github.com/nla-group/fABBA.git
+```
+
+To compile the Cython extension for use in the current directory type:
+```
+$ python3 setup.py build_ext --inplace
+```
+or 
+```
+$ python setup.py build_ext --inplace
 ```
 
 
@@ -123,20 +137,6 @@ There are a number of dependencies listed below. Most of these modules, except p
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
 Please ensure that these modules are available before running the codes.
-
-Download this repository:
-```
-$ git clone https://github.com/nla-group/fABBA.git
-```
-
-To compile the Cython extension for use in the [current directory](https://github.com/nla-group/fABBA/tree/master/experiments/src)  use:
-```
-$ python3 setup.py build_ext --inplace
-```
-or 
-```
-$ python setup.py build_ext --inplace
-```
 
 
 ## Software contributors
