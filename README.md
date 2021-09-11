@@ -131,7 +131,7 @@ There are a number of dependencies listed below. Most of these modules, except p
 Please ensure that these modules are available before running the codes.
 
 
-You're required to compile Cython in the experiment code (which already compiled in the formal software), to compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) for use:
+You're required to compile Cython in the experiments code (though it already compiled in the formal software, but experiments code in the papaer is separated), to compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) for use:
 ```
 $ cd experiments/src
 $ python3 setup.py build_ext --inplace
