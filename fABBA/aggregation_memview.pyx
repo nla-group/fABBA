@@ -86,7 +86,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     # cdef double[:] s1
     cdef double[:, :] cdata = np.empty((len_ind, fdim), dtype=np.float64)
     cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
-    cdef long[:] ind # = np.empty((len_ind, ), dtype=int)
+    cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
     cdef Py_ssize_t sp # starting point index
     cdef unsigned int lab=0, num_group #, nr_dist=0
     cdef double[:] clustc # starting point coordinates

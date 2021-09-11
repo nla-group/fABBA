@@ -2257,6 +2257,9 @@ static CYTHON_INLINE int __pyx_memview_set_double(const char *itemp, PyObject *o
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyObject *, int writable_flag);
 
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(PyObject *, int writable_flag);
+
 /* GCCDiagnostics.proto */
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #define __Pyx_HAS_GCC_DIAGNOSTIC
@@ -2497,6 +2500,7 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_PY_LONG_LONG = { "long long", NULL, sizeof(PY_LONG_LONG), { 0 }, 0, IS_UNSIGNED(PY_LONG_LONG) ? 'U' : 'I', IS_UNSIGNED(PY_LONG_LONG), 0 };
 #define __Pyx_MODULE_NAME "fABBA.fabba_agg_memview"
 extern int __pyx_module_is_main_fABBA__fabba_agg_memview;
 int __pyx_module_is_main_fABBA__fabba_agg_memview = 0;
@@ -2856,7 +2860,7 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
   int __pyx_t_8;
   int __pyx_t_9;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_11;
+  __Pyx_memviewslice __pyx_t_11 = { 0, 0, { 0 }, { 0 }, { 0 } };
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
@@ -2868,9 +2872,10 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
   Py_ssize_t __pyx_t_20;
   Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
-  int __pyx_t_23;
-  Py_ssize_t __pyx_t_24;
-  int __pyx_t_25;
+  Py_ssize_t __pyx_t_23;
+  int __pyx_t_24;
+  Py_ssize_t __pyx_t_25;
+  int __pyx_t_26;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2908,7 +2913,7 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
  *     # cdef double[:] s1
  *     cdef double[:, :] cdata = np.empty((len_ind, fdim), dtype=np.float64)             # <<<<<<<<<<<<<<
  *     cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
- *     cdef long[:] ind # = np.empty((len_ind, ), dtype=int)
+ *     cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
  */
   __Pyx_TraceLine(55,0,__PYX_ERR(0, 55, __pyx_L1_error))
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
@@ -2954,7 +2959,7 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
   __pyx_t_6.data = NULL;
 
   /* "fABBA/fabba_agg_memview.pyx":59
- *     cdef long[:] ind # = np.empty((len_ind, ), dtype=int)
+ *     cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
  *     cdef Py_ssize_t sp # starting point index
  *     cdef unsigned int lab=0, num_group # , nr_dist=0             # <<<<<<<<<<<<<<
  *     cdef double[:] clustc # starting point coordinates
@@ -3094,11 +3099,11 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
     if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_v_ind = __pyx_t_7;
-    __pyx_t_7.memview = NULL;
-    __pyx_t_7.data = NULL;
+    __pyx_v_ind = __pyx_t_11;
+    __pyx_t_11.memview = NULL;
+    __pyx_t_11.data = NULL;
 
     /* "fABBA/fabba_agg_memview.pyx":67
  * 
@@ -3191,11 +3196,11 @@ static PyObject *__pyx_f_5fABBA_17fabba_agg_memview_aggregate(__Pyx_memviewslice
     if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 72, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_v_ind = __pyx_t_7;
-    __pyx_t_7.memview = NULL;
-    __pyx_t_7.data = NULL;
+    __pyx_v_ind = __pyx_t_11;
+    __pyx_t_11.memview = NULL;
+    __pyx_t_11.data = NULL;
 
     /* "fABBA/fabba_agg_memview.pyx":70
  *         sort_vals = np.linalg.norm(data, ord=2, axis=1)
@@ -3278,11 +3283,11 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 74, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 74, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_v_ind = __pyx_t_7;
-    __pyx_t_7.memview = NULL;
-    __pyx_t_7.data = NULL;
+    __pyx_v_ind = __pyx_t_11;
+    __pyx_t_11.memview = NULL;
+    __pyx_t_11.data = NULL;
   }
   __pyx_L3:;
 
@@ -3294,10 +3299,10 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
  * 
  */
   __Pyx_TraceLine(79,0,__PYX_ERR(0, 79, __pyx_L1_error))
-  __pyx_t_11 = __pyx_v_len_ind;
-  __pyx_t_12 = __pyx_t_11;
-  for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-    __pyx_v_i = __pyx_t_13;
+  __pyx_t_12 = __pyx_v_len_ind;
+  __pyx_t_13 = __pyx_t_12;
+  for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
+    __pyx_v_i = __pyx_t_14;
 
     /* "fABBA/fabba_agg_memview.pyx":80
  * 
@@ -3307,8 +3312,8 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
  *         if labels[sp] >= 0:
  */
     __Pyx_TraceLine(80,0,__PYX_ERR(0, 80, __pyx_L1_error))
-    __pyx_t_14 = __pyx_v_i;
-    __pyx_v_sp = (*((long *) ( /* dim=0 */ (__pyx_v_ind.data + __pyx_t_14 * __pyx_v_ind.strides[0]) )));
+    __pyx_t_15 = __pyx_v_i;
+    __pyx_v_sp = (*((PY_LONG_LONG *) ( /* dim=0 */ (__pyx_v_ind.data + __pyx_t_15 * __pyx_v_ind.strides[0]) )));
 
     /* "fABBA/fabba_agg_memview.pyx":82
  *         sp = ind[i] # starting point
@@ -3318,8 +3323,8 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
  * 
  */
     __Pyx_TraceLine(82,0,__PYX_ERR(0, 82, __pyx_L1_error))
-    __pyx_t_14 = __pyx_v_sp;
-    __pyx_t_8 = (((*((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_14 * __pyx_v_labels.strides[0]) ))) >= 0) != 0);
+    __pyx_t_15 = __pyx_v_sp;
+    __pyx_t_8 = (((*((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_15 * __pyx_v_labels.strides[0]) ))) >= 0) != 0);
     if (__pyx_t_8) {
 
       /* "fABBA/fabba_agg_memview.pyx":83
@@ -3375,8 +3380,8 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  * 
  */
     __Pyx_TraceLine(86,0,__PYX_ERR(0, 86, __pyx_L1_error))
-    __pyx_t_14 = __pyx_v_sp;
-    *((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_14 * __pyx_v_labels.strides[0]) )) = __pyx_v_lab;
+    __pyx_t_15 = __pyx_v_sp;
+    *((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_15 * __pyx_v_labels.strides[0]) )) = __pyx_v_lab;
 
     /* "fABBA/fabba_agg_memview.pyx":87
  *         clustc = data[sp,:]
@@ -3396,10 +3401,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  * 
  */
     __Pyx_TraceLine(89,0,__PYX_ERR(0, 89, __pyx_L1_error))
-    __pyx_t_15 = __pyx_v_len_ind;
-    __pyx_t_16 = __pyx_t_15;
-    for (__pyx_t_17 = __pyx_v_i; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
-      __pyx_v_ii = __pyx_t_17;
+    __pyx_t_16 = __pyx_v_len_ind;
+    __pyx_t_17 = __pyx_t_16;
+    for (__pyx_t_18 = __pyx_v_i; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
+      __pyx_v_ii = __pyx_t_18;
 
       /* "fABBA/fabba_agg_memview.pyx":90
  * 
@@ -3409,8 +3414,8 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  *             if labels[j] != -1:
  */
       __Pyx_TraceLine(90,0,__PYX_ERR(0, 90, __pyx_L1_error))
-      __pyx_t_14 = __pyx_v_ii;
-      __pyx_v_j = (*((long *) ( /* dim=0 */ (__pyx_v_ind.data + __pyx_t_14 * __pyx_v_ind.strides[0]) )));
+      __pyx_t_15 = __pyx_v_ii;
+      __pyx_v_j = (*((PY_LONG_LONG *) ( /* dim=0 */ (__pyx_v_ind.data + __pyx_t_15 * __pyx_v_ind.strides[0]) )));
 
       /* "fABBA/fabba_agg_memview.pyx":92
  *             j = ind[ii]
@@ -3420,8 +3425,8 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  * 
  */
       __Pyx_TraceLine(92,0,__PYX_ERR(0, 92, __pyx_L1_error))
-      __pyx_t_14 = __pyx_v_j;
-      __pyx_t_8 = (((*((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_14 * __pyx_v_labels.strides[0]) ))) != -1L) != 0);
+      __pyx_t_15 = __pyx_v_j;
+      __pyx_t_8 = (((*((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_15 * __pyx_v_labels.strides[0]) ))) != -1L) != 0);
       if (__pyx_t_8) {
 
         /* "fABBA/fabba_agg_memview.pyx":93
@@ -3461,10 +3466,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  * 
  */
       __Pyx_TraceLine(96,0,__PYX_ERR(0, 96, __pyx_L1_error))
-      __pyx_t_18 = __pyx_v_fdim;
-      __pyx_t_19 = __pyx_t_18;
-      for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_19; __pyx_t_20+=1) {
-        __pyx_v_coord = __pyx_t_20;
+      __pyx_t_19 = __pyx_v_fdim;
+      __pyx_t_20 = __pyx_t_19;
+      for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
+        __pyx_v_coord = __pyx_t_21;
 
         /* "fABBA/fabba_agg_memview.pyx":97
  *             dist = 0
@@ -3474,10 +3479,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  *             # nr_dist += 1
  */
         __Pyx_TraceLine(97,0,__PYX_ERR(0, 97, __pyx_L1_error))
-        __pyx_t_14 = __pyx_v_coord;
-        __pyx_t_21 = __pyx_v_j;
-        __pyx_t_22 = __pyx_v_coord;
-        __pyx_v_dist = (__pyx_v_dist + pow(((*((double *) ( /* dim=0 */ (__pyx_v_clustc.data + __pyx_t_14 * __pyx_v_clustc.strides[0]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_21 * __pyx_v_data.strides[0]) ) + __pyx_t_22 * __pyx_v_data.strides[1]) )))), 2.0));
+        __pyx_t_15 = __pyx_v_coord;
+        __pyx_t_22 = __pyx_v_j;
+        __pyx_t_23 = __pyx_v_coord;
+        __pyx_v_dist = (__pyx_v_dist + pow(((*((double *) ( /* dim=0 */ (__pyx_v_clustc.data + __pyx_t_15 * __pyx_v_clustc.strides[0]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_22 * __pyx_v_data.strides[0]) ) + __pyx_t_23 * __pyx_v_data.strides[1]) )))), 2.0));
       }
 
       /* "fABBA/fabba_agg_memview.pyx":100
@@ -3509,8 +3514,8 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  *                 if sorting == "2-norm" or sorting == "1-norm":
  */
         __Pyx_TraceLine(102,0,__PYX_ERR(0, 102, __pyx_L1_error))
-        __pyx_t_22 = __pyx_v_j;
-        *((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_22 * __pyx_v_labels.strides[0]) )) = __pyx_v_lab;
+        __pyx_t_23 = __pyx_v_j;
+        *((long *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_23 * __pyx_v_labels.strides[0]) )) = __pyx_v_lab;
 
         /* "fABBA/fabba_agg_memview.pyx":100
  * 
@@ -3532,14 +3537,14 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
       __Pyx_TraceLine(104,0,__PYX_ERR(0, 104, __pyx_L1_error))
       /*else*/ {
         __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_sorting, __pyx_kp_u_2_norm, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
-        __pyx_t_23 = (__pyx_t_9 != 0);
-        if (!__pyx_t_23) {
+        __pyx_t_24 = (__pyx_t_9 != 0);
+        if (!__pyx_t_24) {
         } else {
-          __pyx_t_8 = __pyx_t_23;
+          __pyx_t_8 = __pyx_t_24;
           goto __pyx_L14_bool_binop_done;
         }
-        __pyx_t_23 = (__Pyx_PyUnicode_Equals(__pyx_v_sorting, __pyx_kp_u_1_norm, Py_EQ)); if (unlikely(__pyx_t_23 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
-        __pyx_t_9 = (__pyx_t_23 != 0);
+        __pyx_t_24 = (__Pyx_PyUnicode_Equals(__pyx_v_sorting, __pyx_kp_u_1_norm, Py_EQ)); if (unlikely(__pyx_t_24 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_9 = (__pyx_t_24 != 0);
         __pyx_t_8 = __pyx_t_9;
         __pyx_L14_bool_binop_done:;
         if (__pyx_t_8) {
@@ -3553,10 +3558,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  */
           __Pyx_TraceLine(105,0,__PYX_ERR(0, 105, __pyx_L1_error))
           if (unlikely(!__pyx_v_sort_vals.memview)) { __Pyx_RaiseUnboundLocalError("sort_vals"); __PYX_ERR(0, 105, __pyx_L1_error) }
-          __pyx_t_22 = __pyx_v_j;
+          __pyx_t_23 = __pyx_v_j;
           if (unlikely(!__pyx_v_sort_vals.memview)) { __Pyx_RaiseUnboundLocalError("sort_vals"); __PYX_ERR(0, 105, __pyx_L1_error) }
-          __pyx_t_21 = __pyx_v_sp;
-          __pyx_t_8 = ((((*((double *) ( /* dim=0 */ (__pyx_v_sort_vals.data + __pyx_t_22 * __pyx_v_sort_vals.strides[0]) ))) - (*((double *) ( /* dim=0 */ (__pyx_v_sort_vals.data + __pyx_t_21 * __pyx_v_sort_vals.strides[0]) )))) > __pyx_v_tol) != 0);
+          __pyx_t_22 = __pyx_v_sp;
+          __pyx_t_8 = ((((*((double *) ( /* dim=0 */ (__pyx_v_sort_vals.data + __pyx_t_23 * __pyx_v_sort_vals.strides[0]) ))) - (*((double *) ( /* dim=0 */ (__pyx_v_sort_vals.data + __pyx_t_22 * __pyx_v_sort_vals.strides[0]) )))) > __pyx_v_tol) != 0);
           if (__pyx_t_8) {
 
             /* "fABBA/fabba_agg_memview.pyx":106
@@ -3597,31 +3602,31 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_clustc, 1);
  */
         __Pyx_TraceLine(108,0,__PYX_ERR(0, 108, __pyx_L1_error))
         /*else*/ {
-          __pyx_t_21 = __pyx_v_j;
-          __pyx_t_22 = 0;
-          __pyx_t_14 = __pyx_v_sp;
-          __pyx_t_24 = 0;
-          __pyx_t_9 = ((((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_21 * __pyx_v_data.strides[0]) ) + __pyx_t_22 * __pyx_v_data.strides[1]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_14 * __pyx_v_data.strides[0]) ) + __pyx_t_24 * __pyx_v_data.strides[1]) )))) == __pyx_v_tol) != 0);
+          __pyx_t_22 = __pyx_v_j;
+          __pyx_t_23 = 0;
+          __pyx_t_15 = __pyx_v_sp;
+          __pyx_t_25 = 0;
+          __pyx_t_9 = ((((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_22 * __pyx_v_data.strides[0]) ) + __pyx_t_23 * __pyx_v_data.strides[1]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_15 * __pyx_v_data.strides[0]) ) + __pyx_t_25 * __pyx_v_data.strides[1]) )))) == __pyx_v_tol) != 0);
           if (!__pyx_t_9) {
             goto __pyx_L19_next_or;
           } else {
           }
-          __pyx_t_24 = __pyx_v_j;
-          __pyx_t_14 = 1;
-          __pyx_t_22 = __pyx_v_sp;
-          __pyx_t_21 = 1;
-          __pyx_t_9 = (((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_24 * __pyx_v_data.strides[0]) ) + __pyx_t_14 * __pyx_v_data.strides[1]) ))) > (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_22 * __pyx_v_data.strides[0]) ) + __pyx_t_21 * __pyx_v_data.strides[1]) )))) != 0);
+          __pyx_t_25 = __pyx_v_j;
+          __pyx_t_15 = 1;
+          __pyx_t_23 = __pyx_v_sp;
+          __pyx_t_22 = 1;
+          __pyx_t_9 = (((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_25 * __pyx_v_data.strides[0]) ) + __pyx_t_15 * __pyx_v_data.strides[1]) ))) > (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_23 * __pyx_v_data.strides[0]) ) + __pyx_t_22 * __pyx_v_data.strides[1]) )))) != 0);
           if (!__pyx_t_9) {
           } else {
             __pyx_t_8 = __pyx_t_9;
             goto __pyx_L18_bool_binop_done;
           }
           __pyx_L19_next_or:;
-          __pyx_t_21 = __pyx_v_j;
-          __pyx_t_22 = 0;
-          __pyx_t_14 = __pyx_v_sp;
-          __pyx_t_24 = 0;
-          __pyx_t_9 = ((((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_21 * __pyx_v_data.strides[0]) ) + __pyx_t_22 * __pyx_v_data.strides[1]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_14 * __pyx_v_data.strides[0]) ) + __pyx_t_24 * __pyx_v_data.strides[1]) )))) > __pyx_v_tol) != 0);
+          __pyx_t_22 = __pyx_v_j;
+          __pyx_t_23 = 0;
+          __pyx_t_15 = __pyx_v_sp;
+          __pyx_t_25 = 0;
+          __pyx_t_9 = ((((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_22 * __pyx_v_data.strides[0]) ) + __pyx_t_23 * __pyx_v_data.strides[1]) ))) - (*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_15 * __pyx_v_data.strides[0]) ) + __pyx_t_25 * __pyx_v_data.strides[1]) )))) > __pyx_v_tol) != 0);
           __pyx_t_8 = __pyx_t_9;
           __pyx_L18_bool_binop_done:;
           if (__pyx_t_8) {
@@ -3708,7 +3713,7 @@ __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_25 = __Pyx_PyList_Append(__pyx_v_splist, __pyx_t_2); if (unlikely(__pyx_t_25 == ((int)-1))) __PYX_ERR(0, 111, __pyx_L1_error)
+    __pyx_t_26 = __Pyx_PyList_Append(__pyx_v_splist, __pyx_t_2); if (unlikely(__pyx_t_26 == ((int)-1))) __PYX_ERR(0, 111, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "fABBA/fabba_agg_memview.pyx":114
@@ -3784,6 +3789,7 @@ __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
   __Pyx_AddTraceback("fABBA.fabba_agg_memview.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -25366,6 +25372,29 @@ static CYTHON_INLINE int __pyx_memview_set_double(const char *itemp, PyObject *o
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
                                                  PyBUF_RECORDS_RO | writable_flag, 1,
                                                  &__Pyx_TypeInfo_double, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS_RO | writable_flag, 1,
+                                                 &__Pyx_TypeInfo_PY_LONG_LONG, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;
