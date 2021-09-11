@@ -57,8 +57,8 @@ Instead of using `transform` which combines the polygonal chain approximation of
 from fABBA.chainApproximation import compress
 from fABBA.chainApproximation import inverse_compress
 ts = [np.sin(0.05*i) for i in range(1000)]
-pieces = compress(ts, tol=0.1)                      # pieces is a list of the polygonal chain pieces
-inverse_ts = inverse_compress(pieces, ts[0])        # reconstruct polygonal chain from pieces
+pieces = compress(ts, tol=0.1)                         # pieces is a list of the polygonal chain pieces
+inverse_ts = inverse_compress(pieces, ts[0])           # reconstruct polygonal chain from pieces
 ```
 
 And this is the second.
@@ -66,30 +66,34 @@ And this is the second.
 ```python
 from fABBA.digitization import digitize
 from fABBA.digitization import inverse_digitize
-string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon into few symbols
-print(''.join(string))                              # string representation 
+string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon
+print(''.join(string))                                 # prints #$!"!"!"!"!"!"!"%
 
 inverse_pieces = inverse_digitize(string, parameters)
-inverse_ts = inverse_compress(inverse_pieces, ts[0])
+inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series reconstruction
 ```
 
 
 #### *Image compression*
+
+The following example shows how to apply fABBA to image data.
+
 ```python
->>> import matplotlib.pyplot as plt
->>> from fABBA.load_datasets import load_images
->>> from fABBA.symbolic_representation import image_compress
->>> from fABBA.symbolic_representation import image_decompress
->>> from fABBA.symbolic_representation import fabba_model
->>> from cv2 import resize
->>> img_samples = load_images(shape=(100,100)) # load fABBA image test samples
->>> img = resize(img_samples[0], (100, 100)) # select the first image for test
->>> fabba = fabba_model(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1, max_len=np.inf, string_form=True)
->>> strings = image_compress(fabba, img)
->>> inverse_img = image_decompress(fabba, strings)
+import matplotlib.pyplot as plt
+from fABBA.load_datasets import load_images
+from fABBA.symbolic_representation import image_compress
+from fABBA.symbolic_representation import image_decompress
+from fABBA.symbolic_representation import fabba_model
+from cv2 import resize
+img_samples = load_images() # load test images
+img = resize(img_samples[0], (100, 100)) # select the first image for test
+
+fabba = fabba_model(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1, max_len=np.inf, string_form=True)
+string = image_compress(fabba, img)
+inverse_img = image_decompress(fabba, string)
 ```
 
-Plot the original image
+Plot the original image:
 ```python
 >>> plt.imshow(img)
 >>> plt.show()
@@ -98,7 +102,7 @@ Plot the original image
 ![original image](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/img.png)
 
 
-Plot the reconstructed image
+Plot the reconstructed image:
 ```python
 >>> plt.imshow(inverse_img)
 >>> plt.show()
@@ -107,16 +111,11 @@ Plot the reconstructed image
 
 ![reconstruction](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/inverse_img.png)
 
-## Experiment
+## Experiments
 
-The folder named "experiments" contains all code required to reproduce the experiments in the manuscript 
-"An efficient aggregation method for the symbolic representation of temporal data".
+The folder "experiments" contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
-#### Overview and dependencies
-
-The "experiments" folder is self-contained, covering all scripts to reproduce the experimental data except UCRArchive2018 datasets in the paper.
-
-The UCRArchive2018 datasets can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
+Some of the experiments also require the UCRArchive2018 datasets which can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
 
 There are a number of dependencies listed below. Most of these modules, except perhaps the final ones, are part of any standard Python installation. We list them for completeness:
 
@@ -125,24 +124,21 @@ There are a number of dependencies listed below. Most of these modules, except p
 Please ensure that these modules are available before running the codes.
 
 
-## Software Contributor
+## Software contributors
 
-Stefan Guettel <stefan.guettel@manchester.ac.uk>
+Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
-Xinye Chen <xinye.chen@manchester.ac.uk>
-
+Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
 ## Reference
 
-
-If you have used this software in a scientific publication and wish to cite it, 
-please use the following citation.
+If you wish to cite fABBA, please use the following bib entry.
 
 ```bibtex
 @article{fABBAarticle,
   title={An efficient aggregation method for the symbolic representation of temporal data},
-  author={Xinye, Chen and Guettel, Stefan},
+  author={Xinye, Chen and G\"{u}ttel, Stefan},
   journal={},
   volume={},
   number={},
