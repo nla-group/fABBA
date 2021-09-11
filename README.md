@@ -1,6 +1,6 @@
 # fABBA
 
-### An efficient aggregation method for the symbolicrepresentation of temporal data
+### An efficient aggregation method for the symbolic representation of temporal data
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
