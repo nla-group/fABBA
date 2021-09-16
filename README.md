@@ -84,6 +84,24 @@ inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series r
 ```
 
 
+#### *Alternative ABBA approach*
+
+We also provide other clustering based ABBA methods, it is easy to use with the support of scikit-learn tools. The user guidance is as follows
+
+```python
+import numpy as np
+from sklearn.cluster import KMeans
+from fABBA.symbolic_representation import ABBAbase
+
+ts = [np.sin(0.05*i) for i in range(1000)]            # original time series
+kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     #  specifies 5 symbols using kmeans clustering
+abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans.fit_predict)
+string = abba.fit_transform(ts)                        # string representation of the time series
+print(string)                                          # prints #$!"!"!"!"!"!"!"%
+```
+
+
+
 #### *Image compression*
 
 The following example shows how to apply fABBA to image data.

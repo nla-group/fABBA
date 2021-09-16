@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import os
+import copy
 import pickle
 import warnings
 import logging
@@ -45,10 +46,14 @@ try:
     # !python3 setup.py build_ext --inplace
     # from .cagg import aggregate
     from .chainApproximation_c import compress
-    from .caggregation_memview import aggregate as aggregate_fc # cython with memory view
+    from .fabba_agg_memview import aggregate as aggregate_fabba 
+    # cython with memory view
+    from .aggregation_memview import aggregate as aggregate_fc 
+    # cython with memory view
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
     from .chainApproximation import compress
+    from .fabba_agg import aggregate as aggregate_fabba 
     from .aggregation import aggregate as aggregate_fc
 
     
@@ -169,7 +174,7 @@ class Aggregation2D:
             
             lab += 1
 
-        return np.array(splist), labels
+        return labels, np.array(splist)
 
     
     
@@ -294,8 +299,8 @@ class fabba_model(Aggregation2D):
     max_len - int, default=1
         The max length for each segment, optional choice for compression
     
-    string_form - boolean, default=True
-        Whether to return with string form
+    return_list - boolean, default=True
+        Whether to return with list or not, "False" means return string.
     
     n_jobs - int, default=-1 
         The number of threads to use for the computation.
@@ -327,11 +332,11 @@ class fabba_model(Aggregation2D):
     >>> N = 100
     >>> x = np.random.rand(N)
     
-    >>> fabba = model(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=np.inf, string_form=True) 
+    >>> fabba = model(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=np.inf, return_list=True) 
     >>> print(fabba)
-    fABBA(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=inf, string_form=True)
-    >>> symbolic_tsf = fabba.fit_transform(x)
-    >>> inverse_ts = fabba.inverse_transform(symbolic_tsf, x[0])
+    fABBA(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=inf, return_list=True)
+    >>> string = fabba.fit_transform(x)
+    >>> inverse_ts = fabba.inverse_transform(string, x[0])
     
     >>> import matplotlib.pyplot as plt
     >>> plt.plot(x, label='time series', c='olive')
@@ -345,8 +350,8 @@ class fabba_model(Aggregation2D):
     """    
     
     def __init__ (self, tol=0.1, alpha=0.5, 
-                  sorting='norm', scl=1, verbose=1,
-                  max_len=np.inf, string_form=True, n_jobs=1):
+                  sorting='2-norm', scl=1, verbose=1,
+                  max_len=np.inf, return_list=False, n_jobs=1):
         
         super().__init__()
         self.tol = tol
@@ -355,8 +360,8 @@ class fabba_model(Aggregation2D):
         self.scl = scl
         self.verbose = verbose
         self.max_len = max_len
-        self.string_form = string_form
-        self.n_jobs = n_jobs
+        self.return_list = return_list
+        self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         self.compress = compress
         
     
@@ -366,6 +371,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
 
     
@@ -376,6 +382,7 @@ class fabba_model(Aggregation2D):
         parameters_dict.pop('logger', None)
         parameters_dict.pop('parameters', None)
         parameters_dict.pop('compress', None)
+        parameters_dict.pop('n_jobs', None) # For the moment, we don't use this parameter.
         return "%s(%r)" % ("fABBA", parameters_dict)
     
     
@@ -394,11 +401,11 @@ class fabba_model(Aggregation2D):
         string (str): The string transformed by fABBA
         """
         
-        if self.n_jobs > 1 and self.max_len == 1:
-            pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
-        else:
-            # pieces = self.compress(ts=series)
-            pieces = self.compress(ts=series, tol=self.tol, max_len=self.max_len)
+        # if self.n_jobs > 1 and self.max_len == 1:
+        #     pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
+        # else:
+        #     # pieces = self.compress(ts=series)
+        pieces = self.compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
             
         string, parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2])
@@ -410,7 +417,7 @@ class fabba_model(Aggregation2D):
                 len(string)) + " to {} ".format(len(self.parameters.centers)) + " symbols"
             self.logger.info(_info)
 
-        if self.string_form:
+        if not self.return_list:
             string = "".join(string)
             
         return string
@@ -461,39 +468,41 @@ class fabba_model(Aggregation2D):
 
     
 
-    def parallel_compress(self, ts, n_jobs=-1):
-        """
-        Approximate a time series using a continuous piecewise linear function in a parallel way.
-        Each piece is of length 1. 
-        
-        Parameters
-        ----------
-        ts - numpy ndarray
-            Time series as input of numpy array
+    # def parallel_compress(self, ts, n_jobs=-1):
+    #     """
+    #     Approximate a time series using a continuous piecewise linear function in a parallel way.
+    #     Each piece is of length 1. 
+    #     
+    #     Parameters
+    #     ----------
+    #     ts - numpy ndarray
+    #         Time series as input of numpy array
+    #     
+    #         
+    #     Returns
+    #     -------
+    #     pieces - numpy array
+    #         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
+    #     """
+    #     from joblib import Parallel, delayed
+    #     x = np.arange(0, len(ts))
+    # 
+    #     def construct_piece(i):
+    #         inc = ts[i+1] - ts[i]
+    #         err = np.linalg.norm((ts[i] + (inc)*x[0:2]) - ts[i:i+2])**2
+    #         return [1, inc, err]
+    # 
+    #     pieces = Parallel(n_jobs=n_jobs)(
+    #         delayed(construct_piece)(i) for i in range(len(ts) - 1))
+    # 
+    #     if self.verbose:
+    #         self.logger = logging.getLogger("fABBA")
+    #         self.logger.info(
+    #             "Compression: Reduced time series of length "  
+    #             + str(len(ts)) + " to " + str(len(pieces)) + " segments")
+    # 
+    #     return np.array(pieces)
 
-            
-        Returns
-        -------
-        pieces - numpy array
-            Numpy ndarray with three columns, each row contains length, increment, error for the segment.
-        """
-        x = np.arange(0, len(ts))
-
-        def construct_piece(i):
-            inc = ts[i+1] - ts[i]
-            err = np.linalg.norm((ts[i] + (inc)*x[0:2]) - ts[i:i+2])**2
-            return [1, inc, err]
-
-        pieces = Parallel(n_jobs=n_jobs)(
-            delayed(construct_piece)(i) for i in range(len(ts) - 1))
-
-        if self.verbose:
-            self.logger = logging.getLogger("fABBA")
-            self.logger.info(
-                "Compression: Reduced time series of length "  
-                + str(len(ts)) + " to " + str(len(pieces)) + " segments")
-
-        return np.array(pieces)
 
 
     
@@ -533,12 +542,11 @@ class fabba_model(Aggregation2D):
             npieces[:,1] = npieces[:,1] / self._std[1]
         
         if self.sorting in ["lexi", "2-norm", "1-norm"]:
-            warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", 
-                          FutureWarning)
-            splist, labels = self.aggregate(npieces)
+            # warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", FutureWarning)
+            labels, splist = aggregate_fabba(npieces, self.sorting, self.alpha)
         else:
             labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
-            
+
         centers = np.zeros((0,2))
         
         for c in range(len(splist)):
@@ -853,16 +861,16 @@ class fabba_model(Aggregation2D):
 
 
     @property
-    def string_form(self):
-        return self._string_form
+    def return_list(self):
+        return self._return_list
 
 
 
-    @string_form.setter
-    def string_form(self, value):
+    @return_list.setter
+    def return_list(self, value):
         if not isinstance(value, bool):
             raise TypeError("Expected a boolean type.")
-        self._string_form = value
+        self._return_list = value
 
 
     @property
@@ -880,4 +888,172 @@ class fabba_model(Aggregation2D):
 
         
         
+
+class ABBAbase:
+    def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
+        """
+        This class is designed for other clustering based ABBA
+        
+        Parameters
+        ----------
+        tol - float
+            Control tolerence for compression, default as 0.1.
+        scl - int
+            Scale for length, default as 1, means 2d-digitization, otherwise implement 1d-digitization.
+        verbose - int
+            Control logs print, default as 1, print logs.
+        max_len - int
+            The max length for each segment, default as np.inf. 
+        
+        """
+        
+        self.tol = tol
+        self.scl = scl
+        self.verbose = verbose
+        self.max_len = max_len
+        self.compress = compress
+        self.compression_rate = None
+        self.digitization_rate = None
+        self.clustering = clustering
+
+
+
+    def image_compress(self, data, adjust=False):
+        ts = data.reshape(-1)
+        if adjust:
+            _mean = ts.mean(axis=0)
+            _std = ts.std(axis=0)
+            if _std == 0:
+                _std = 1
+            ts = (ts - _mean) / _std
+            strings = self.fit_transform(ts)
+            self.img_norm = (_mean, _std)
+        else:
+            self.img_norm = None
+            strings = self.fit_transform(ts)
+        return strings, ts[0], self
+
+    
+    def fit_transform(self, series):
+        """ 
+        Compress and digitize the time series together.
+        
+        Parameters
+        ----------
+        series - array or list
+            Time series.
+        alpha - float
+            Control tolerence for digitization, default as 0.5.
+        string_form - boolean
+            Whether to return with string form, default as True.
+        """
+        series = np.array(series).astype(np.float64)
+        pieces = np.array(self.compress(ts=series, tol=self.tol, max_len=self.max_len))
+        strings = self.digitize(pieces[:,0:2])
+        self.compression_rate = pieces.shape[0] / series.shape[0]
+        self.digitization_rate = self.centers.shape[0] / pieces.shape[0]
+        if self.verbose in [1, 2]:
+            print("""Compression: Reduced series of length {0} to {1} segments.""".format(series.shape[0], pieces.shape[0]),
+                """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.centers.shape[0], "symbols.")  
+        strings = ''.join(strings)
+        return strings
+    
+    
+    def digitize(self, pieces, early_stopping=True):
+        """
+        Greedy 2D clustering of pieces (a Nx2 numpy array),
+        using tolernce tol and len/inc scaling parameter scl.
+
+        In this variant, a 'temporary' cluster center is used 
+        when assigning pieces to clusters. This temporary cluster
+        is the first piece available after appropriate scaling 
+        and sorting of all pieces. It is *not* necessarily the 
+        mean of all pieces in that cluster and hence the final
+        cluster centers, which are just the means, might achieve 
+        a smaller within-cluster tol.
+        """
+        _std = np.std(pieces, axis=0) # prevent zero-division
+        if _std[0] == 0:
+             _std[1] = 1
+        if _std[1] == 0:
+             _std[1] = 1
+                
+        npieces = pieces * np.array([self.scl, 1]) / _std
+        
+        # replace aggregation with other clustering
+        labels = self.reassign_labels(self.clustering(npieces)) # some labels might be negative
+        centers = np.zeros((0,2))
+        for c in range(len(np.unique(labels))):
+            indc = np.argwhere(labels==c)
+            center = np.mean(pieces[indc,:], axis=0)
+            centers = np.r_[ centers, center ]
+        self.centers = centers
+        strings, self.hashmap = self.symbolsAssign(labels)
+        return strings
+
+    
+    def symbolsAssign(self, clusters):
+        """ automatically assign symbols to different clusters, start with '!'
+
+        Parameters
+        ----------
+        clusters(list or pd.Series or array): the list of clusters.
+
+        -------------------------------------------------------------
+        Return:
+        symbols(list of string), inverse_hash(dict): repectively for corresponding symbols and hashmap for inverse transform.
+        """
+        
+        clusters = pd.Series(clusters)
+        N = len(clusters.unique())
+
+        cluster_sort = [0] * N 
+        counter = collections.Counter(clusters)
+        for ind, el in enumerate(counter.most_common()):
+            cluster_sort[ind] = el[0]
+
+        alphabet= [chr(i) for i in range(33,33 + N)]
+        hashmap = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
+        strings = [hashmap[i] for i in clusters]
+        return strings, hashmap
+
+    
+    def reassign_labels(self, labels):
+        old_labels_count = collections.Counter(labels)
+        sorted_dict = sorted(old_labels_count.items(), key=lambda x: x[1], reverse=True)
+
+        clabels = copy.deepcopy(labels)
+        for i in range(len(sorted_dict)):
+            clabels[labels == sorted_dict[i][0]]  = i
+        return clabels
+    
+    
+    def inverse_transform(self, strings, start=0):
+        pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
+        pieces = self.quantize(pieces)
+        time_series = self.inverse_compress(pieces, start)
+        return time_series
+
+    
+    def inverse_digitize(self, strings, centers, hashmap):
+        pieces = np.empty([0,2])
+        for p in strings:
+            pc = centers[int(hashmap[p])]
+            pieces = np.vstack([pieces, pc])
+        return pieces[:,0:2]
+
+    
+    def quantize(self, pieces):
+        if len(pieces) == 1:
+            pieces[0,0] = round(pieces[0,0])
+        else:
+            for p in range(len(pieces)-1):
+                corr = round(pieces[p,0]) - pieces[p,0]
+                pieces[p,0] = round(pieces[p,0] + corr)
+                pieces[p+1,0] = pieces[p+1,0] - corr
+                if pieces[p,0] == 0:
+                    pieces[p,0] = 1
+                    pieces[p+1,0] -= 1
+            pieces[-1,0] = round(pieces[-1,0],0)
+        return pieces
 

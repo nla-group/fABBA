@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import os
+import copy
 import pickle
 import warnings
 import logging
@@ -888,7 +889,7 @@ class fabba_model(Aggregation2D):
         
         
 
-class cABBA:
+class ABBAbase:
     def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
         """
         This class is designed for other clustering based ABBA
@@ -932,7 +933,6 @@ class cABBA:
             strings = self.fit_transform(ts)
         return strings, ts[0], self
 
-    
     
     def fit_transform(self, series):
         """ 
@@ -979,7 +979,7 @@ class cABBA:
              _std[1] = 1
                 
         npieces = pieces * np.array([self.scl, 1]) / _std
-        # labels, self.splist, self.nr_dist = aggregate_fc(npieces, self.sorting, self.alpha)
+        
         # replace aggregation with other clustering
         labels = self.reassign_labels(self.clustering(npieces)) # some labels might be negative
         centers = np.zeros((0,2))
