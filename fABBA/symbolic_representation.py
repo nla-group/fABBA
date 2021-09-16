@@ -888,7 +888,7 @@ class fabba_model(Aggregation2D):
         
         
 
-class cABBA:
+class ABBAbase:
     def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
         """
         This class is designed for other clustering based ABBA
