@@ -888,3 +888,172 @@ class fabba_model(Aggregation2D):
         
         
 
+class cABBA:
+    def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
+        """
+        This class is designed for other clustering based ABBA
+        
+        Parameters
+        ----------
+        tol - float
+            Control tolerence for compression, default as 0.1.
+        scl - int
+            Scale for length, default as 1, means 2d-digitization, otherwise implement 1d-digitization.
+        verbose - int
+            Control logs print, default as 1, print logs.
+        max_len - int
+            The max length for each segment, default as np.inf. 
+        
+        """
+        
+        self.tol = tol
+        self.scl = scl
+        self.verbose = verbose
+        self.max_len = max_len
+        self.compress = compress
+        self.compression_rate = None
+        self.digitization_rate = None
+        self.clustering = clustering
+
+
+
+    def image_compress(self, data, adjust=False):
+        ts = data.reshape(-1)
+        if adjust:
+            _mean = ts.mean(axis=0)
+            _std = ts.std(axis=0)
+            if _std == 0:
+                _std = 1
+            ts = (ts - _mean) / _std
+            strings = self.fit_transform(ts)
+            self.img_norm = (_mean, _std)
+        else:
+            self.img_norm = None
+            strings = self.fit_transform(ts)
+        return strings, ts[0], self
+
+    
+    
+    def fit_transform(self, series):
+        """ 
+        Compress and digitize the time series together.
+        
+        Parameters
+        ----------
+        series - array or list
+            Time series.
+        alpha - float
+            Control tolerence for digitization, default as 0.5.
+        string_form - boolean
+            Whether to return with string form, default as True.
+        """
+        series = np.array(series).astype(np.float64)
+        pieces = np.array(self.compress(ts=series, tol=self.tol, max_len=self.max_len))
+        strings = self.digitize(pieces[:,0:2])
+        self.compression_rate = pieces.shape[0] / series.shape[0]
+        self.digitization_rate = self.centers.shape[0] / pieces.shape[0]
+        if self.verbose in [1, 2]:
+            print("""Compression: Reduced series of length {0} to {1} segments.""".format(series.shape[0], pieces.shape[0]),
+                """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.centers.shape[0], "symbols.")  
+        strings = ''.join(strings)
+        return strings
+    
+    
+    def digitize(self, pieces, early_stopping=True):
+        """
+        Greedy 2D clustering of pieces (a Nx2 numpy array),
+        using tolernce tol and len/inc scaling parameter scl.
+
+        In this variant, a 'temporary' cluster center is used 
+        when assigning pieces to clusters. This temporary cluster
+        is the first piece available after appropriate scaling 
+        and sorting of all pieces. It is *not* necessarily the 
+        mean of all pieces in that cluster and hence the final
+        cluster centers, which are just the means, might achieve 
+        a smaller within-cluster tol.
+        """
+        _std = np.std(pieces, axis=0) # prevent zero-division
+        if _std[0] == 0:
+             _std[1] = 1
+        if _std[1] == 0:
+             _std[1] = 1
+                
+        npieces = pieces * np.array([self.scl, 1]) / _std
+        # labels, self.splist, self.nr_dist = aggregate_fc(npieces, self.sorting, self.alpha)
+        # replace aggregation with other clustering
+        labels = self.reassign_labels(self.clustering(npieces)) # some labels might be negative
+        centers = np.zeros((0,2))
+        for c in range(len(np.unique(labels))):
+            indc = np.argwhere(labels==c)
+            center = np.mean(pieces[indc,:], axis=0)
+            centers = np.r_[ centers, center ]
+        self.centers = centers
+        strings, self.hashmap = self.symbolsAssign(labels)
+        return strings
+
+    
+    def symbolsAssign(self, clusters):
+        """ automatically assign symbols to different clusters, start with '!'
+
+        Parameters
+        ----------
+        clusters(list or pd.Series or array): the list of clusters.
+
+        -------------------------------------------------------------
+        Return:
+        symbols(list of string), inverse_hash(dict): repectively for corresponding symbols and hashmap for inverse transform.
+        """
+        
+        clusters = pd.Series(clusters)
+        N = len(clusters.unique())
+
+        cluster_sort = [0] * N 
+        counter = collections.Counter(clusters)
+        for ind, el in enumerate(counter.most_common()):
+            cluster_sort[ind] = el[0]
+
+        alphabet= [chr(i) for i in range(33,33 + N)]
+        hashmap = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
+        strings = [hashmap[i] for i in clusters]
+        return strings, hashmap
+
+    
+    def reassign_labels(self, labels):
+        old_labels_count = collections.Counter(labels)
+        sorted_dict = sorted(old_labels_count.items(), key=lambda x: x[1], reverse=True)
+
+        clabels = copy.deepcopy(labels)
+        for i in range(len(sorted_dict)):
+            clabels[labels == sorted_dict[i][0]]  = i
+        return clabels
+    
+    
+    def inverse_transform(self, strings, start=0):
+        pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
+        pieces = self.quantize(pieces)
+        time_series = self.inverse_compress(pieces, start)
+        return time_series
+
+    
+    def inverse_digitize(self, strings, centers, hashmap):
+        pieces = np.empty([0,2])
+        for p in strings:
+            pc = centers[int(hashmap[p])]
+            pieces = np.vstack([pieces, pc])
+        return pieces[:,0:2]
+
+    
+    def quantize(self, pieces):
+        if len(pieces) == 1:
+            pieces[0,0] = round(pieces[0,0])
+        else:
+            for p in range(len(pieces)-1):
+                corr = round(pieces[p,0]) - pieces[p,0]
+                pieces[p,0] = round(pieces[p,0] + corr)
+                pieces[p+1,0] = pieces[p+1,0] - corr
+                if pieces[p,0] == 0:
+                    pieces[p,0] = 1
+                    pieces[p+1,0] -= 1
+            pieces[-1,0] = round(pieces[-1,0],0)
+        return pieces
+
