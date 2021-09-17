@@ -250,7 +250,17 @@ def image_compress(fabba, data, adjust=True):
 
 
 
+def image_decompress(fabba, strings):
+    """ image decompression. """
+    reconstruction = np.array(fabba.inverse_transform(strings, fabba.img_start))
+    if fabba.img_norm != None:
+        reconstruction = reconstruction*fabba.img_norm[1] + fabba.img_norm[0]
+    reconstruction = reconstruction.round().reshape(fabba.img_shape).astype(np.uint8)
+    return  reconstruction
 
+
+   
+   
 class ABBAbase:
     def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
         """
@@ -420,14 +430,6 @@ class ABBAbase:
         return pieces
 
 
-
-def image_decompress(fabba, strings):
-    """ image decompression. """
-    reconstruction = np.array(fabba.inverse_transform(strings, fabba.img_start))
-    if fabba.img_norm != None:
-        reconstruction = reconstruction*fabba.img_norm[1] + fabba.img_norm[0]
-    reconstruction = reconstruction.round().reshape(fabba.img_shape).astype(np.uint8)
-    return  reconstruction
 
 
 
