@@ -56,7 +56,7 @@ plt.grid(True, axis='y')
 plt.show()
 ```
 
-![reconstruction](https://raw.githubusercontent.com/umtsd/C_temp_img/main/fABBAdemo/demo.png)
+![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/demo.png)
 
 
 #### *Adaptive polygonal chain approximation*
@@ -95,7 +95,7 @@ from fABBA.symbolic_representation import ABBAbase
 
 ts = [np.sin(0.05*i) for i in range(1000)]            # original time series
 kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     #  specifies 5 symbols using kmeans clustering
-abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans.fit_predict)
+abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
 string = abba.fit_transform(ts)                        # string representation of the time series
 print(string)                                          # prints #$!"!"!"!"!"!"!"%
 ```
@@ -127,7 +127,7 @@ plt.imshow(img)
 plt.show()
 ```
 
-![original image](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/img.png)
+![original image](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/img.png)
 
 Plot the reconstructed image:
 ```python
@@ -135,7 +135,7 @@ plt.imshow(inverse_img)
 plt.show()
 ```
 
-![reconstruction](https://github.com/umtsd/C_temp_img/raw/main/fABBAdemo/inverse_img.png)
+![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/inverse_img.png)
 
 ## Experiments
 

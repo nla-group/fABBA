@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 import sys
 
 def get_img(file, store_dir):
-    url_parent = "https://raw.githubusercontent.com/umtsd/C_temp_img/main/Stanford%20Dogs%20Dataset/"
+    url_parent = "https://raw.githubusercontent.com/nla-group/fABBA/master/fABBA/samples/img/"
     img_data = requests.get(url_parent + file).content
     with open(store_dir + "/" + file, 'wb') as handler:
         handler.write(img_data)
@@ -70,7 +70,7 @@ def load_images():
     
     if not os.path.isdir(store_dir):
         os.makedirs(store_dir)
-        sys.stdout.write("Progress: [ %s" % ("" * len(samples_list)))
+        sys.stdout.write("Downloading: [ %s" % ("" * len(samples_list)))
         sys.stdout.flush()
         sys.stdout.write("\b" * (len(samples_list)+1)) 
 
