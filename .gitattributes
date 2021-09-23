@@ -1,3 +1,4 @@
 *.ipynb linguist-detectable=false
 *.cpp linguist-detectable=true
 *.py linguist-detectable=true
+*.pyx linguist-detectable=true
