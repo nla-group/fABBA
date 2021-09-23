@@ -170,4 +170,4 @@ Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
-If you have any questions, please be free to reach us!
+####### If you have any questions, please be free to reach us!
