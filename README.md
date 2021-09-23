@@ -160,9 +160,14 @@ $ cd experiments/src
 $ python setup.py build_ext --inplace
 ```
 
+## Others
+
+We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to have a try!
 
 ## Software contributors
 
 Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
+
+If you have any questions, please be free to reach us!
