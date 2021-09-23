@@ -1,1 +1,2 @@
- *.* linguist-language=C++
+*.ipynb linguist-detectable=false
+*.CPP linguist-detectable=true
