@@ -61,7 +61,7 @@ plt.show()
 
 #### *Adaptive polygonal chain approximation*
 
-Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. This is the first step.
+Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. This is the first step:
 
 ```python
 from fABBA.chainApproximation import compress
@@ -71,7 +71,7 @@ pieces = compress(ts, tol=0.1)                         # pieces is a list of the
 inverse_ts = inverse_compress(pieces, ts[0])           # reconstruct polygonal chain from pieces
 ```
 
-And this is the second.
+And this is the second:
 
 ```python
 from fABBA.digitization import digitize
@@ -163,6 +163,16 @@ $ python setup.py build_ext --inplace
 ## Others
 
 We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to have a try!
+
+Run example:
+
+```
+$ git clone https://github.com/nla-group/fABBA.git
+$ cd fABBA/cpp
+$ g++ -o test runtime.cpp
+$ ./test
+```
+
 
 ## Software contributors
 
