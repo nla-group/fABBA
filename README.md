@@ -61,7 +61,7 @@ plt.show()
 
 #### *Adaptive polygonal chain approximation*
 
-Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. This is the first step:
+Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
 ```python
 from fABBA.chainApproximation import compress
@@ -71,7 +71,7 @@ pieces = compress(ts, tol=0.1)                         # pieces is a list of the
 inverse_ts = inverse_compress(pieces, ts[0])           # reconstruct polygonal chain from pieces
 ```
 
-And this is the second:
+Similarly, the digitization can be implemented after compression step as belows:
 
 ```python
 from fABBA.digitization import digitize
