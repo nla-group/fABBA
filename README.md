@@ -25,7 +25,6 @@ $ git clone https://github.com/nla-group/fABBA.git
 ```
 
 
-
 ## Examples 
 
 #### *Compress and reconstruct a time series*
