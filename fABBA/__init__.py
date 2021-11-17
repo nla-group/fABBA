@@ -9,3 +9,5 @@ from . import fabba_agg
 from . import load_datasets
 from . import symbolic_representation
 from .symbolic_representation import *
+from .chainApproximation import *
+from .digitization import *
