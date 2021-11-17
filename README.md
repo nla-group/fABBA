@@ -66,8 +66,8 @@ Instead of using `transform` which combines the polygonal chain approximation of
 
 ```python
 import numpy as np
-from fABBA.chainApproximation import compress
-from fABBA.chainApproximation import inverse_compress
+from fABBA import compress
+from fABBA import inverse_compress
 ts = [np.sin(0.05*i) for i in range(1000)]
 pieces = compress(ts, tol=0.1)               # pieces is a list of the polygonal chain pieces
 inverse_ts = inverse_compress(pieces, ts[0]) # reconstruct polygonal chain from pieces
@@ -76,8 +76,8 @@ inverse_ts = inverse_compress(pieces, ts[0]) # reconstruct polygonal chain from 
 Similarly, the digitization can be implemented after compression step as belows:
 
 ```python
-from fABBA.digitization import digitize
-from fABBA.digitization import inverse_digitize
+from fABBA import digitize
+from fABBA import inverse_digitize
 string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon
 print(''.join(string))                                 # prints #$!"!"!"!"!"!"!"%
 
