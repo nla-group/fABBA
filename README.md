@@ -110,9 +110,9 @@ The following example shows how to apply fABBA to image data.
 ```python
 import matplotlib.pyplot as plt
 from fABBA.load_datasets import load_images
-from fABBA.symbolic_representation import image_compress
-from fABBA.symbolic_representation import image_decompress
-from fABBA.symbolic_representation import fabba_model
+from fABBA import image_compress
+from fABBA import image_decompress
+from fABBA import fabba_model
 from cv2 import resize
 img_samples = load_images() # load test images
 img = resize(img_samples[0], (100, 100)) # select the first image for test
