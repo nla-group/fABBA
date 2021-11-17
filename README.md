@@ -39,11 +39,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from fABBA import fabba_model
 
-ts = [np.sin(0.05*i) for i in range(1000)]          # original time series
+ts = [np.sin(0.05*i) for i in range(1000)]  # original time series
 fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
 
-string = fabba.fit_transform(ts)                    # string representation of the time series
-print(string)                                       # prints #$!"!"!"!"!"!"!"%
+string = fabba.fit_transform(ts)            # string representation of the time series
+print(string)                               # prints #$!"!"!"!"!"!"!"%
 
 inverse_ts = fabba.inverse_transform(string, ts[0]) # numerical time series reconstruction
 ```
@@ -65,11 +65,12 @@ plt.show()
 Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
 ```python
+import numpy as np
 from fABBA.chainApproximation import compress
 from fABBA.chainApproximation import inverse_compress
 ts = [np.sin(0.05*i) for i in range(1000)]
-pieces = compress(ts, tol=0.1)                         # pieces is a list of the polygonal chain pieces
-inverse_ts = inverse_compress(pieces, ts[0])           # reconstruct polygonal chain from pieces
+pieces = compress(ts, tol=0.1)               # pieces is a list of the polygonal chain pieces
+inverse_ts = inverse_compress(pieces, ts[0]) # reconstruct polygonal chain from pieces
 ```
 
 Similarly, the digitization can be implemented after compression step as belows:
@@ -94,11 +95,12 @@ import numpy as np
 from sklearn.cluster import KMeans
 from fABBA import ABBAbase
 
-ts = [np.sin(0.05*i) for i in range(1000)]            # original time series
-kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     #  specifies 5 symbols using kmeans clustering
+ts = [np.sin(0.05*i) for i in range(1000)]         # original time series
+#  specifies 5 symbols using kmeans clustering
+kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     
 abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
-string = abba.fit_transform(ts)                        # string representation of the time series
-print(string)                                          # prints #$!"!"!"!"!"!"!"%
+string = abba.fit_transform(ts)                    # string representation of the time series
+print(string)                                      # prints #$!"!"!"!"!"!"!"%
 ```
 
 
