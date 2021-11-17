@@ -37,7 +37,7 @@ The choice of parameters depends on the application, but in practice, one often 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-from fABBA.symbolic_representation import fabba_model
+from fABBA import fabba_model
 
 ts = [np.sin(0.05*i) for i in range(1000)]          # original time series
 fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
@@ -57,7 +57,7 @@ plt.grid(True, axis='y')
 plt.show()
 ```
 
-![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/demo.png)
+![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
 
 #### *Adaptive polygonal chain approximation*
@@ -92,7 +92,7 @@ We also provide other clustering based ABBA methods, it is easy to use with the 
 ```python
 import numpy as np
 from sklearn.cluster import KMeans
-from fABBA.symbolic_representation import ABBAbase
+from fABBA import ABBAbase
 
 ts = [np.sin(0.05*i) for i in range(1000)]            # original time series
 kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     #  specifies 5 symbols using kmeans clustering
@@ -128,7 +128,7 @@ plt.imshow(img)
 plt.show()
 ```
 
-![original image](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/img.png)
+![original image](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/img.png)
 
 Plot the reconstructed image:
 ```python
@@ -136,7 +136,7 @@ plt.imshow(inverse_img)
 plt.show()
 ```
 
-![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/fig/inverse_img.png)
+![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/inverse_img.png)
 
 ## Experiments
 

@@ -4,3 +4,5 @@ scipy>1.6.0
 tqdm
 pandas
 matplotlib
+requests
+pickle
