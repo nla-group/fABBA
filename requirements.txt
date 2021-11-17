@@ -5,4 +5,3 @@ tqdm
 pandas
 matplotlib
 requests
-pickle
