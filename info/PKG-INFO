@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 0.7.2
+Version: 0.7.3
 Summary: An efficient aggregation based symbolic representation
 Home-page: https://github.com/nla-group/fABBA
 Author: Stefan Guettel, Xinye Chen
@@ -187,7 +187,7 @@ $ python setup.py build_ext --inplace
 
 ## Others
 
-We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to have a try!
+We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to give a shot!
 
 Run example:
 
@@ -207,7 +207,7 @@ Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
 ## Citation
-If you use scikit-learn in a scientific publication, we would appreciate your citing:
+If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
 @misc{StefanChenfABBA,
