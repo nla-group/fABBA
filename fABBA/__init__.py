@@ -1,4 +1,3 @@
-from . import symbolic_representation
 from . import chainApproximation
 from . import chainApproximation_c
 from . import digitization
