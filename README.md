@@ -186,7 +186,7 @@ Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
 ## Citation
-If you use scikit-learn in a scientific publication, we would appreciate your citing:
+If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
 @misc{StefanChenfABBA,
