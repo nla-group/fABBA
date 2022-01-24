@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
 import requests
+import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
@@ -39,6 +40,21 @@ def get_img(file, store_dir):
     with open(store_dir + "/" + file, 'wb') as handler:
         handler.write(img_data)
         
+        
+def load_synthetic_sample(length=1000, freq=20):
+    try:
+        assert(type(length)==int and type(freq)==int)
+    except:
+        print("Please ensure both parameters are integer.")
+    # generate synthetic sine time series
+    sample = np.zeros(length)
+    j = 0
+    for i in np.arange(0, length, 1)*(1/freq):
+        sample[j] = np.sin(i)
+        j = j + 1
+    return sample
+
+
 def load_images():
     samples_list = [ 'n02086646_2069.jpg',
                      'n02088094_3593.jpg',

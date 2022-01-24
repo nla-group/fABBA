@@ -2,9 +2,6 @@
 #cython: language_level=3
 #cython: profile=True
 #cython: linetrace=True
-
-# CLASSIX: Fast and explainable clustering based on sorting
-
 # License: BSD 3 clause
 
 # Copyright (c) 2021, Stefan Güttel, Xinye Chen

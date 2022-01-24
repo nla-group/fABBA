@@ -50,12 +50,13 @@ try:
     # cython with memory view
     from .aggregation_memview import aggregate as aggregate_fc 
     # cython with memory view
+    from .inverse_tc import *
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
     from .chainApproximation import compress
     from .fabba_agg import aggregate as aggregate_fabba 
     from .aggregation import aggregate as aggregate_fc
-
+    from .inverse_t import *
     
   
   
@@ -69,11 +70,47 @@ class Model:
     splist: np.ndarray # store start point data
     
     """ dictionary """
-    hashm: dict # labels -> symbols
-    inverse_hashm: dict #  symbols -> labels
-    
-    
+    hashm: dict # labels -> symbols, symbols -> labels
 
+
+
+def symbolsAssign(clusters):
+    """
+    Automatically assign symbols to different groups, start with '!'
+
+    Parameters
+    ----------
+    clusters - list or pd.Series or array
+            the list of labels.
+
+    ----------
+    Return:
+
+    strings(list of string), hashmap(dict): repectively for the
+    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
+    labels to symbols.
+
+    """
+    alphabet = ['A','a','B','b','C','c','D','d','E','e',
+                'F','f','G','g','H','h','I','i','J','j',
+                'K','k','L','l','M','m','N','n','O','o',
+                'P','p','Q','q','R','r','S','s','T','t',
+                'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    clusters = pd.Series(clusters)
+    N = len(clusters.unique())
+
+    cluster_sort = [0] * N 
+    counter = collections.Counter(clusters)
+    for ind, el in enumerate(counter.most_common()):
+        cluster_sort[ind] = el[0]
+
+    if N >= len(alphabet):
+        alphabet = [chr(i+33) for i in range(0, N)]
+    else:
+        alphabet = alphabet[:N]
+    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
+    strings = [hashm[i] for i in clusters]
+    return strings, hashm
 
 
 
@@ -250,7 +287,17 @@ def image_compress(fabba, data, adjust=True):
 
 
 
+def image_decompress(fabba, strings):
+    """ image decompression. """
+    reconstruction = np.array(fabba.inverse_transform(strings, start=fabba.img_start))
+    if fabba.img_norm != None:
+        reconstruction = reconstruction*fabba.img_norm[1] + fabba.img_norm[0]
+    reconstruction = reconstruction.round().reshape(fabba.img_shape).astype(np.uint8)
+    return  reconstruction
 
+
+   
+    
 class ABBAbase:
     def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
         """
@@ -277,24 +324,8 @@ class ABBAbase:
         self.compression_rate = None
         self.digitization_rate = None
         self.clustering = clustering
-
-
-
-    def image_compress(self, data, adjust=False):
-        ts = data.reshape(-1)
-        if adjust:
-            _mean = ts.mean(axis=0)
-            _std = ts.std(axis=0)
-            if _std == 0:
-                _std = 1
-            ts = (ts - _mean) / _std
-            strings = self.fit_transform(ts)
-            self.img_norm = (_mean, _std)
-        else:
-            self.img_norm = None
-            strings = self.fit_transform(ts)
-        return strings, ts[0], self
-
+        
+        
     
     def fit_transform(self, series):
         """ 
@@ -319,6 +350,7 @@ class ABBAbase:
                 """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.centers.shape[0], "symbols.")  
         strings = ''.join(strings)
         return strings
+    
     
     
     def digitize(self, pieces, early_stopping=True):
@@ -350,34 +382,9 @@ class ABBAbase:
             center = np.mean(pieces[indc,:], axis=0)
             centers = np.r_[ centers, center ]
         self.centers = centers
-        strings, self.hashmap = self.symbolsAssign(labels)
+        strings, self.hashmap = symbolsAssign(labels)
         return strings
 
-    
-    def symbolsAssign(self, clusters):
-        """ automatically assign symbols to different clusters, start with '!'
-
-        Parameters
-        ----------
-        clusters(list or pd.Series or array): the list of clusters.
-
-        -------------------------------------------------------------
-        Return:
-        symbols(list of string), inverse_hash(dict): repectively for corresponding symbols and hashmap for inverse transform.
-        """
-        
-        clusters = pd.Series(clusters)
-        N = len(clusters.unique())
-
-        cluster_sort = [0] * N 
-        counter = collections.Counter(clusters)
-        for ind, el in enumerate(counter.most_common()):
-            cluster_sort[ind] = el[0]
-
-        alphabet= [chr(i) for i in range(33,33 + N)]
-        hashmap = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
-        strings = [hashmap[i] for i in clusters]
-        return strings, hashmap
 
     
     def reassign_labels(self, labels):
@@ -390,62 +397,41 @@ class ABBAbase:
         return clabels
     
     
+    
     def inverse_transform(self, strings, start=0):
-        pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
-        pieces = self.quantize(pieces)
-        time_series = self.inverse_compress(pieces, start)
+        time_series = inv_transform(strings, self.centers, self.hashmap, start)
         return time_series
-
     
-    def inverse_digitize(self, strings, centers, hashmap):
-        pieces = np.empty([0,2])
-        for p in strings:
-            pc = centers[int(hashmap[p])]
-            pieces = np.vstack([pieces, pc])
-        return pieces[:,0:2]
-
     
-    def quantize(self, pieces):
-        if len(pieces) == 1:
-            pieces[0,0] = round(pieces[0,0])
-        else:
-            for p in range(len(pieces)-1):
-                corr = round(pieces[p,0]) - pieces[p,0]
-                pieces[p,0] = round(pieces[p,0] + corr)
-                pieces[p+1,0] = pieces[p+1,0] - corr
-                if pieces[p,0] == 0:
-                    pieces[p,0] = 1
-                    pieces[p+1,0] -= 1
-            pieces[-1,0] = round(pieces[-1,0],0)
-        return pieces
-
-
-
-def image_decompress(fabba, strings):
-    """ image decompression. """
-    reconstruction = np.array(fabba.inverse_transform(strings, fabba.img_start))
-    if fabba.img_norm != None:
-        reconstruction = reconstruction*fabba.img_norm[1] + fabba.img_norm[0]
-    reconstruction = reconstruction.round().reshape(fabba.img_shape).astype(np.uint8)
-    return  reconstruction
-
-
-
-# def load_images(shape=(250, 250)):
-#     images = list()
-#     folder = os.path.dirname(os.path.realpath(__file__))+'/samples/img'
-#     figs = os.listdir(folder)
-#     for filename in figs:
-#         img = cv2.imread(os.path.join(folder,filename)) 
-#         img = cv2.cvtColor(img,  cv2.COLOR_BGR2RGB) # transform to grayscale: cv2.COLOR_BGR2GRAY or RGB cv2.COLOR_BGR2RGB
-#         img = cv2.resize(img, shape) # resize to 80x80
-#         if img is not None:
-#             images.append(img)
-#     images = np.array(images)
-#     return images
-
-
-
+    
+    # def inverse_transform(self, strings, start=0):
+    #     pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
+    #     pieces = self.quantize(pieces)
+    #     time_series = self.inverse_compress(pieces, start)
+    #     return time_series
+    # 
+    # 
+    # def inverse_digitize(self, strings, centers, hashmap):
+    #     pieces = np.empty([0,2])
+    #     for p in strings:
+    #         pc = centers[int(hashmap[p])]
+    #         pieces = np.vstack([pieces, pc])
+    #     return pieces[:,0:2]
+    # 
+    # 
+    # def quantize(self, pieces):
+    #     if len(pieces) == 1:
+    #         pieces[0,0] = round(pieces[0,0])
+    #     else:
+    #         for p in range(len(pieces)-1):
+    #             corr = round(pieces[p,0]) - pieces[p,0]
+    #             pieces[p,0] = round(pieces[p,0] + corr)
+    #             pieces[p+1,0] = pieces[p+1,0] - corr
+    #             if pieces[p,0] == 0:
+    #                 pieces[p,0] = 1
+    #                 pieces[p+1,0] -= 1
+    #         pieces[-1,0] = round(pieces[-1,0],0)
+    #     return pieces
 
 
 
@@ -536,8 +522,9 @@ class fabba_model(Aggregation2D, ABBAbase):
         self.return_list = return_list
         self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         self.compress = compress
+
         
-    
+        
     def __repr__(self):
         parameters_dict = self.__dict__.copy()
         parameters_dict.pop('_std', None)
@@ -727,43 +714,13 @@ class fabba_model(Aggregation2D, ABBAbase):
             center = np.mean(pieces[indc,:], axis=0)
             centers = np.r_[ centers, center ]
         
-        string, hashm, inverse_hashm = self.symbolsAssign(labels)
+        string, hashm = symbolsAssign(labels)
         
-        parameters = Model(centers, np.array(splist), hashm, inverse_hashm)
+        parameters = Model(centers, np.array(splist), hashm)
         return string, parameters
 
 
-
-    def symbolsAssign(self, clusters):
-        """ automatically assign symbols to different clusters, start with '!'
-        Parameters
-        ----------
-        clusters - list or pd.Series or array
-                the list of clusters.
-        ----------
-        Return:
-        
-        symbols(list of string), inverse_hash(dict): repectively for the
-        corresponding symbolic sequence and the hashmap for inverse transform.
-        
-        """
-        
-        clusters = pd.Series(clusters)
-        N = len(clusters.unique())
-
-        cluster_sort = [0] * N 
-        counter = collections.Counter(clusters)
-        for ind, el in enumerate(counter.most_common()):
-            cluster_sort[ind] = el[0]
-
-        alphabet= [chr(i) for i in range(33,33 + N)]
-        hashm = dict(zip(cluster_sort, alphabet))
-        inverse_hashm = dict(zip(alphabet, cluster_sort))
-        strings = [hashm[i] for i in clusters]
-        return strings, hashm, inverse_hashm
-
-
-
+    
     def inverse_transform(self, strings, start=0, parameters=None):
         """
         Convert ABBA symbolic representation back to numeric time series representation.
@@ -784,105 +741,133 @@ class fabba_model(Aggregation2D, ABBAbase):
             Reconstruction of the time series.
         """
         if parameters == None:
-            pieces = self.inverse_digitize(strings, self.parameters)
+            time_series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
         else:
-            pieces = self.inverse_digitize(strings, parameters)
-            
-        pieces = self.quantize(pieces)
-        time_series = self.inverse_compress(pieces, start)
+            time_series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
+    
         return time_series
-
     
     
-    def inverse_digitize(self, strings, parameters):
-        """
-        Convert symbolic representation back to compressed representation for reconstruction.
-        
-        Parameters
-        ----------
-        string - string
-            Time series in symbolic representation using unicode characters starting
-            with character 'a'.
-            
-        centers - numpy array
-            centers of clusters from clustering algorithm. Each centre corresponds
-            to character in string.
-            
-        Returns
-        -------
-        pieces - np.array
-            Time series in compressed format. See compression.
-        """
-        
-        pieces = np.empty([0,2])
-        for p in strings:
-            pc = parameters.centers[int(parameters.inverse_hashm[p])]
-            pieces = np.vstack([pieces, pc])
-        return pieces[:,0:2]
-
-    
-    
-    def quantize(self, pieces):
-        """
-        Realign window lengths with integer grid.
-        
-        Parameters
-        ----------
-        pieces: Time series in compressed representation.
-        
-        
-        Returns
-        -------
-        pieces: Time series in compressed representation with window length adjusted to integer grid.
-        """
-            
-        if len(pieces) == 1:
-            pieces[0,0] = round(pieces[0,0])
-        
-        else:
-            for p in range(len(pieces)-1):
-                corr = round(pieces[p,0]) - pieces[p,0]
-                pieces[p,0] = round(pieces[p,0] + corr)
-                pieces[p+1,0] = pieces[p+1,0] - corr
-                if pieces[p,0] == 0:
-                    pieces[p,0] = 1
-                    pieces[p+1,0] -= 1
-            pieces[-1,0] = round(pieces[-1,0],0)
-        
-        return pieces
-
-    
-    
-    def inverse_compress(self, pieces, start):
-        """
-        Reconstruct time series from its first value `ts0` and its `pieces`.
-        `pieces` must have (at least) two columns, incremenent and window width, resp.
-        A window width w means that the piece ranges from s to s+w.
-        In particular, a window width of 1 is allowed.
-        
-        Parameters
-        ----------
-        start - float
-            First element of original time series. Applies vertical shift in
-            reconstruction.
-        
-        pieces - numpy array
-            Numpy array with three columns, each row contains increment, length,
-            error for the segment. Only the first two columns are required.
-        
-        Returns
-        -------
-        time_series : Reconstructed time series
-        """
-        
-        time_series = [start]
-        # stitch linear piece onto last
-        for j in range(0, len(pieces)):
-            x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
-            y = time_series[-1] + x
-            time_series = time_series + y[1:].tolist()
-
-        return time_series
+    # [DEPRECATED]
+    # def inverse_transform(self, strings, parameters=None, start=0):
+    #     """
+    #     Convert ABBA symbolic representation back to numeric time series representation.
+    #     
+    #     Parameters
+    #     ----------
+    #     string - string
+    #         Time series in symbolic representation using unicode characters starting
+    #         with character 'a'.
+    #     
+    #     start - float
+    #         First element of original time series. Applies vertical shift in
+    #         reconstruction. If not specified, the default is 0.
+    #     
+    #     Returns
+    #     -------
+    #     times_series - list
+    #         Reconstruction of the time series.
+    #     """
+    #     if parameters == None:
+    #         pieces = self.inverse_digitize(strings, self.parameters)
+    #     else:
+    #         pieces = self.inverse_digitize(strings, parameters)
+    #         
+    #     pieces = self.quantize(pieces)
+    #     time_series = self.inverse_compress(pieces, start)
+    #     return time_series
+    # 
+    # 
+    # 
+    # def inverse_digitize(self, strings, parameters):
+    #     """
+    #     Convert symbolic representation back to compressed representation for reconstruction.
+    #     
+    #     Parameters
+    #     ----------
+    #     string - string
+    #         Time series in symbolic representation using unicode characters starting
+    #         with character 'a'.
+    #         
+    #     centers - numpy array
+    #         centers of clusters from clustering algorithm. Each centre corresponds
+    #         to character in string.
+    #         
+    #     Returns
+    #     -------
+    #     pieces - np.array
+    #         Time series in compressed format. See compression.
+    #     """
+    #     
+    #     pieces = np.empty([0,2])
+    #     for p in strings:
+    #         pc = parameters.centers[int(parameters.inverse_hashm[p])]
+    #         pieces = np.vstack([pieces, pc])
+    #     return pieces[:,0:2]
+    # 
+    # 
+    # 
+    # def quantize(self, pieces):
+    #     """
+    #     Realign window lengths with integer grid.
+    #     
+    #     Parameters
+    #     ----------
+    #     pieces: Time series in compressed representation.
+    #     
+    #     
+    #     Returns
+    #     -------
+    #     pieces: Time series in compressed representation with window length adjusted to integer grid.
+    #     """
+    #         
+    #     if len(pieces) == 1:
+    #         pieces[0,0] = round(pieces[0,0])
+    #     
+    #     else:
+    #         for p in range(len(pieces)-1):
+    #             corr = round(pieces[p,0]) - pieces[p,0]
+    #             pieces[p,0] = round(pieces[p,0] + corr)
+    #             pieces[p+1,0] = pieces[p+1,0] - corr
+    #             if pieces[p,0] == 0:
+    #                 pieces[p,0] = 1
+    #                 pieces[p+1,0] -= 1
+    #         pieces[-1,0] = round(pieces[-1,0],0)
+    #     
+    #     return pieces
+    # 
+    # 
+    # 
+    # def inverse_compress(self, pieces, start):
+    #     """
+    #     Reconstruct time series from its first value `ts0` and its `pieces`.
+    #     `pieces` must have (at least) two columns, incremenent and window width, resp.
+    #     A window width w means that the piece ranges from s to s+w.
+    #     In particular, a window width of 1 is allowed.
+    #     
+    #     Parameters
+    #     ----------
+    #     start - float
+    #         First element of original time series. Applies vertical shift in
+    #         reconstruction.
+    #     
+    #     pieces - numpy array
+    #         Numpy array with three columns, each row contains increment, length,
+    #         error for the segment. Only the first two columns are required.
+    #     
+    #     Returns
+    #     -------
+    #     time_series : Reconstructed time series
+    #     """
+    #     
+    #     time_series = [start]
+    #     # stitch linear piece onto last
+    #     for j in range(0, len(pieces)):
+    #         x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
+    #         y = time_series[-1] + x
+    #         time_series = time_series + y[1:].tolist()
+    # 
+    #     return time_series
     
     
     # save model

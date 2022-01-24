@@ -44,7 +44,7 @@ ts = [np.sin(0.05*i) for i in range(1000)]  # original time series
 fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
 
 string = fabba.fit_transform(ts)            # string representation of the time series
-print(string)                               # prints #$!"!"!"!"!"!"!"%
+print(string)                               # prints BbAaAaAaAaAaAaAaC
 
 inverse_ts = fabba.inverse_transform(string, ts[0]) # numerical time series reconstruction
 ```
@@ -80,7 +80,7 @@ Similarly, the digitization can be implemented after compression step as belows:
 from fABBA import digitize
 from fABBA import inverse_digitize
 string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon
-print(''.join(string))                                 # prints #$!"!"!"!"!"!"!"%
+print(''.join(string))                                 # prints BbAaAaAaAaAaAaAaC
 
 inverse_pieces = inverse_digitize(string, parameters)
 inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series reconstruction
@@ -101,7 +101,7 @@ ts = [np.sin(0.05*i) for i in range(1000)]         # original time series
 kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     
 abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
 string = abba.fit_transform(ts)                    # string representation of the time series
-print(string)                                      # prints #$!"!"!"!"!"!"!"%
+print(string)                                      # prints BbAaAaAaAaAaAaAaC
 ```
 
 
@@ -143,7 +143,7 @@ plt.show()
 
 ## Experiments
 
-The folder ["experiments"](https://github.com/nla-group/fABBA/tree/master/experiments) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
+The folder ["exp"](https://github.com/nla-group/fABBA/tree/master/exp) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
 Some of the experiments also require the UCR Archive 2018 datasets which can be downloaded from [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/).
 
@@ -153,14 +153,14 @@ There are a number of dependencies listed below. Most of these modules, except p
 
 Please ensure that these modules are available before running the codes. A `numpy` version newer than 1.19.0 is required.
 
-It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/experiments/src) use:
+It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/exp/src) use:
 ```
-$ cd experiments/src
+$ cd exp/src
 $ python3 setup.py build_ext --inplace
 ```
 or 
 ```
-$ cd experiments/src
+$ cd exp/src
 $ python setup.py build_ext --inplace
 ```
 
@@ -184,5 +184,19 @@ Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
+
+## Citation
+If you use scikit-learn in a scientific publication, we would appreciate your citing:
+
+```bibtex
+@misc{StefanChenfABBA,
+      title={An efficient aggregation method for the symbolic representation of temporal data}, 
+      author={Xinye Chen and G\"{u}ttel, Stefan},
+      year={2022},
+      eprint={2201.05697},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
 
 #####  If you have any questions, please be free to reach us!
