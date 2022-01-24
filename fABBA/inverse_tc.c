@@ -1239,6 +1239,19 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
+struct __pyx_opt_args_5fABBA_10inverse_tc_inv_transform;
+
+/* "fABBA/inverse_tc.pyx":11
+ * 
+ * 
+ * cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
+ *     """
+ *     Convert ABBA symbolic representation back to numeric time series representation.
+ */
+struct __pyx_opt_args_5fABBA_10inverse_tc_inv_transform {
+  int __pyx_n;
+  double start;
+};
 
 /* "View.MemoryView":105
  * 
@@ -1439,24 +1452,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
-
-/* ArgTypeTest.proto */
-#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
-    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
-        __Pyx__ArgTypeTest(obj, type, name, exact))
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
-
 /* IsLittleEndian.proto */
 static CYTHON_INLINE int __Pyx_Is_Little_Endian(void);
 
@@ -1539,6 +1534,24 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
 #define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
 #endif
+
+/* RaiseArgTupleInvalid.proto */
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+
+/* RaiseDoubleKeywords.proto */
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+/* ParseKeywords.proto */
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
+    const char* function_name);
+
+/* ArgTypeTest.proto */
+#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
+    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
+        __Pyx__ArgTypeTest(obj, type, name, exact))
+static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -2253,6 +2266,7 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
+static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_transform(PyObject *, PyArrayObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_10inverse_tc_inv_transform *__pyx_optional_args); /*proto*/
 static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_digitize(PyObject *, PyArrayObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
 static PyObject *__pyx_f_5fABBA_10inverse_tc_quantize(__Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
 static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_compress(__Pyx_memviewslice, double, int __pyx_skip_dispatch); /*proto*/
@@ -2368,7 +2382,6 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_time_series[] = "time_series";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_inv_transform[] = "inv_transform";
@@ -2507,7 +2520,6 @@ static PyObject *__pyx_n_s_strings;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_struct;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_time_series;
 static PyObject *__pyx_n_s_tolist;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
@@ -2604,10 +2616,127 @@ static PyObject *__pyx_codeobj__30;
 /* "fABBA/inverse_tc.pyx":11
  * 
  * 
- * def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
+ * cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
  *     """
  *     Convert ABBA symbolic representation back to numeric time series representation.
  */
+
+static PyObject *__pyx_pw_5fABBA_10inverse_tc_1inv_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_transform(PyObject *__pyx_v_strings, PyArrayObject *__pyx_v_centers, PyObject *__pyx_v_hashm, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5fABBA_10inverse_tc_inv_transform *__pyx_optional_args) {
+  double __pyx_v_start = ((double)0.0);
+  __Pyx_memviewslice __pyx_v_pieces = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_v_time_series = 0;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_centers;
+  __Pyx_Buffer __pyx_pybuffer_centers;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_memviewslice __pyx_t_2 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("inv_transform", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_start = __pyx_optional_args->start;
+    }
+  }
+  __pyx_pybuffer_centers.pybuffer.buf = NULL;
+  __pyx_pybuffer_centers.refcount = 0;
+  __pyx_pybuffernd_centers.data = NULL;
+  __pyx_pybuffernd_centers.rcbuffer = &__pyx_pybuffer_centers;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_centers.rcbuffer->pybuffer, (PyObject*)__pyx_v_centers, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_centers.diminfo[0].strides = __pyx_pybuffernd_centers.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_centers.diminfo[0].shape = __pyx_pybuffernd_centers.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_centers.diminfo[1].strides = __pyx_pybuffernd_centers.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_centers.diminfo[1].shape = __pyx_pybuffernd_centers.rcbuffer->pybuffer.shape[1];
+
+  /* "fABBA/inverse_tc.pyx":34
+ *     """
+ * 
+ *     cdef double[:, :] pieces = inv_digitize(strings, centers, hashm)             # <<<<<<<<<<<<<<
+ * 
+ *     pieces = quantize(pieces)
+ */
+  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_inv_digitize(__pyx_v_strings, ((PyArrayObject *)__pyx_v_centers), __pyx_v_hashm, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_pieces = __pyx_t_2;
+  __pyx_t_2.memview = NULL;
+  __pyx_t_2.data = NULL;
+
+  /* "fABBA/inverse_tc.pyx":36
+ *     cdef double[:, :] pieces = inv_digitize(strings, centers, hashm)
+ * 
+ *     pieces = quantize(pieces)             # <<<<<<<<<<<<<<
+ *     cdef list time_series = inv_compress(pieces, start)
+ *     return time_series
+ */
+  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_quantize(__pyx_v_pieces, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_pieces, 1);
+  __pyx_v_pieces = __pyx_t_2;
+  __pyx_t_2.memview = NULL;
+  __pyx_t_2.data = NULL;
+
+  /* "fABBA/inverse_tc.pyx":37
+ * 
+ *     pieces = quantize(pieces)
+ *     cdef list time_series = inv_compress(pieces, start)             # <<<<<<<<<<<<<<
+ *     return time_series
+ * 
+ */
+  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_inv_compress(__pyx_v_pieces, __pyx_v_start, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_v_time_series = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "fABBA/inverse_tc.pyx":38
+ *     pieces = quantize(pieces)
+ *     cdef list time_series = inv_compress(pieces, start)
+ *     return time_series             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_time_series);
+  __pyx_r = __pyx_v_time_series;
+  goto __pyx_L0;
+
+  /* "fABBA/inverse_tc.pyx":11
+ * 
+ * 
+ * cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
+ *     """
+ *     Convert ABBA symbolic representation back to numeric time series representation.
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_centers.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("fABBA.inverse_tc.inv_transform", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_centers.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_pieces, 1);
+  __Pyx_XDECREF(__pyx_v_time_series);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
 
 /* Python wrapper */
 static PyObject *__pyx_pw_5fABBA_10inverse_tc_1inv_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
@@ -2686,7 +2815,7 @@ static PyObject *__pyx_pw_5fABBA_10inverse_tc_1inv_transform(PyObject *__pyx_sel
     if (values[3]) {
       __pyx_v_start = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L3_error)
     } else {
-      __pyx_v_start = ((double)((double)0.0));
+      __pyx_v_start = ((double)0.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
@@ -2697,7 +2826,7 @@ static PyObject *__pyx_pw_5fABBA_10inverse_tc_1inv_transform(PyObject *__pyx_sel
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_strings), (&PyList_Type), 1, "strings", 1))) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_strings), (&PyString_Type), 1, "strings", 1))) __PYX_ERR(0, 11, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_centers), __pyx_ptype_5numpy_ndarray, 1, "centers", 0))) __PYX_ERR(0, 11, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_hashm), (&PyDict_Type), 1, "hashm", 1))) __PYX_ERR(0, 11, __pyx_L1_error)
   __pyx_r = __pyx_pf_5fABBA_10inverse_tc_inv_transform(__pyx_self, __pyx_v_strings, __pyx_v_centers, __pyx_v_hashm, __pyx_v_start);
@@ -2712,14 +2841,12 @@ static PyObject *__pyx_pw_5fABBA_10inverse_tc_1inv_transform(PyObject *__pyx_sel
 }
 
 static PyObject *__pyx_pf_5fABBA_10inverse_tc_inv_transform(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_strings, PyArrayObject *__pyx_v_centers, PyObject *__pyx_v_hashm, double __pyx_v_start) {
-  __Pyx_memviewslice __pyx_v_pieces = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_v_time_series = 0;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_centers;
   __Pyx_Buffer __pyx_pybuffer_centers;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  __Pyx_memviewslice __pyx_t_2 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  struct __pyx_opt_args_5fABBA_10inverse_tc_inv_transform __pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2733,75 +2860,18 @@ static PyObject *__pyx_pf_5fABBA_10inverse_tc_inv_transform(CYTHON_UNUSED PyObje
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_centers.rcbuffer->pybuffer, (PyObject*)__pyx_v_centers, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 11, __pyx_L1_error)
   }
   __pyx_pybuffernd_centers.diminfo[0].strides = __pyx_pybuffernd_centers.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_centers.diminfo[0].shape = __pyx_pybuffernd_centers.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_centers.diminfo[1].strides = __pyx_pybuffernd_centers.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_centers.diminfo[1].shape = __pyx_pybuffernd_centers.rcbuffer->pybuffer.shape[1];
-
-  /* "fABBA/inverse_tc.pyx":34
- *     """
- * 
- *     cdef double[:, :] pieces = inv_digitize(strings, centers, hashm)             # <<<<<<<<<<<<<<
- * 
- *     pieces = quantize(pieces)
- */
-  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_inv_digitize(__pyx_v_strings, ((PyArrayObject *)__pyx_v_centers), __pyx_v_hashm, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_pieces = __pyx_t_2;
-  __pyx_t_2.memview = NULL;
-  __pyx_t_2.data = NULL;
-
-  /* "fABBA/inverse_tc.pyx":36
- *     cdef double[:, :] pieces = inv_digitize(strings, centers, hashm)
- * 
- *     pieces = quantize(pieces)             # <<<<<<<<<<<<<<
- *     cdef list time_series = inv_compress(pieces, start)
- *     return time_series
- */
-  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_quantize(__pyx_v_pieces, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_pieces, 1);
-  __pyx_v_pieces = __pyx_t_2;
-  __pyx_t_2.memview = NULL;
-  __pyx_t_2.data = NULL;
-
-  /* "fABBA/inverse_tc.pyx":37
- * 
- *     pieces = quantize(pieces)
- *     cdef list time_series = inv_compress(pieces, start)             # <<<<<<<<<<<<<<
- *     return time_series
- * 
- */
-  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_inv_compress(__pyx_v_pieces, __pyx_v_start, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 37, __pyx_L1_error)
-  __pyx_v_time_series = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "fABBA/inverse_tc.pyx":38
- *     pieces = quantize(pieces)
- *     cdef list time_series = inv_compress(pieces, start)
- *     return time_series             # <<<<<<<<<<<<<<
- * 
- * 
- */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_time_series);
-  __pyx_r = __pyx_v_time_series;
+  __pyx_t_2.__pyx_n = 1;
+  __pyx_t_2.start = __pyx_v_start;
+  __pyx_t_1 = __pyx_f_5fABBA_10inverse_tc_inv_transform(__pyx_v_strings, __pyx_v_centers, __pyx_v_hashm, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
   goto __pyx_L0;
-
-  /* "fABBA/inverse_tc.pyx":11
- * 
- * 
- * def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
- *     """
- *     Convert ABBA symbolic representation back to numeric time series representation.
- */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -2814,8 +2884,6 @@ static PyObject *__pyx_pf_5fABBA_10inverse_tc_inv_transform(CYTHON_UNUSED PyObje
   __pyx_L0:;
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_centers.rcbuffer->pybuffer);
   __pyx_L2:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_pieces, 1);
-  __Pyx_XDECREF(__pyx_v_time_series);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2824,7 +2892,7 @@ static PyObject *__pyx_pf_5fABBA_10inverse_tc_inv_transform(CYTHON_UNUSED PyObje
 /* "fABBA/inverse_tc.pyx":42
  * 
  * 
- * cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):             # <<<<<<<<<<<<<<
+ * cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):             # <<<<<<<<<<<<<<
  *     """
  *     Convert symbolic representation back to compressed representation for reconstruction.
  */
@@ -2847,7 +2915,7 @@ static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_digitize(PyObject *__pyx_v_stri
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyArrayObject *__pyx_t_5 = NULL;
-  Py_ssize_t __pyx_t_6;
+  PyObject *(*__pyx_t_6)(PyObject *);
   PyArrayObject *__pyx_t_7 = NULL;
   int __pyx_t_8;
   PyObject *__pyx_t_9 = NULL;
@@ -2933,20 +3001,22 @@ static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_digitize(PyObject *__pyx_v_stri
  *         pc = centers[int(hashm[p])]
  *         pieces = np.vstack([pieces, pc])
  */
-  if (unlikely(__pyx_v_strings == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 67, __pyx_L1_error)
-  }
-  __pyx_t_1 = __pyx_v_strings; __Pyx_INCREF(__pyx_t_1); __pyx_t_6 = 0;
+  __pyx_t_1 = PyObject_GetIter(__pyx_v_strings); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
   for (;;) {
-    if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_1)) break;
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_3); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
-    #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    #endif
-    if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 67, __pyx_L1_error)
+    {
+      __pyx_t_3 = __pyx_t_6(__pyx_t_1);
+      if (unlikely(!__pyx_t_3)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 67, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_3);
+    }
     __Pyx_XDECREF_SET(__pyx_v_p, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
@@ -3081,7 +3151,7 @@ static PyObject *__pyx_f_5fABBA_10inverse_tc_inv_digitize(PyObject *__pyx_v_stri
   /* "fABBA/inverse_tc.pyx":42
  * 
  * 
- * cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):             # <<<<<<<<<<<<<<
+ * cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):             # <<<<<<<<<<<<<<
  *     """
  *     Convert symbolic representation back to compressed representation for reconstruction.
  */
@@ -3186,7 +3256,7 @@ static PyObject *__pyx_pw_5fABBA_10inverse_tc_3inv_digitize(PyObject *__pyx_self
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_strings), (&PyList_Type), 1, "strings", 1))) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_strings), (&PyString_Type), 1, "strings", 1))) __PYX_ERR(0, 42, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_centers), __pyx_ptype_5numpy_ndarray, 1, "centers", 0))) __PYX_ERR(0, 42, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_hashm), (&PyDict_Type), 1, "hashm", 1))) __PYX_ERR(0, 42, __pyx_L1_error)
   __pyx_r = __pyx_pf_5fABBA_10inverse_tc_2inv_digitize(__pyx_self, __pyx_v_strings, __pyx_v_centers, __pyx_v_hashm);
@@ -18911,6 +18981,7 @@ static PyTypeObject __pyx_type___pyx_memoryviewslice = {
 };
 
 static PyMethodDef __pyx_methods[] = {
+  {"inv_transform", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_10inverse_tc_1inv_transform, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_10inverse_tc_inv_transform},
   {"inv_digitize", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_10inverse_tc_3inv_digitize, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_10inverse_tc_2inv_digitize},
   {"quantize", (PyCFunction)__pyx_pw_5fABBA_10inverse_tc_5quantize, METH_O, __pyx_doc_5fABBA_10inverse_tc_4quantize},
   {"inv_compress", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5fABBA_10inverse_tc_7inv_compress, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5fABBA_10inverse_tc_6inv_compress},
@@ -19057,7 +19128,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_time_series, __pyx_k_time_series, sizeof(__pyx_k_time_series), 0, 0, 1, 1},
   {&__pyx_n_s_tolist, __pyx_k_tolist, sizeof(__pyx_k_tolist), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
@@ -19314,14 +19384,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "fABBA/inverse_tc.pyx":11
  * 
  * 
- * def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
+ * cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
  *     """
  *     Convert ABBA symbolic representation back to numeric time series representation.
  */
-  __pyx_tuple__22 = PyTuple_Pack(6, __pyx_n_s_strings, __pyx_n_s_centers, __pyx_n_s_hashm, __pyx_n_s_start, __pyx_n_s_pieces, __pyx_n_s_time_series); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(4, __pyx_n_s_strings, __pyx_n_s_centers, __pyx_n_s_hashm, __pyx_n_s_start); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_fABBA_inverse_tc_pyx, __pyx_n_s_inv_transform, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_fABBA_inverse_tc_pyx, __pyx_n_s_inv_transform, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 11, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -19680,8 +19750,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_inverse_tc(PyObject *__pyx_pyinit_
 {
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  static PyThread_type_lock __pyx_t_4[8];
+  static PyThread_type_lock __pyx_t_3[8];
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -19810,21 +19879,12 @@ if (!__Pyx_RefNanny) {
   /* "fABBA/inverse_tc.pyx":11
  * 
  * 
- * def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
+ * cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):             # <<<<<<<<<<<<<<
  *     """
  *     Convert ABBA symbolic representation back to numeric time series representation.
  */
-  __pyx_t_1 = PyFloat_FromDouble(((double)0.0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 11, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5fABBA_10inverse_tc_1inv_transform, 0, __pyx_n_s_inv_transform, NULL, __pyx_n_s_fABBA_inverse_tc, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_inv_transform, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -19937,15 +19997,15 @@ if (!__Pyx_RefNanny) {
  *     PyThread_allocate_lock(),
  *     PyThread_allocate_lock(),
  */
-  __pyx_t_4[0] = PyThread_allocate_lock();
-  __pyx_t_4[1] = PyThread_allocate_lock();
-  __pyx_t_4[2] = PyThread_allocate_lock();
-  __pyx_t_4[3] = PyThread_allocate_lock();
-  __pyx_t_4[4] = PyThread_allocate_lock();
-  __pyx_t_4[5] = PyThread_allocate_lock();
-  __pyx_t_4[6] = PyThread_allocate_lock();
-  __pyx_t_4[7] = PyThread_allocate_lock();
-  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_4, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
+  __pyx_t_3[0] = PyThread_allocate_lock();
+  __pyx_t_3[1] = PyThread_allocate_lock();
+  __pyx_t_3[2] = PyThread_allocate_lock();
+  __pyx_t_3[3] = PyThread_allocate_lock();
+  __pyx_t_3[4] = PyThread_allocate_lock();
+  __pyx_t_3[5] = PyThread_allocate_lock();
+  __pyx_t_3[6] = PyThread_allocate_lock();
+  __pyx_t_3[7] = PyThread_allocate_lock();
+  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_3, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
 
   /* "View.MemoryView":549
  *         info.obj = self
@@ -19996,7 +20056,6 @@ if (!__Pyx_RefNanny) {
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init fABBA.inverse_tc", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -20060,169 +20119,6 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
 #endif
     }
     return result;
-}
-
-/* RaiseArgTupleInvalid */
-static void __Pyx_RaiseArgtupleInvalid(
-    const char* func_name,
-    int exact,
-    Py_ssize_t num_min,
-    Py_ssize_t num_max,
-    Py_ssize_t num_found)
-{
-    Py_ssize_t num_expected;
-    const char *more_or_less;
-    if (num_found < num_min) {
-        num_expected = num_min;
-        more_or_less = "at least";
-    } else {
-        num_expected = num_max;
-        more_or_less = "at most";
-    }
-    if (exact) {
-        more_or_less = "exactly";
-    }
-    PyErr_Format(PyExc_TypeError,
-                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                 func_name, more_or_less, num_expected,
-                 (num_expected == 1) ? "" : "s", num_found);
-}
-
-/* RaiseDoubleKeywords */
-static void __Pyx_RaiseDoubleKeywordsError(
-    const char* func_name,
-    PyObject* kw_name)
-{
-    PyErr_Format(PyExc_TypeError,
-        #if PY_MAJOR_VERSION >= 3
-        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
-        #else
-        "%s() got multiple values for keyword argument '%s'", func_name,
-        PyString_AsString(kw_name));
-        #endif
-}
-
-/* ParseKeywords */
-static int __Pyx_ParseOptionalKeywords(
-    PyObject *kwds,
-    PyObject **argnames[],
-    PyObject *kwds2,
-    PyObject *values[],
-    Py_ssize_t num_pos_args,
-    const char* function_name)
-{
-    PyObject *key = 0, *value = 0;
-    Py_ssize_t pos = 0;
-    PyObject*** name;
-    PyObject*** first_kw_arg = argnames + num_pos_args;
-    while (PyDict_Next(kwds, &pos, &key, &value)) {
-        name = first_kw_arg;
-        while (*name && (**name != key)) name++;
-        if (*name) {
-            values[name-argnames] = value;
-            continue;
-        }
-        name = first_kw_arg;
-        #if PY_MAJOR_VERSION < 3
-        if (likely(PyString_Check(key))) {
-            while (*name) {
-                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
-                        && _PyString_Eq(**name, key)) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    if ((**argname == key) || (
-                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
-                             && _PyString_Eq(**argname, key))) {
-                        goto arg_passed_twice;
-                    }
-                    argname++;
-                }
-            }
-        } else
-        #endif
-        if (likely(PyUnicode_Check(key))) {
-            while (*name) {
-                int cmp = (**name == key) ? 0 :
-                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                    (__Pyx_PyUnicode_GET_LENGTH(**name) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
-                #endif
-                    PyUnicode_Compare(**name, key);
-                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                if (cmp == 0) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    int cmp = (**argname == key) ? 0 :
-                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                        (__Pyx_PyUnicode_GET_LENGTH(**argname) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
-                    #endif
-                        PyUnicode_Compare(**argname, key);
-                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                    if (cmp == 0) goto arg_passed_twice;
-                    argname++;
-                }
-            }
-        } else
-            goto invalid_keyword_type;
-        if (kwds2) {
-            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
-        } else {
-            goto invalid_keyword;
-        }
-    }
-    return 0;
-arg_passed_twice:
-    __Pyx_RaiseDoubleKeywordsError(function_name, key);
-    goto bad;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    goto bad;
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-bad:
-    return -1;
-}
-
-/* ArgTypeTest */
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
-{
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    else if (exact) {
-        #if PY_MAJOR_VERSION == 2
-        if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
-        #endif
-    }
-    else {
-        if (likely(__Pyx_TypeCheck(obj, type))) return 1;
-    }
-    PyErr_Format(PyExc_TypeError,
-        "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
-        name, type->tp_name, Py_TYPE(obj)->tp_name);
-    return 0;
 }
 
 /* IsLittleEndian */
@@ -20940,6 +20836,169 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
     tstate->curexc_traceback = 0;
 }
 #endif
+
+/* RaiseArgTupleInvalid */
+  static void __Pyx_RaiseArgtupleInvalid(
+    const char* func_name,
+    int exact,
+    Py_ssize_t num_min,
+    Py_ssize_t num_max,
+    Py_ssize_t num_found)
+{
+    Py_ssize_t num_expected;
+    const char *more_or_less;
+    if (num_found < num_min) {
+        num_expected = num_min;
+        more_or_less = "at least";
+    } else {
+        num_expected = num_max;
+        more_or_less = "at most";
+    }
+    if (exact) {
+        more_or_less = "exactly";
+    }
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                 func_name, more_or_less, num_expected,
+                 (num_expected == 1) ? "" : "s", num_found);
+}
+
+/* RaiseDoubleKeywords */
+  static void __Pyx_RaiseDoubleKeywordsError(
+    const char* func_name,
+    PyObject* kw_name)
+{
+    PyErr_Format(PyExc_TypeError,
+        #if PY_MAJOR_VERSION >= 3
+        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
+        #else
+        "%s() got multiple values for keyword argument '%s'", func_name,
+        PyString_AsString(kw_name));
+        #endif
+}
+
+/* ParseKeywords */
+  static int __Pyx_ParseOptionalKeywords(
+    PyObject *kwds,
+    PyObject **argnames[],
+    PyObject *kwds2,
+    PyObject *values[],
+    Py_ssize_t num_pos_args,
+    const char* function_name)
+{
+    PyObject *key = 0, *value = 0;
+    Py_ssize_t pos = 0;
+    PyObject*** name;
+    PyObject*** first_kw_arg = argnames + num_pos_args;
+    while (PyDict_Next(kwds, &pos, &key, &value)) {
+        name = first_kw_arg;
+        while (*name && (**name != key)) name++;
+        if (*name) {
+            values[name-argnames] = value;
+            continue;
+        }
+        name = first_kw_arg;
+        #if PY_MAJOR_VERSION < 3
+        if (likely(PyString_Check(key))) {
+            while (*name) {
+                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
+                        && _PyString_Eq(**name, key)) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    if ((**argname == key) || (
+                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
+                             && _PyString_Eq(**argname, key))) {
+                        goto arg_passed_twice;
+                    }
+                    argname++;
+                }
+            }
+        } else
+        #endif
+        if (likely(PyUnicode_Check(key))) {
+            while (*name) {
+                int cmp = (**name == key) ? 0 :
+                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                    (__Pyx_PyUnicode_GET_LENGTH(**name) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
+                #endif
+                    PyUnicode_Compare(**name, key);
+                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                if (cmp == 0) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    int cmp = (**argname == key) ? 0 :
+                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                        (__Pyx_PyUnicode_GET_LENGTH(**argname) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
+                    #endif
+                        PyUnicode_Compare(**argname, key);
+                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                    if (cmp == 0) goto arg_passed_twice;
+                    argname++;
+                }
+            }
+        } else
+            goto invalid_keyword_type;
+        if (kwds2) {
+            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
+        } else {
+            goto invalid_keyword;
+        }
+    }
+    return 0;
+arg_passed_twice:
+    __Pyx_RaiseDoubleKeywordsError(function_name, key);
+    goto bad;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    goto bad;
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+bad:
+    return -1;
+}
+
+/* ArgTypeTest */
+  static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
+{
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    else if (exact) {
+        #if PY_MAJOR_VERSION == 2
+        if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
+        #endif
+    }
+    else {
+        if (likely(__Pyx_TypeCheck(obj, type))) return 1;
+    }
+    PyErr_Format(PyExc_TypeError,
+        "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
+        name, type->tp_name, Py_TYPE(obj)->tp_name);
+    return 0;
+}
 
 /* PyDictVersioning */
   #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS

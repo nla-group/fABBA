@@ -41,23 +41,15 @@ from inspect import signature, isclass, Parameter
 
 
 
-try:
-    # # %load_ext Cython
-    # !python3 setup.py build_ext --inplace
-    # from .cagg import aggregate
-    from .chainApproximation_c import compress
-    from .fabba_agg_memview import aggregate as aggregate_fabba 
-    # cython with memory view
-    from .aggregation_memview import aggregate as aggregate_fc 
-    # cython with memory view
-    from .inverse_tc import *
-except ModuleNotFoundError:
-    warnings.warn("cython fail.")
-    from .chainApproximation import compress
-    from .fabba_agg import aggregate as aggregate_fabba 
-    from .aggregation import aggregate as aggregate_fc
-    from .inverse_t import *
-    
+# # %load_ext Cython
+# !python3 setup.py build_ext --inplace
+# from .cagg import aggregate
+from .chainApproximation_c import compress
+from .fabba_agg_memview import aggregate as aggregate_fabba 
+# cython with memory view
+from .aggregation_memview import aggregate as aggregate_fc 
+# cython with memory view
+from .inverse_tc import *
   
   
 
@@ -740,6 +732,9 @@ class fabba_model(Aggregation2D, ABBAbase):
         times_series - list
             Reconstruction of the time series.
         """
+        
+        if type(strings) != str:
+            string = "".join(strings)
         if parameters == None:
             time_series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
         else:

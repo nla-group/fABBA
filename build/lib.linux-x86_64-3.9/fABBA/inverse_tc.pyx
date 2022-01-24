@@ -8,7 +8,7 @@ np.import_array()
 @cython.binding(True)
 
     
-def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):
+cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -39,7 +39,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict h
 
 
 
-cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):
+cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):
     """
     Convert symbolic representation back to compressed representation for reconstruction.
 
