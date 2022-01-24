@@ -41,15 +41,23 @@ from inspect import signature, isclass, Parameter
 
 
 
-# # %load_ext Cython
-# !python3 setup.py build_ext --inplace
-# from .cagg import aggregate
-from .chainApproximation_c import compress
-from .fabba_agg_memview import aggregate as aggregate_fabba 
-# cython with memory view
-from .aggregation_memview import aggregate as aggregate_fc 
-# cython with memory view
-from .inverse_tc import *
+try:
+    # # %load_ext Cython
+    # !python3 setup.py build_ext --inplace
+    # from .cagg import aggregate
+    from .chainApproximation_c import compress
+    from .fabba_agg_memview import aggregate as aggregate_fabba 
+    # cython with memory view
+    from .aggregation_memview import aggregate as aggregate_fc 
+    # cython with memory view
+    from .inverse_tc import *
+except ModuleNotFoundError:
+    warnings.warn("cython fail.")
+    from .chainApproximation import compress
+    from .fabba_agg import aggregate as aggregate_fabba 
+    from .aggregation import aggregate as aggregate_fc
+    from .inverse_t import *
+    
   
   
 
@@ -146,6 +154,8 @@ class Aggregation2D:
     def __init__(self, alpha=0.5, sorting='2-norm'):
         self.alpha = alpha
         self.sorting = sorting
+        
+        
         
     def aggregate(self, data):
                 
