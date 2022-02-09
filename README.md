@@ -189,13 +189,16 @@ Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
-@misc{StefanChenfABBA,
-      title={An efficient aggregation method for the symbolic representation of temporal data}, 
-      author={Xinye Chen and G\"{u}ttel, Stefan},
-      year={2022},
-      eprint={2201.05697},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@techreport{CG22a,
+  title   = {An efficient aggregation method for the symbolic representation of temporal data},
+  author  = {Chen, Xinye and G\"{u}ttel, Stefan},
+  year    = {2022},
+  number  = {arXiv:2201.05697},
+  pages   = {23},
+  institution = {The University of Manchester},
+  address = {UK},
+  type    = {arXiv EPrint},
+  url     = {https://arxiv.org/abs/2201.05697}
 }
 ```
 
