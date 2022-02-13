@@ -322,14 +322,14 @@ class ABBAbase:
         self.scl = scl
         self.verbose = verbose
         self.max_len = max_len
-        self.compress = compress
+        # self.compress = compress
         self.compression_rate = None
         self.digitization_rate = None
         self.clustering = clustering
         
         
     
-    def fit_transform(self, series):
+    def fit_transform(self, series, fillm='bfill'):
         """ 
         Compress and digitize the time series together.
         
@@ -337,13 +337,27 @@ class ABBAbase:
         ----------
         series - array or list
             Time series.
+            
         alpha - float
             Control tolerence for digitization, default as 0.5.
+            
         string_form - boolean
             Whether to return with string form, default as True.
+            
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero.   
         """
+        if np.sum(np.isnan(series)) > 0:
+            series = fillna(series, method=fillm)
         series = np.array(series).astype(np.float64)
-        pieces = np.array(self.compress(ts=series, tol=self.tol, max_len=self.max_len))
+        pieces = np.array(self.compress(series))
         strings = self.digitize(pieces[:,0:2])
         self.compression_rate = pieces.shape[0] / series.shape[0]
         self.digitization_rate = self.centers.shape[0] / pieces.shape[0]
@@ -352,6 +366,33 @@ class ABBAbase:
                 """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.centers.shape[0], "symbols.")  
         strings = ''.join(strings)
         return strings
+    
+    
+
+    def compress(self, series, fillm='bfill'):
+        """
+        Compress time series.
+        
+        Parameters
+        ----------
+        series - numpy.ndarray or list
+            Time series of the shape (1, n_samples).
+
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero.   
+        
+        """
+        
+        if np.sum(np.isnan(series)) > 0:
+            series = fillna(series, fillm)
+        return compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
     
     
     
@@ -435,6 +476,7 @@ class ABBAbase:
     #         pieces[-1,0] = round(pieces[-1,0],0)
     #     return pieces
 
+    
 
 
 class fabba_model(Aggregation2D, ABBAbase):
@@ -523,7 +565,7 @@ class fabba_model(Aggregation2D, ABBAbase):
         self.max_len = max_len
         self.return_list = return_list
         self.n_jobs = n_jobs # For the moment, we don't use this parameter.
-        self.compress = compress
+        # self.compress = compress
 
         
         
@@ -549,7 +591,7 @@ class fabba_model(Aggregation2D, ABBAbase):
     
     
     
-    def fit_transform(self, series):
+    def fit_transform(self, series, fillm='bfill'):
         """ 
         Compress and digitize the time series together.
         
@@ -557,17 +599,30 @@ class fabba_model(Aggregation2D, ABBAbase):
         ----------
         series - numpy.ndarray or list
             Time series of the shape (1, n_samples).
-        
+            
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero. 
+                
         Returns
         ----------
         string (str): The string transformed by fABBA
         """
         
+        if np.sum(np.isnan(series)) > 0:
+            series = fillna(series, fillm)
+
         # if self.n_jobs > 1 and self.max_len == 1:
         #     pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
         # else:
         #     # pieces = self.compress(ts=series)
-        pieces = self.compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
+        pieces = self.compress(series)
             
         string, parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2])
@@ -666,7 +721,31 @@ class fabba_model(Aggregation2D, ABBAbase):
     #     return np.array(pieces)
 
 
+    def compress(self, series, fillm='bfill'):
+        """
+        Compress time series.
+        
+        Parameters
+        ----------
+        series - numpy.ndarray or list
+            Time series of the shape (1, n_samples).
 
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero.   
+        
+        """
+        if np.sum(np.isnan(series)) > 0:
+            series = fillna(series, fillm)
+        return compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
+    
+    
     
     @_deprecate_positional_args
     def digitize(self, pieces):
@@ -678,7 +757,7 @@ class fabba_model(Aggregation2D, ABBAbase):
         cluster is the first piece available after appropriate scaling 
         and sorting of all pieces. After finishing the grouping procedure,
         the centers are calculated the mean value of the objects within 
-        the clusters
+        the clusters.
         
         Parameters
         ----------
@@ -744,7 +823,7 @@ class fabba_model(Aggregation2D, ABBAbase):
         """
         
         if type(strings) != str:
-            string = "".join(strings)
+            strings = "".join(strings)
         if parameters == None:
             time_series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
         else:
@@ -874,7 +953,7 @@ class fabba_model(Aggregation2D, ABBAbase):
     # 
     #     return time_series
     
-    
+                
     # save model
     def dump(self, file=None):
         if file == None:
@@ -1050,4 +1129,43 @@ class fabba_model(Aggregation2D, ABBAbase):
         self._n_jobs = value
 
         
-        
+
+def fillna(series, method='zero'):
+    """
+    series - numpy.ndarray or list
+        Time series of the shape (1, n_samples).
+
+    fillna - str, default = 'zero'
+        Fill NA/NaN values using the specified method.
+        'Zero': Fill the holes of series with value of 0.
+        'Mean': Fill the holes of series with mean value.
+        'Median': Fill the holes of series with mean value.
+        'ffill': Forward last valid observation to fill gap.
+            If the first element is nan, then will set it to zero.
+        'bfill': Use next valid observation to fill gap. 
+            If the last element is nan, then will set it to zero.        
+    """
+
+    if method == 'Mean':
+        series[np.isnan(series)] = np.mean(series[~np.isnan(series)])
+
+    elif method == 'Median':
+        series[np.isnan(series)] = np.median(series[~np.isnan(series)])
+
+    elif method == 'ffill':
+        for i in np.where(np.isnan(series))[0]:
+            if i > 0:
+                series[i] = series[i-1]
+            else:
+                series[i] = 0
+
+    elif method == 'bfill':
+        for i in sorted(np.where(np.isnan(series))[0], reverse=True):
+            if i < len(series):
+                series[i] = series[i+1]
+            else:
+                series[i] = 0
+    else:
+        series[np.isnan(series)] = 0
+
+    return series
