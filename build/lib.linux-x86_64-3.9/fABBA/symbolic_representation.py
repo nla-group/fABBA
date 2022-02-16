@@ -323,17 +323,17 @@ class ABBAbase:
         pieces = np.array(self.compress(series))
         strings, self.parameters = self.digitize(pieces[:,0:2])
         self.compression_rate = pieces.shape[0] / series.shape[0]
-        self.digitization_rate = self.centers.shape[0] / pieces.shape[0]
+        self.digitization_rate = self.parameters.centers.shape[0] / pieces.shape[0]
         if self.verbose in [1, 2]:
             print("""Compression: Reduced series of length {0} to {1} segments.""".format(series.shape[0], pieces.shape[0]),
-                """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.centers.shape[0], "symbols.")  
+                """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.parameters.centers.shape[0], "symbols.")  
         strings = ''.join(strings)
         return strings
     
     
     
     def inverse_transform(self, strings, start=0):
-        series = inv_transform(strings, self.parameters.centers, self.parameters.hashmap, start)
+        series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start)
         return series
     
     
@@ -396,7 +396,7 @@ class ABBAbase:
             centers = np.r_[ centers, center ]
             
         # self.centers = centers
-        # strings, self.hashmap = symbolsAssign(labels)
+        strings, hashm = symbolsAssign(labels)
         parameters = Model(centers, centers, hashm)
         return strings, parameters
 
@@ -414,7 +414,7 @@ class ABBAbase:
     
     
     # def inverse_transform(self, strings, start=0):
-    #     pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
+    #     pieces = self.inverse_digitize(strings, self.parameters.centers, self.parameters.hashm)
     #     pieces = self.quantize(pieces)
     #     series = self.inverse_compress(pieces, start)
     #     return series
