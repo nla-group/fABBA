@@ -372,6 +372,7 @@ class ABBAbase:
         cluster centers, which are just the means, might achieve 
         a smaller within-cluster tol.
         """
+        pieces = np.array(pieces)[:,:2]
         _std = np.std(pieces, axis=0) # prevent zero-division
         if _std[0] == 0:
              _std[1] = 1
