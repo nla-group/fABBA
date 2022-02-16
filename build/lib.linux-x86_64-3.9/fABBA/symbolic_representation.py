@@ -332,9 +332,41 @@ class ABBAbase:
     
     
     
-    def inverse_transform(self, strings, start=0):
-        series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start)
+    def inverse_transform(self, strings, start=0, parameters=None):
+        """
+        Convert ABBA symbolic representation back to numeric time series representation.
+        
+        Parameters
+        ----------
+        string - string
+            Time series in symbolic representation using unicode characters starting
+            with character 'a'.
+        
+        start - float
+            First element of original time series. Applies vertical shift in
+            reconstruction. If not specified, the default is 0.
+        
+        parameters - Model
+            The parameters of model.
+            
+            
+        Returns
+        -------
+        series - list
+            Reconstruction of the time series.
+        """
+        if type(strings) != str:
+            strings = "".join(strings)
+            
+        if parameters is None:
+            try:
+                series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+            except:
+                raise ValueError("Please train the model using ``fit_transform`` first.")
+        else:
+            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
         return series
+
     
     
     
@@ -715,16 +747,22 @@ class fabba_model(Aggregation2D, ABBAbase):
             First element of original time series. Applies vertical shift in
             reconstruction. If not specified, the default is 0.
         
+        parameters - Model
+            The parameters of model.
+            
         Returns
         -------
-        times_series - list
+        series - list
             Reconstruction of the time series.
         """
         
         if type(strings) != str:
             strings = "".join(strings)
-        if parameters == None:
-            series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+        if parameters is None:
+            try:
+                series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+            except:
+                raise ValueError("Please train the model using ``fit_transform`` first.") 
         else:
             series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
     
@@ -854,12 +892,15 @@ class fabba_model(Aggregation2D, ABBAbase):
         Parameters
         ----------
         pieces - numpy.ndarray
-            The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression
+            The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression.
             
         Returns
         ----------
-        string (str or list)
-            string sequence
+        string - str or list)
+            String sequence.
+            
+        parameters - Model
+            The parameters of model.
         """
 
         if self.sorting not in ["lexi", "2-norm", "1-norm", "norm", "pca"]:
