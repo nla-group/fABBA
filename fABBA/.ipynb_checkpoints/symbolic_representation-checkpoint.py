@@ -321,7 +321,7 @@ class ABBAbase:
             series = fillna(series, method=fillm)
         series = np.array(series).astype(np.float64)
         pieces = np.array(self.compress(series))
-        strings = self.digitize(pieces[:,0:2])
+        strings, self.parameters = self.digitize(pieces[:,0:2])
         self.compression_rate = pieces.shape[0] / series.shape[0]
         self.digitization_rate = self.centers.shape[0] / pieces.shape[0]
         if self.verbose in [1, 2]:
@@ -331,7 +331,13 @@ class ABBAbase:
         return strings
     
     
-
+    
+    def inverse_transform(self, strings, start=0):
+        series = inv_transform(strings, self.parameters.centers, self.parameters.hashmap, start)
+        return series
+    
+    
+    
     def compress(self, series, fillm='bfill'):
         """
         Compress time series.
@@ -388,9 +394,11 @@ class ABBAbase:
             indc = np.argwhere(labels==c)
             center = np.mean(pieces[indc,:], axis=0)
             centers = np.r_[ centers, center ]
-        self.centers = centers
-        strings, self.hashmap = symbolsAssign(labels)
-        return strings
+            
+        # self.centers = centers
+        # strings, self.hashmap = symbolsAssign(labels)
+        parameters = Model(centers, centers, hashm)
+        return strings, parameters
 
 
     
@@ -402,12 +410,6 @@ class ABBAbase:
         for i in range(len(sorted_dict)):
             clabels[labels == sorted_dict[i][0]]  = i
         return clabels
-    
-    
-    
-    def inverse_transform(self, strings, start=0):
-        series = inv_transform(strings, self.centers, self.hashmap, start)
-        return series
     
     
     
@@ -683,11 +685,9 @@ class fabba_model(Aggregation2D, ABBAbase):
         #     # pieces = self.compress(ts=series)
         pieces = self.compress(series)
             
-        string, parameters = self.digitize(
+        string, self.parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2]
         )
-        
-        self.parameters = parameters
         
         if self.verbose:
             _info = "Digitization: Reduced pieces of length {}".format(
@@ -699,6 +699,38 @@ class fabba_model(Aggregation2D, ABBAbase):
             
         return string
 
+
+
+    def inverse_transform(self, strings, start=0, parameters=None):
+        """
+        Convert ABBA symbolic representation back to numeric time series representation.
+        
+        Parameters
+        ----------
+        string - string
+            Time series in symbolic representation using unicode characters starting
+            with character 'a'.
+        
+        start - float
+            First element of original time series. Applies vertical shift in
+            reconstruction. If not specified, the default is 0.
+        
+        Returns
+        -------
+        times_series - list
+            Reconstruction of the time series.
+        """
+        
+        if type(strings) != str:
+            strings = "".join(strings)
+        if parameters == None:
+            series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+        else:
+            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
+    
+        return series
+    
+    
     
     # deprecated
     # def compress(self, ts):
@@ -860,36 +892,6 @@ class fabba_model(Aggregation2D, ABBAbase):
         parameters = Model(centers, np.array(splist), hashm)
         return string, parameters
 
-
-    
-    def inverse_transform(self, strings, start=0, parameters=None):
-        """
-        Convert ABBA symbolic representation back to numeric time series representation.
-        
-        Parameters
-        ----------
-        string - string
-            Time series in symbolic representation using unicode characters starting
-            with character 'a'.
-        
-        start - float
-            First element of original time series. Applies vertical shift in
-            reconstruction. If not specified, the default is 0.
-        
-        Returns
-        -------
-        times_series - list
-            Reconstruction of the time series.
-        """
-        
-        if type(strings) != str:
-            strings = "".join(strings)
-        if parameters == None:
-            series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
-        else:
-            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
-    
-        return series
     
     
     # [DEPRECATED]
