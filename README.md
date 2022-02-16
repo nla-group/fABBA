@@ -102,6 +102,7 @@ kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)
 abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
 string = abba.fit_transform(ts)                    # string representation of the time series
 print(string)                                      # prints BbAaAaAaAaAaAaAaC
+inverse_ts = abba.inverse_transform(string)        # reconstruction
 ```
 
 
