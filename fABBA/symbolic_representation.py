@@ -74,46 +74,7 @@ class Model:
 
 
 
-def symbolsAssign(clusters):
-    """
-    Automatically assign symbols to different groups, start with '!'
-
-    Parameters
-    ----------
-    clusters - list or pd.Series or array
-            the list of labels.
-
-    ----------
-    Return:
-
-    strings(list of string), hashmap(dict): repectively for the
-    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
-    labels to symbols.
-
-    """
-    alphabet = ['A','a','B','b','C','c','D','d','E','e',
-                'F','f','G','g','H','h','I','i','J','j',
-                'K','k','L','l','M','m','N','n','O','o',
-                'P','p','Q','q','R','r','S','s','T','t',
-                'U','u','V','v','W','w','X','x','Y','y','Z','z']
-    clusters = pd.Series(clusters)
-    N = len(clusters.unique())
-
-    cluster_sort = [0] * N 
-    counter = collections.Counter(clusters)
-    for ind, el in enumerate(counter.most_common()):
-        cluster_sort[ind] = el[0]
-
-    if N >= len(alphabet):
-        alphabet = [chr(i+33) for i in range(0, N)]
-    else:
-        alphabet = alphabet[:N]
-    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
-    strings = [hashm[i] for i in clusters]
-    return strings, hashm
-
-
-
+        
 class Aggregation2D:
     """ A separatate aggregation for data with 2-dimensional (2D) features. 
         Independent applicable to 2D data aggregation
@@ -229,9 +190,11 @@ def _deprecate_positional_args(func=None, *, version=None):
     ----------
     func : callable, default=None
         Function to check arguments on.
+        
     version : callable, default="1.0 (renaming of 0.25)"
         The version when positional arguments will result in error.
     """
+    
     def _inner_deprecate_positional_args(f):
         sig = signature(f)
         kwonly_args = []
@@ -442,16 +405,16 @@ class ABBAbase:
     
     
     def inverse_transform(self, strings, start=0):
-        time_series = inv_transform(strings, self.centers, self.hashmap, start)
-        return time_series
+        series = inv_transform(strings, self.centers, self.hashmap, start)
+        return series
     
     
     
     # def inverse_transform(self, strings, start=0):
     #     pieces = self.inverse_digitize(strings, self.centers, self.hashmap)
     #     pieces = self.quantize(pieces)
-    #     time_series = self.inverse_compress(pieces, start)
-    #     return time_series
+    #     series = self.inverse_compress(pieces, start)
+    #     return series
     # 
     # 
     # def inverse_digitize(self, strings, centers, hashmap):
@@ -477,6 +440,101 @@ class ABBAbase:
     #     return pieces
 
     
+    
+def get_patches(ts, pieces, string, centers, dictionary):
+    """
+    Follow original ABBA smooth reconstruction, 
+    creates a dictionary of patches from time series data using the clustering result.
+    
+    Parameters
+    ----------
+    ts - numpy array
+        Original time series.
+        
+    pieces - numpy array
+        Time series in compressed format.
+        
+    string - string
+        Time series in symbolic representation using unicode characters starting
+        with character 'a'.
+        
+    centers - numpy array
+        Centers of clusters from clustering algorithm. Each centre corresponds
+        to a character in string.
+        
+    ditionary - dict
+         For mapping from symbols to labels or labels to symbols.
+        
+    
+    Returns
+    -------
+    patches - dict
+        A dictionary of time series patches.
+    """
+    
+    pieces = np.array(pieces)
+    patches = dict()
+    inds = 0
+    for j in range(len(pieces)):
+        symbol = string[j]                        # letter
+        lab = dictionary[symbol]                  # label (integer)
+        lgt = round(centers[lab,0])               # patch length
+        inc = centers[lab,1]                      # patch increment
+        inde = inds + int(pieces[j,0]);
+        tsp = ts[inds:inde+1]                      # time series patch
+
+        tsp = tsp - (tsp[-1]-tsp[0]-inc)/2-tsp[0]  # shift patch so that it is vertically centered with patch increment
+
+        tspi = np.interp(np.linspace(0,1,lgt+1), np.linspace(0,1,len(tsp)), tsp)
+        if symbol in patches:
+            patches[symbol] = np.append(patches[symbol], np.array([tspi]), axis = 0)
+        else:
+            patches[symbol] = np.array([ tspi ])
+        inds = inde
+    return patches
+
+
+
+def patched_reconstruction(series, pieces, string, centers, dictionary):
+    """
+    An alternative reconstruction procedure which builds patches for each
+    cluster by extrapolating/intepolating the segments and taking the mean.
+    The reconstructed time series is no longer guaranteed to be of the same
+    length as the original.
+    
+    Parameters
+    ----------
+    series - numpy array
+        Normalised time series as numpy array.
+        
+    pieces - numpy array
+        One or both columns from compression. See compression.
+        
+    string - string
+        Time series in symbolic representation using unicode characters starting
+        with character 'a'.
+        
+    centers - numpy array
+        centers of clusters from clustering algorithm. Each center corresponds
+        to character in string.
+
+    ditionary - dict
+         For mapping from symbols to labels or labels to symbols.
+    """
+    
+    patches = get_patches(series, pieces, string, centers, dictionary)
+    # Construct mean of each patch
+    d = {}
+    for key in patches:
+        d[key] = list(np.mean(patches[key], axis=0))
+
+    reconstructed_series = [series[0]]
+    for letter in string:
+        patch = d[letter]
+        patch -= patch[0] - reconstructed_series[-1] # shift vertically
+        reconstructed_series = reconstructed_series + patch[1:].tolist()
+    return reconstructed_series
+
 
 
 class fabba_model(Aggregation2D, ABBAbase):
@@ -625,7 +683,8 @@ class fabba_model(Aggregation2D, ABBAbase):
         pieces = self.compress(series)
             
         string, parameters = self.digitize(
-            pieces=np.array(pieces)[:,0:2])
+            pieces=np.array(pieces)[:,0:2]
+        )
         
         self.parameters = parameters
         
@@ -685,14 +744,14 @@ class fabba_model(Aggregation2D, ABBAbase):
 
     
 
-    # def parallel_compress(self, ts, n_jobs=-1):
+    # def parallel_compress(self, series, n_jobs=-1):
     #     """
     #     Approximate a time series using a continuous piecewise linear function in a parallel way.
     #     Each piece is of length 1. 
     #     
     #     Parameters
     #     ----------
-    #     ts - numpy ndarray
+    #     series - numpy ndarray
     #         Time series as input of numpy array
     #     
     #         
@@ -702,21 +761,21 @@ class fabba_model(Aggregation2D, ABBAbase):
     #         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
     #     """
     #     from joblib import Parallel, delayed
-    #     x = np.arange(0, len(ts))
+    #     x = np.arange(0, len(series))
     # 
     #     def construct_piece(i):
-    #         inc = ts[i+1] - ts[i]
-    #         err = np.linalg.norm((ts[i] + (inc)*x[0:2]) - ts[i:i+2])**2
+    #         inc = series[i+1] - series[i]
+    #         err = np.linalg.norm((series[i] + (inc)*x[0:2]) - series[i:i+2])**2
     #         return [1, inc, err]
     # 
     #     pieces = Parallel(n_jobs=n_jobs)(
-    #         delayed(construct_piece)(i) for i in range(len(ts) - 1))
+    #         delayed(construct_piece)(i) for i in range(len(series) - 1))
     # 
     #     if self.verbose:
     #         self.logger = logging.getLogger("fABBA")
     #         self.logger.info(
     #             "Compression: Reduced time series of length "  
-    #             + str(len(ts)) + " to " + str(len(pieces)) + " segments")
+    #             + str(len(series)) + " to " + str(len(pieces)) + " segments")
     # 
     #     return np.array(pieces)
 
@@ -773,7 +832,7 @@ class fabba_model(Aggregation2D, ABBAbase):
         if self.sorting not in ["lexi", "2-norm", "1-norm", "norm", "pca"]:
             raise ValueError("Please refer to a specific and correct sorting way, namely 'lexi', '2-norm' and '1-norm'")
         
-        pieces = np.array(pieces).astype(np.float64)
+        pieces = np.array(pieces)[:,:2].astype(np.float64)
         self._std = np.std(pieces, axis=0) 
         
         if self._std[0] != 0: # to prevent 0 std when assign max_len as 1 to compression, which make aggregation go wrong.
@@ -825,11 +884,11 @@ class fabba_model(Aggregation2D, ABBAbase):
         if type(strings) != str:
             strings = "".join(strings)
         if parameters == None:
-            time_series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+            series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
         else:
-            time_series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
+            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
     
-        return time_series
+        return series
     
     
     # [DEPRECATED]
@@ -852,14 +911,15 @@ class fabba_model(Aggregation2D, ABBAbase):
     #     times_series - list
     #         Reconstruction of the time series.
     #     """
+    #
     #     if parameters == None:
     #         pieces = self.inverse_digitize(strings, self.parameters)
     #     else:
     #         pieces = self.inverse_digitize(strings, parameters)
     #         
     #     pieces = self.quantize(pieces)
-    #     time_series = self.inverse_compress(pieces, start)
-    #     return time_series
+    #     series = self.inverse_compress(pieces, start)
+    #     return series
     # 
     # 
     # 
@@ -941,17 +1001,17 @@ class fabba_model(Aggregation2D, ABBAbase):
     #     
     #     Returns
     #     -------
-    #     time_series : Reconstructed time series
+    #     series : Reconstructed time series
     #     """
     #     
-    #     time_series = [start]
+    #     series = [start]
     #     # stitch linear piece onto last
     #     for j in range(0, len(pieces)):
     #         x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
-    #         y = time_series[-1] + x
-    #         time_series = time_series + y[1:].tolist()
+    #         y = series[-1] + x
+    #         series = series + y[1:].tolist()
     # 
-    #     return time_series
+    #     return series
     
                 
     # save model
@@ -1169,3 +1229,44 @@ def fillna(series, method='zero'):
         series[np.isnan(series)] = 0
 
     return series
+
+
+
+
+def symbolsAssign(clusters):
+    """
+    Automatically assign symbols to different groups, start with '!'
+
+    Parameters
+    ----------
+    clusters - list or pd.Series or array
+            the list of labels.
+
+    ----------
+    Return:
+
+    strings(list of string), hashmap(dict): repectively for the
+    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
+    labels to symbols.
+
+    """
+    alphabet = ['A','a','B','b','C','c','D','d','E','e',
+                'F','f','G','g','H','h','I','i','J','j',
+                'K','k','L','l','M','m','N','n','O','o',
+                'P','p','Q','q','R','r','S','s','T','t',
+                'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    clusters = pd.Series(clusters)
+    N = len(clusters.unique())
+
+    cluster_sort = [0] * N 
+    counter = collections.Counter(clusters)
+    for ind, el in enumerate(counter.most_common()):
+        cluster_sort[ind] = el[0]
+
+    if N >= len(alphabet):
+        alphabet = [chr(i+33) for i in range(0, N)]
+    else:
+        alphabet = alphabet[:N]
+    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
+    strings = [hashm[i] for i in clusters]
+    return strings, hashm
