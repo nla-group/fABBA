@@ -19,7 +19,7 @@ setuptools.setup(
                             "inverse_tc.pyx"]},
     include_dirs=[numpy.get_include()],
     long_description=long_description,
-    author="Xinye Chen, Stefan Guettel",
+    author="Xinye Chen, Stefan Güttel",
     author_email="stefan.guettel@manchester.ac.uk, xinye.chen@manchester.ac.uk",
     classifiers=["Intended Audience :: Science/Research",
                 "Intended Audience :: Developers",
