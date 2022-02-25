@@ -24,7 +24,7 @@ pip install fABBA
 
 Download this repository:
 ```
-$ git clone https://github.com/nla-group/fABBA.git
+git clone https://github.com/nla-group/fABBA.git
 ```
 
 
