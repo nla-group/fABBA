@@ -1,10 +1,10 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 0.8.8
+Version: 0.8.9
 Summary: An efficient aggregation based symbolic representation
 Home-page: https://github.com/nla-group/fABBA
-Author: Stefan Guettel, Xinye Chen
-Author-email: stefan.guettel@manchester.ac.uk, xinye.chen@manchester.ac.uk
+Author: Xinye Chen, Stefan Güttel
+Author-email: xinye.chen@manchester.ac.uk, stefan.guettel@manchester.ac.uk
 License: BSD 3-Clause
 Platform: UNKNOWN
 Classifier: Intended Audience :: Science/Research
@@ -14,6 +14,8 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Scientific/Engineering
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Description-Content-Type: text/markdown
@@ -28,7 +30,8 @@ License-File: LICENSE
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/fABBA.svg)](https://pypi.python.org/pypi/fABBA/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/nla-group/fABBA/HEAD)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6206977.svg)](https://doi.org/10.5281/zenodo.6206977)
+[![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 
 fABBA is a fast and accurate symbolic representation method for temporal data. 
 It is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. 
@@ -37,6 +40,15 @@ In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Know
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## Install
+fABBA has the following essential dependencies for its functionality:
+
+- cython>=0.29.4
+- numpy>=1.22.0
+- scipy>1.6.0
+- requests
+
+To ensure successful Cython compiling, please update your NumPy to the latest version 1.22.0.  
+
 To install the current release via PIP use:
 ```
 pip install fABBA
@@ -44,7 +56,7 @@ pip install fABBA
 
 Download this repository:
 ```
-$ git clone https://github.com/nla-group/fABBA.git
+git clone https://github.com/nla-group/fABBA.git
 ```
 
 

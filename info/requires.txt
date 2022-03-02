@@ -1,4 +1,5 @@
-numpy>=1.22.1
-tqdm
+cython>=0.29.4
+numpy>=1.22.0
+scipy>1.6.0
+requests>2.24.0
 pandas
-matplotlib
