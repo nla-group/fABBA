@@ -1,6 +1,8 @@
 # fABBA
-
-### An efficient aggregation method for the symbolic representation of temporal data
+<h3 align="center">
+ 🤖 🎓 🏁 
+</h3>
+### An efficient aggregation method for the symbolic representation of temporal data  
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -16,7 +18,7 @@ The aggregation process is sped up by sorting the polygonal pieces and exploitin
 In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
-## Install
+## 🚀 Install
 fABBA has the following essential dependencies for its functionality:
 
 - cython>=0.29.4
@@ -37,7 +39,7 @@ git clone https://github.com/nla-group/fABBA.git
 ```
 
 
-## Examples 
+## 🏁 Examples 
 
 #### *Compress and reconstruct a time series*
 
@@ -152,7 +154,7 @@ plt.show()
 
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/inverse_img.png)
 
-## Experiments
+## 🎨 Experiments
 
 The folder ["exp"](https://github.com/nla-group/fABBA/tree/master/exp) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
@@ -189,14 +191,14 @@ $ ./test
 ```
 
 
-## Software contributors
+## ✨ Software contributors
 
 Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
-## Citation
+## ⭐ Citation
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
