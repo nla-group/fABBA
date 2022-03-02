@@ -3,7 +3,7 @@
 </h1>
 <h3 align="left">
   An efficient aggregation method for the symbolic representation of temporal data  
-   🤖 🎓 🏁 
+   🎓 🏁 
 </h3>
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
