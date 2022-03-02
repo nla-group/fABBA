@@ -1,5 +1,5 @@
 <h1 align="left">
-  fABBA 🙌
+  fABBA 🐪
 </h1>
 <h3 align="left">
   An efficient aggregation method for the symbolic representation of temporal data  
