@@ -17,6 +17,16 @@ In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Know
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## Install
+fABBA has the following essential dependencies for its functionality:
+
+- cython>=0.29.4
+- numpy>=1.22.0
+- scipy>1.6.0
+- pandas
+- requests
+
+To ensure successful Cython compiling, please update your NumPy to the latest version 1.22.0.  
+
 To install the current release via PIP use:
 ```
 pip install fABBA
