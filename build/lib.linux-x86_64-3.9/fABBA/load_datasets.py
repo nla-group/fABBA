@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 import sys
 
 def get_img(file, store_dir):
-    url_parent = "https://raw.githubusercontent.com/nla-group/fABBA/master/fABBA/samples/img/"
+    url_parent = "https://raw.githubusercontent.com/nla-group/fABBA/master/samples/img/"
     img_data = requests.get(url_parent + file).content
     with open(store_dir + "/" + file, 'wb') as handler:
         handler.write(img_data)

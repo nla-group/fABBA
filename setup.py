@@ -8,7 +8,7 @@ with open("README.md", 'r') as f:
 setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
-    version="0.8.9",
+    version="0.9.0",
     setup_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>1.6.0", "requests>2.24.0"],
     install_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>1.6.0", "requests>2.24.0", "pandas"],
     ext_modules=cythonize(["fABBA/*.pyx"], include_path=["fABBA"]),
