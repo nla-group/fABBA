@@ -22,7 +22,6 @@ fABBA has the following essential dependencies for its functionality:
 - cython>=0.29.4
 - numpy>=1.22.0
 - scipy>1.6.0
-- pandas
 - requests
 
 To ensure successful Cython compiling, please update your NumPy to the latest version 1.22.0.  
