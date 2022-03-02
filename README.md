@@ -1,9 +1,8 @@
-<h1 align="center">
+<h1 align="left">
   fABBA
 </h1>
 <h3 align="center">
   An efficient aggregation method for the symbolic representation of temporal data  
-
    🤖 🎓 🏁 
 </h3>
 
