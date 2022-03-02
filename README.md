@@ -1,11 +1,11 @@
 <h1 align="center">
   fABBA
 </h1>
-<h2 align="center">
+<h3 align="center">
   An efficient aggregation method for the symbolic representation of temporal data  
 
    🤖 🎓 🏁 
-</h2>
+</h3>
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
