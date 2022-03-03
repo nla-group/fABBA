@@ -43,7 +43,7 @@ git clone https://github.com/nla-group/fABBA.git
 
 ## 🏁 Examples 
 
-#### *Compress and reconstruct a time series*
+#### ⭐ *Compress and reconstruct a time series*
 
 The following example approximately transforms a time series into a symbolic string representation (`transform`) and then converts the string back into a numerical format (`inverse_transform`). fABBA essentially requires two parameters `tol` and `alpha`. The tolerance `tol` determines how closely the polygonal chain approximation follows the original time series. The parameter `alpha` controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller `tol` means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. A smaller `alpha` typically results in a larger number of symbols. 
 
@@ -75,7 +75,7 @@ plt.show()
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
 
-#### *Adaptive polygonal chain approximation*
+#### ⭐ *Adaptive polygonal chain approximation*
 
 Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
@@ -101,7 +101,7 @@ inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series r
 ```
 
 
-#### *Alternative ABBA approach*
+#### ⭐ *Alternative ABBA approach*
 
 We also provide other clustering based ABBA methods, it is easy to use with the support of scikit-learn tools. The user guidance is as follows
 
@@ -121,7 +121,7 @@ inverse_ts = abba.inverse_transform(string)        # reconstruction
 
 
 
-#### *Image compression*
+#### ⭐ *Image compression*
 
 The following example shows how to apply fABBA to image data.
 
