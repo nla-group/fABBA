@@ -1,9 +1,9 @@
 <h1 align="left">
-  fABBA 🐪
+  fABBA :dromedary_camel:
 </h1>
 <h3 align="left">
   An efficient aggregation method for the symbolic representation of temporal data  
-   🐋  🐬
+   :whale:  :dolphin:
 </h3>
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
@@ -20,7 +20,7 @@ The aggregation process is sped up by sorting the polygonal pieces and exploitin
 In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
-## 🚀 Install
+## :rocket: Install
 fABBA has the following essential dependencies for its functionality:
 
 - cython>=0.29.4
@@ -41,9 +41,9 @@ git clone https://github.com/nla-group/fABBA.git
 ```
 
 
-## 🏁 Examples 
+## :checkered_flag: Examples 
 
-#### ⭐ *Compress and reconstruct a time series*
+#### :star: *Compress and reconstruct a time series*
 
 The following example approximately transforms a time series into a symbolic string representation (`transform`) and then converts the string back into a numerical format (`inverse_transform`). fABBA essentially requires two parameters `tol` and `alpha`. The tolerance `tol` determines how closely the polygonal chain approximation follows the original time series. The parameter `alpha` controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller `tol` means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. A smaller `alpha` typically results in a larger number of symbols. 
 
@@ -75,7 +75,7 @@ plt.show()
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
 
-#### ⭐ *Adaptive polygonal chain approximation*
+#### :star: *Adaptive polygonal chain approximation*
 
 Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
@@ -101,7 +101,7 @@ inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series r
 ```
 
 
-#### ⭐ *Alternative ABBA approach*
+#### :star: *Alternative ABBA approach*
 
 We also provide other clustering based ABBA methods, it is easy to use with the support of scikit-learn tools. The user guidance is as follows
 
@@ -121,7 +121,7 @@ inverse_ts = abba.inverse_transform(string)        # reconstruction
 
 
 
-#### ⭐ *Image compression*
+#### :star: *Image compression*
 
 The following example shows how to apply fABBA to image data.
 
@@ -156,7 +156,7 @@ plt.show()
 
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/inverse_img.png)
 
-## 🎨 Experiments
+## :art: Experiments
 
 The folder ["exp"](https://github.com/nla-group/fABBA/tree/master/exp) contains all code required to reproduce the experiments in the manuscript "An efficient aggregation method for the symbolic representation of temporal data".
 
@@ -179,7 +179,7 @@ $ cd exp/src
 $ python setup.py build_ext --inplace
 ```
 
-## 💌 Others
+## :love_letter: Others
 
 We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to give a shot!
 
@@ -193,14 +193,14 @@ $ ./test
 ```
 
 
-## ✨ Software contributors
+## :sparkles: Software contributors
 
 Xinye Chen (<xinye.chen@manchester.ac.uk>)
 
 Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
-## ⭐ Citation
+## :sparkles: Citation
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
