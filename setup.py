@@ -9,8 +9,8 @@ setuptools.setup(
     name="fABBA",
     packages=setuptools.find_packages(),
     version="0.9.0",
-    setup_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>1.6.0", "requests>2.24.0"],
-    install_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>1.6.0", "requests>2.24.0", "pandas"],
+    setup_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>=1.2.1", "requests>=2.24.0"],
+    install_requires=["cython>=0.29.4", "numpy>=1.22.0", "scipy>=1.2.1", "requests>=2.24.0", "pandas"],
     ext_modules=cythonize(["fABBA/*.pyx"], include_path=["fABBA"]),
     package_data={"fABBA": ["chainApproximation_c.pyx", 
                             "aggregation_c.pyx", 
@@ -32,7 +32,8 @@ setuptools.setup(
                 "Programming Language :: Python :: 3.6",
                 "Programming Language :: Python :: 3.7",
                 "Programming Language :: Python :: 3.8",
-                "Programming Language :: Python :: 3.9"
+                "Programming Language :: Python :: 3.9",
+                "Programming Language :: Python :: 3.10"
                 ],
     description="An efficient aggregation based symbolic representation",
     long_description_content_type='text/markdown',
