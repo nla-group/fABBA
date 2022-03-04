@@ -35,7 +35,7 @@ setuptools.setup(
                 "Programming Language :: Python :: 3.9",
                 "Programming Language :: Python :: 3.10"
                 ],
-    description="An efficient aggregation based symbolic representation",
+    description="An efficient aggregation method for the symbolic representation of temporal data",
     long_description_content_type='text/markdown',
     url="https://github.com/nla-group/fABBA",
     license='BSD 3-Clause'
