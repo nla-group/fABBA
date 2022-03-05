@@ -166,7 +166,7 @@ There are a number of dependencies listed below. Most of these modules, except p
 
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
-Please ensure that these modules are available before running the codes. A `numpy` version newer than 1.19.0 is required.
+Please ensure that these modules are available before running the codes. A `numpy` version newer than 1.19.0 and less than 1.20 is required.
 
 It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/exp/src) use:
 ```
