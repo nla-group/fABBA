@@ -28,8 +28,6 @@ fABBA has the following essential dependencies for its functionality:
 - scipy>=1.2.1
 - requests
 
-To ensure successful Cython compiling, please update your NumPy to the latest version>= 1.22.0.  
-
 To install the current release via PIP use:
 ```
 pip install fABBA
