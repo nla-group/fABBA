@@ -23,12 +23,12 @@ Furthermore, fABBA is fully tolerance-driven and does not require the number of 
 ## :rocket: Install
 fABBA has the following essential dependencies for its functionality:
 
-- cython>=0.29.4
-- numpy>=1.22.0
-- scipy>1.6.0
+- cython
+- numpy
+- scipy>1.2.1
 - requests
 
-To ensure successful Cython compiling, please update your NumPy to the latest version 1.22.0.  
+To ensure successful Cython compiling, please update your NumPy to the latest version>= 1.22.0.  
 
 To install the current release via PIP use:
 ```

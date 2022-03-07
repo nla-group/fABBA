@@ -41,26 +41,38 @@ from inspect import signature, isclass, Parameter
 
 
 
-try:
-    # # %load_ext Cython
-    # !python3 setup.py build_ext --inplace
-    # from .cagg import aggregate
-    from .chainApproximation_c import compress
-    from .fabba_agg_memview import aggregate as aggregate_fabba 
-    # cython with memory view
-    from .aggregation_memview import aggregate as aggregate_fc 
-    # cython with memory view
-    from .inverse_tc import *
-except ModuleNotFoundError:
-    warnings.warn("cython fail.")
-    from .chainApproximation import compress
-    from .fabba_agg import aggregate as aggregate_fabba 
-    from .aggregation import aggregate as aggregate_fc
-    from .inverse_t import *
-    
-  
-  
 
+# # %load_ext Cython
+# !python3 setup.py build_ext --inplace
+# from .cagg import aggregate
+
+try:
+    import numpy, scipy
+    if numpy.__version__ >= '1.22.0':
+        if scipy.__version__ != '1.8.0':
+            from .separate.aggregation_cm import aggregate as aggregate_fc 
+        else:
+            warnings.warn("Part of installation is not using Cython memoryview.")
+            from .separate.aggregation_c import aggregate as aggregate_fc 
+        from .extmod.chainApproximation_c import compress
+        # cython with memory view
+        from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
+        # cython with memory view
+        from .extmod.inverse_tc import *
+    else:
+        from .extmod.chainApproximation_c import *
+        from .separate.aggregation_c import aggregate as aggregate_fc 
+        from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
+        warnings.warn("Installation is not using Cython memoryview.")
+    from extmod.inverse_tc import *
+
+except (ModuleNotFoundError, ValueError):
+    from .chainApproximation import *
+    from .separate.aggregation import *
+    from .inverse_t import *
+    warnings.warn("This installation is not using Cython.")
+
+    
 @dataclass
 class Model:
     """

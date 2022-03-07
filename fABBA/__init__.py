@@ -1,15 +1,20 @@
 try:
-    from . import chainApproximation_c
-    from . import aggregation_memview
-    from . import fabba_agg_memview
-except ModuleNotFoundError:
-    from . import chainApproximation
-    from . import digitization
-    from . import aggregation
+    import numpy, scipy
+    if scipy.__version__ != '1.8.0':
+        from .separate.aggregation_cm import *
+    else:
+        from .separate.aggregation_c import *
+        
+    if numpy.__version__ >= '1.22.0':
+        from .extmod.chainApproximation_cm import *
+    else:
+        from .separate.aggregation_c import *
+        from .extmod.chainApproximation_c import *
+        
+except (ModuleNotFoundError, ValueError):
+    from .chainApproximation import *
+    from .separate.aggregation import *
 
-from . import fabba_agg
-from . import load_datasets
-from . import symbolic_representation
+from .load_datasets import load_images
 from .symbolic_representation import *
-from .chainApproximation import *
 from .digitization import *

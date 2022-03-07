@@ -33,12 +33,20 @@
 import warnings
 
 try:
-    from .fabba_agg_memview import aggregate as aggregate_fabba 
-    from .aggregation_memview import aggregate as aggregate_fc # cython with memory view
-except ModuleNotFoundError:
-    warnings.warn("cython fail.")
+    import numpy, scipy
+    if numpy.__version__ >= '1.22.0':
+        from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
+        if scipy.__version__ != '1.8.0':
+            from .separate.aggregation_cm import aggregate as aggregate_fc # cython with memory view
+        else:
+            from .separate.aggregation_c import aggregate as aggregate_fc # cython with memory view
+    else:
+        from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
+        from .separate.aggregation_c import aggregate as aggregate_fc # cython with memory view
+except (ModuleNotFoundError, ValueError):
+    # warnings.warn("Installation is not using Cython.")
     from .fabba_agg import aggregate as aggregate_fabba 
-    from .aggregation import aggregate as aggregate_fc
+    from .separate.aggregation import aggregate as aggregate_fc
     
 import collections
 import numpy as np

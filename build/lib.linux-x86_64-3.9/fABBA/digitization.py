@@ -33,12 +33,20 @@
 import warnings
 
 try:
-    from .fabba_agg_memview import aggregate as aggregate_fabba 
-    from .aggregation_memview import aggregate as aggregate_fc # cython with memory view
-except ModuleNotFoundError:
-    warnings.warn("cython fail.")
+    import numpy, scipy
+    if numpy.__version__ >= '1.22.0':
+        from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
+        if scipy.__version__ != '1.8.0':
+            from .separate.aggregation_cm import aggregate as aggregate_fc # cython with memory view
+        else:
+            from .separate.aggregation_c import aggregate as aggregate_fc # cython with memory view
+    else:
+        from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
+        from .separate.aggregation_c import aggregate as aggregate_fc # cython with memory view
+except (ModuleNotFoundError, ValueError):
+    # warnings.warn("Installation is not using Cython.")
     from .fabba_agg import aggregate as aggregate_fabba 
-    from .aggregation import aggregate as aggregate_fc
+    from .separate.aggregation import aggregate as aggregate_fc
     
 import collections
 import numpy as np
@@ -51,8 +59,8 @@ class Model:
     centers: np.ndarray # store aggregation centers
     splist: np.ndarray # store start point data
 
-    hashm: dict # labels -> symbols
-    inverse_hashm: dict #  symbols -> labels
+    hashm: dict # labels -> symbols, symbols -> labels
+    
     
     
 def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
@@ -106,10 +114,11 @@ def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
         center = np.mean(pieces[indc,:], axis=0)
         centers = np.r_[ centers, center ]
 
-    string, hashm, inverse_hashm = symbolsAssign(labels)
+    string, hashm = symbolsAssign(labels)
 
-    parameters = Model(centers, np.array(splist), hashm, inverse_hashm)
+    parameters = Model(centers, np.array(splist), hashm)
     return string, parameters
+
 
 
 def inverse_digitize(strings, parameters):
@@ -134,7 +143,7 @@ def inverse_digitize(strings, parameters):
 
     pieces = np.empty([0,2])
     for p in strings:
-        pc = parameters.centers[int(parameters.inverse_hashm[p])]
+        pc = parameters.centers[int(parameters.hashm[p])]
         pieces = np.vstack([pieces, pc])
     return pieces[:,0:2]
 
@@ -150,19 +159,23 @@ def calculate_group_centers(data, labels):
 
 
 def symbolsAssign(clusters):
-    """ automatically assign symbols to different clusters, start with '!'
+    """
+    Automatically assign symbols to different groups, start with '!'
     Parameters
     ----------
     clusters - list or pd.Series or array
-            the list of clusters.
+            the list of labels.
     ----------
     Return:
-
-    symbols(list of string), inverse_hash(dict): repectively for the
-    corresponding symbolic sequence and the hashmap for inverse transform.
-
+    strings(list of string), hashmap(dict): repectively for the
+    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
+    labels to symbols.
     """
-
+    alphabet = ['A','a','B','b','C','c','D','d','E','e',
+                'F','f','G','g','H','h','I','i','J','j',
+                'K','k','L','l','M','m','N','n','O','o',
+                'P','p','Q','q','R','r','S','s','T','t',
+                'U','u','V','v','W','w','X','x','Y','y','Z','z']
     clusters = pd.Series(clusters)
     N = len(clusters.unique())
 
@@ -171,11 +184,13 @@ def symbolsAssign(clusters):
     for ind, el in enumerate(counter.most_common()):
         cluster_sort[ind] = el[0]
 
-    alphabet= [chr(i) for i in range(33,33 + N)]
-    hashm = dict(zip(cluster_sort, alphabet))
-    inverse_hashm = dict(zip(alphabet, cluster_sort))
+    if N >= len(alphabet):
+        alphabet = [chr(i+33) for i in range(0, N)]
+    else:
+        alphabet = alphabet[:N]
+    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
     strings = [hashm[i] for i in clusters]
-    return strings, hashm, inverse_hashm
+    return strings, hashm
 
 
 
@@ -186,6 +201,7 @@ def wcss(data, labels, centers):
         partition = data[labels == i]
         inertia_ = inertia_ + np.sum(np.linalg.norm(partition - c, ord=2, axis=1)**2)
     return inertia_
+
 
 
 def quantize(pieces):
