@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 0.9.2
+Version: 0.9.3
 Summary: An efficient aggregation method for the symbolic representation of temporal data
 Home-page: https://github.com/nla-group/fABBA
 Author: Xinye Chen, Stefan Güttel
@@ -170,15 +170,6 @@ The following example shows how to apply fABBA to image data.
     string = image_compress(fabba, img) # compress image
     inverse_img = image_decompress(fabba, string) # decompress image
 
-
-
-------------------------
-Software contributors
-------------------------
-
-Xinye Chen (<xinye.chen@manchester.ac.uk>)
-
-Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
 
 
 --------
