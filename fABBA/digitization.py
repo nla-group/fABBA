@@ -63,7 +63,7 @@ class Model:
     
     
     
-def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
+def digitize(pieces, alpha=0.5, sorting='norm', scl=1, alphabet_set=0):
     """
     Greedy 2D clustering of pieces (a Nx2 numpy array),
     using tolernce alpha and len/inc scaling parameter scl.
@@ -114,7 +114,7 @@ def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
         center = np.mean(pieces[indc,:], axis=0)
         centers = np.r_[ centers, center ]
 
-    string, hashm = symbolsAssign(labels)
+    string, hashm = symbolsAssign(labels, alphabet_set)
 
     parameters = Model(centers, np.array(splist), hashm)
     return string, parameters
