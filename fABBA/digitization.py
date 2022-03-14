@@ -178,7 +178,7 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'P','p','Q','q','R','r','S','s','T','t',
                     'U','u','V','v','W','w','X','x','Y','y','Z','z']
     
-    elif alphabet_set == 1::
+    elif alphabet_set == 1:
         alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     
