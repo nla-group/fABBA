@@ -168,13 +168,13 @@ Please ensure that these modules are available before running the codes. A `nump
 
 It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/exp/src) use:
 ```
-$ cd exp/src
-$ python3 setup.py build_ext --inplace
+cd exp/src
+python3 setup.py build_ext --inplace
 ```
 or 
 ```
-$ cd exp/src
-$ python setup.py build_ext --inplace
+cd exp/src
+python setup.py build_ext --inplace
 ```
 
 ## :love_letter: Others
@@ -184,10 +184,10 @@ We also provide C++ implementation for fABBA in the folder ["cpp"](https://githu
 Run example:
 
 ```
-$ git clone https://github.com/nla-group/fABBA.git
-$ cd fABBA/cpp
-$ g++ -o test runtime.cpp
-$ ./test
+git clone https://github.com/nla-group/fABBA.git
+cd fABBA/cpp
+g++ -o test runtime.cpp
+./test
 ```
 
 
