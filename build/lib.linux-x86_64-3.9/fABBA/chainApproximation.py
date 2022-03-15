@@ -32,21 +32,29 @@
 
 import numpy as np
 
-def compress(ts, tol=0.5, max_len=np.inf):
+def compress(ts, tol=0.5, max_len=-1):
     """
     Approximate a time series using a continuous piecewise linear function.
 
     Parameters
     ----------
     ts - numpy ndarray
-        Time series as input of numpy array
-
+        Time series as input of numpy array.
+    
+    tol - float
+        The tolerance that controls the accuracy.
+    
+    max_len - int
+        The maximum length that compression restriction.
+        
     Returns
     -------
     pieces - numpy array
         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
     """
-
+    if max_len < 0:
+        max_len = len(ts)
+        
     start = 0
     end = 1
     pieces = list() # np.empty([0, 3])

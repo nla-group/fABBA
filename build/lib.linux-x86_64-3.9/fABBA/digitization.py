@@ -63,7 +63,7 @@ class Model:
     
     
     
-def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
+def digitize(pieces, alpha=0.5, sorting='norm', scl=1, alphabet_set=0):
     """
     Greedy 2D clustering of pieces (a Nx2 numpy array),
     using tolernce alpha and len/inc scaling parameter scl.
@@ -114,7 +114,7 @@ def digitize(pieces, alpha=0.5, sorting='norm', scl=1):
         center = np.mean(pieces[indc,:], axis=0)
         centers = np.r_[ centers, center ]
 
-    string, hashm = symbolsAssign(labels)
+    string, hashm = symbolsAssign(labels, alphabet_set)
 
     parameters = Model(centers, np.array(splist), hashm)
     return string, parameters
@@ -158,24 +158,53 @@ def calculate_group_centers(data, labels):
 
 
 
-def symbolsAssign(clusters):
+def wcss(data, labels, centers):
+    inertia_ = 0
+    for i in np.unique(labels):
+        c = centers[i]
+        partition = data[labels == i]
+        inertia_ = inertia_ + np.sum(np.linalg.norm(partition - c, ord=2, axis=1)**2)
+    return inertia_
+
+
+
+
+
+def symbolsAssign(clusters, alphabet_set=0):
     """
     Automatically assign symbols to different groups, start with '!'
+    
     Parameters
     ----------
     clusters - list or pd.Series or array
-            the list of labels.
+        The list of labels.
+            
+    alphabet_set - int or list
+        The list of alphabet letter.
+        
     ----------
     Return:
     strings(list of string), hashmap(dict): repectively for the
     corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
     labels to symbols.
     """
-    alphabet = ['A','a','B','b','C','c','D','d','E','e',
-                'F','f','G','g','H','h','I','i','J','j',
-                'K','k','L','l','M','m','N','n','O','o',
-                'P','p','Q','q','R','r','S','s','T','t',
-                'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    
+    if alphabet_set == 0:
+        alphabet = ['A','a','B','b','C','c','D','d','E','e',
+                    'F','f','G','g','H','h','I','i','J','j',
+                    'K','k','L','l','M','m','N','n','O','o',
+                    'P','p','Q','q','R','r','S','s','T','t',
+                    'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    
+    elif alphabet_set == 1:
+        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    
+    elif isinstance(alphabet_set, list) and len(alphabet):
+        alphabet = alphabet_set
+       
+    else:
+        raise ValueError('Please specify a legal parameter value for alphabet_set.')
     clusters = pd.Series(clusters)
     N = len(clusters.unique())
 
@@ -192,15 +221,6 @@ def symbolsAssign(clusters):
     strings = [hashm[i] for i in clusters]
     return strings, hashm
 
-
-
-def wcss(data, labels, centers):
-    inertia_ = 0
-    for i in np.unique(labels):
-        c = centers[i]
-        partition = data[labels == i]
-        inertia_ = inertia_ + np.sum(np.linalg.norm(partition - c, ord=2, axis=1)**2)
-    return inertia_
 
 
 

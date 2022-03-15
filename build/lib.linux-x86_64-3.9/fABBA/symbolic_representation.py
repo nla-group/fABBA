@@ -47,28 +47,29 @@ from inspect import signature, isclass, Parameter
 # from .cagg import aggregate
 
 try:
-    import numpy, scipy
-    if numpy.__version__ >= '1.22.0':
+    import scipy
+    try:
         if scipy.__version__ != '1.8.0':
             from .separate.aggregation_cm import aggregate as aggregate_fc 
         else:
-            warnings.warn("Part of installation is not using Cython memoryview.")
             from .separate.aggregation_c import aggregate as aggregate_fc 
-        from .extmod.chainApproximation_c import compress
+            
+        from .extmod.chainApproximation_cm import compress
         # cython with memory view
         from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
-        # cython with memory view
-        from .extmod.inverse_tc import *
-    else:
-        from .extmod.chainApproximation_c import *
+        
+        
+    except ModuleNotFoundError:
+        from .extmod.chainApproximation_c import compress
         from .separate.aggregation_c import aggregate as aggregate_fc 
         from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
         warnings.warn("Installation is not using Cython memoryview.")
-    from extmod.inverse_tc import *
-
+        
+    from .extmod.inverse_tc import *
 except (ModuleNotFoundError, ValueError):
-    from .chainApproximation import *
-    from .separate.aggregation import *
+    from .chainApproximation import compress
+    from .separate.aggregation import aggregate as aggregate_fc 
+    from .fabba_agg import aggregate as aggregate_fabba
     from .inverse_t import *
     warnings.warn("This installation is not using Cython.")
 
@@ -274,9 +275,53 @@ def image_decompress(fabba, strings):
 
 
    
+def _compress(series, tol=0.5, max_len=-1, fillm='bfill'):
+    """
+    Compress time series.
+
+    Parameters
+    ----------
+    series - numpy.ndarray or list
+        Time series of the shape (1, n_samples).
     
+    tol - float
+        The tolerance that controls the accuracy.
+    
+    max_len - int
+        The maximum length that compression restriction.
+        
+    fillm - str, default = 'zero'
+        Fill NA/NaN values using the specified method.
+        'Zero': Fill the holes of series with value of 0.
+        'Mean': Fill the holes of series with mean value.
+        'Median': Fill the holes of series with mean value.
+        'ffill': Forward last valid observation to fill gap.
+            If the first element is nan, then will set it to zero.
+        'bfill': Use next valid observation to fill gap. 
+            If the last element is nan, then will set it to zero.   
+
+    """
+    
+    series = np.array(series).astype(np.float64)
+    if len(series.shape) > 1:
+        series = series.reshape(-1)
+        
+    if np.sum(np.isnan(series)) > 0:
+        series = fillna(series, fillm)
+    
+    return compress(ts=series, tol=tol, max_len=max_len)
+
+
+
+
+def _inverse_compress(pieces, start):
+    pieces = np.array(pieces)[:, :2]
+    return inv_compress(pieces, start)
+
+
+
 class ABBAbase:
-    def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=np.inf):
+    def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=-1):
         """
         This class is designed for other clustering based ABBA
         
@@ -289,7 +334,7 @@ class ABBAbase:
         verbose - int
             Control logs print, default as 1, print logs.
         max_len - int
-            The max length for each segment, default as np.inf. 
+            The max length for each segment, default as -1. 
         
         """
         
@@ -304,7 +349,7 @@ class ABBAbase:
         
         
     
-    def fit_transform(self, series, fillm='bfill'):
+    def fit_transform(self, series, fillm='bfill', alphabet_set=0):
         """ 
         Compress and digitize the time series together.
         
@@ -333,7 +378,7 @@ class ABBAbase:
             series = fillna(series, method=fillm)
         series = np.array(series).astype(np.float64)
         pieces = np.array(self.compress(series))
-        strings, self.parameters = self.digitize(pieces[:,0:2])
+        strings, self.parameters = self.digitize(pieces[:,0:2], alphabet_set)
         self.compression_rate = pieces.shape[0] / series.shape[0]
         self.digitization_rate = self.parameters.centers.shape[0] / pieces.shape[0]
         if self.verbose in [1, 2]:
@@ -403,13 +448,11 @@ class ABBAbase:
         
         """
         
-        if np.sum(np.isnan(series)) > 0:
-            series = fillna(series, fillm)
-        return compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
+        return _compress(series=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len, fillm=fillm)
     
     
     
-    def digitize(self, pieces, early_stopping=True):
+    def digitize(self, pieces, alphabet_set=0):
         """
         Greedy 2D clustering of pieces (a Nx2 numpy array),
         using tolernce tol and len/inc scaling parameter scl.
@@ -440,7 +483,7 @@ class ABBAbase:
             centers = np.r_[ centers, center ]
             
         # self.centers = centers
-        strings, hashm = symbolsAssign(labels)
+        strings, hashm = symbolsAssign(labels, alphabet_set)
         parameters = Model(centers, centers, hashm)
         return strings, parameters
 
@@ -591,21 +634,22 @@ class fabba_model(Aggregation2D, ABBAbase):
     Parameters
     ----------
     tol - float, default=0.1
-        Control tolerence for compression
+        Control tolerence for compression.
     
     alpha - float, default=0.5
-        Control tolerence for digitization        
+        Control tolerence for digitization.        
     
     sorting - str, default='2-norm', {'lexi', '1-norm', '2-norm'}
-        by which the sorting pieces prior to aggregation
+        by which the sorting pieces prior to aggregation.
+        
     scl - int, default=1
-        Scale for length, default as 1, refers to 2d-digitization, otherwise implement 1d-digitization
+        Scale for length, default as 1, refers to 2d-digitization, otherwise implement 1d-digitization.
     
     verbose - int, default=1
-        Verbosity mode, control logs print, default as 1; print logs
+        Verbosity mode, control logs print, default as 1; print logs.
     
-    max_len - int, default=1
-        The max length for each segment, optional choice for compression
+    max_len - int, default=-1
+        The max length for each segment, optional choice for compression.
     
     return_list - boolean, default=True
         Whether to return with list or not, "False" means return string.
@@ -659,7 +703,7 @@ class fabba_model(Aggregation2D, ABBAbase):
     
     def __init__ (self, tol=0.1, alpha=0.5, 
                   sorting='2-norm', scl=1, verbose=1,
-                  max_len=np.inf, return_list=False, n_jobs=1):
+                  max_len=-1, return_list=False, n_jobs=1):
         
         super().__init__()
         self.tol = tol
@@ -696,7 +740,7 @@ class fabba_model(Aggregation2D, ABBAbase):
     
     
     
-    def fit_transform(self, series, fillm='bfill'):
+    def fit_transform(self, series, fillm='bfill', alphabet_set=0):
         """ 
         Compress and digitize the time series together.
         
@@ -717,7 +761,7 @@ class fabba_model(Aggregation2D, ABBAbase):
                 
         Returns
         ----------
-        string (str): The string transformed by fABBA
+        string (str): The string transformed by fABBA.
         """
         
         if np.sum(np.isnan(series)) > 0:
@@ -730,7 +774,7 @@ class fabba_model(Aggregation2D, ABBAbase):
         pieces = self.compress(series)
             
         string, self.parameters = self.digitize(
-            pieces=np.array(pieces)[:,0:2]
+            pieces=np.array(pieces)[:,0:2], alphabet_set=alphabet_set
         )
         
         if self.verbose:
@@ -883,14 +927,13 @@ class fabba_model(Aggregation2D, ABBAbase):
                 If the last element is nan, then will set it to zero.   
         
         """
-        if np.sum(np.isnan(series)) > 0:
-            series = fillna(series, fillm)
-        return compress(ts=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len)
+        
+        return _compress(series=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len, fillm=fillm)
     
     
     
     @_deprecate_positional_args
-    def digitize(self, pieces):
+    def digitize(self, pieces, alphabet_set=0):
         """
         Greedy 2D clustering of pieces (a Nx2 numpy array),
         using tolernce alpha and len/inc scaling parameter scl.
@@ -906,6 +949,9 @@ class fabba_model(Aggregation2D, ABBAbase):
         pieces - numpy.ndarray
             The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression.
             
+        alphabet_set - int or list
+            The list of alphabet letter.
+        
         Returns
         ----------
         string - str or list)
@@ -940,7 +986,7 @@ class fabba_model(Aggregation2D, ABBAbase):
             center = np.mean(pieces[indc,:], axis=0)
             centers = np.r_[ centers, center ]
         
-        string, hashm = symbolsAssign(labels)
+        string, hashm = symbolsAssign(labels, alphabet_set)
         
         parameters = Model(centers, np.array(splist), hashm)
         return string, parameters
@@ -1206,14 +1252,15 @@ class fabba_model(Aggregation2D, ABBAbase):
 
     @max_len.setter
     def max_len(self, value):
-        if value != np.inf:
-            if not isinstance(value, float) and not isinstance(value,int):
-                raise TypeError("Expected a float or int type.")
-        
-        if value <= 0:
-            raise ValueError(
-                "Please feed an correct value for max_len.")
-
+        # if value == np.inf:
+        #     if not isinstance(value, float) and not isinstance(value,int):
+        #         raise TypeError("Expected a float or int type.")
+        # 
+        # if value <= 0:
+        #     raise ValueError(
+        #         "Please feed an correct value for max_len.")
+        if value == np.inf:
+            raise ValueError("Please feed an correct value for max_len.")
         self._max_len = value
 
 
@@ -1289,28 +1336,49 @@ def fillna(series, method='zero'):
 
 
 
-def symbolsAssign(clusters):
+def symbolsAssign(clusters, alphabet_set=0):
     """
     Automatically assign symbols to different groups, start with '!'
-
+    
     Parameters
     ----------
     clusters - list or pd.Series or array
-            the list of labels.
-
+        The list of labels.
+            
+    alphabet_set - int or list
+        The list of alphabet letter.
+        
     ----------
     Return:
-
     strings(list of string), hashmap(dict): repectively for the
     corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
     labels to symbols.
-
     """
-    alphabet = ['A','a','B','b','C','c','D','d','E','e',
-                'F','f','G','g','H','h','I','i','J','j',
-                'K','k','L','l','M','m','N','n','O','o',
-                'P','p','Q','q','R','r','S','s','T','t',
-                'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    
+    if alphabet_set == 0:
+        alphabet = ['A','a','B','b','C','c','D','d','E','e',
+                    'F','f','G','g','H','h','I','i','J','j',
+                    'K','k','L','l','M','m','N','n','O','o',
+                    'P','p','Q','q','R','r','S','s','T','t',
+                    'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    
+    elif alphabet_set == 1:
+        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
+                    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
+                    'w', 'x', 'y', 'z']
+    
+    elif isinstance(alphabet_set, list) and len(alphabet):
+        alphabet = alphabet_set
+       
+    else:
+        alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                    'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
+                    'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+                    'W', 'X', 'Y', 'Z']
+        
     clusters = pd.Series(clusters)
     N = len(clusters.unique())
 

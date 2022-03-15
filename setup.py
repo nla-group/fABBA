@@ -14,11 +14,13 @@ ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError, IOErro
 
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"0.9.3",
+        'version':"0.9.4",
         'setup_requires':["numpy"],
         'cmdclass': {'build_ext': build_ext},
         'install_requires':["cython", "numpy", "scipy>=1.2.1", "requests", "pandas"],
         'package_data':{"fABBA": [
+                                 "extmod/__init__.py",
+                                 "separate/__init__.py", 
                                  "extmod/chainApproximation_c.pyx", 
                                  "extmod/chainApproximation_cm.pyx",
                                  "separate/aggregation_c.pyx", 

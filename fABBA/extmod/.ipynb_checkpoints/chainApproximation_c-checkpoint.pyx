@@ -28,25 +28,25 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Adaptive polygonal chain approximation
-
+import sys
+cimport cython
 import numpy as np
+cimport numpy as np 
+np.import_array()
 
-def compress(ts, tol=0.5, max_len=-1):
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.binding(True)
+
+def compress(np.ndarray[np.float64_t, ndim=1] ts, double tol=0.5, int max_len=-1):
     """
     Approximate a time series using a continuous piecewise linear function.
 
     Parameters
     ----------
     ts - numpy ndarray
-        Time series as input of numpy array.
-    
-    tol - float
-        The tolerance that controls the accuracy.
-    
-    max_len - int
-        The maximum length that compression restriction.
-        
+        Time series as input of numpy array
+
     Returns
     -------
     pieces - numpy array
@@ -55,20 +55,29 @@ def compress(ts, tol=0.5, max_len=-1):
     if max_len < 0:
         max_len = len(ts)
         
-    start = 0
-    end = 1
-    pieces = list() # np.empty([0, 3])
-    x = np.arange(0, len(ts))
-    epsilon =  np.finfo(float).eps
+    cdef int start = 0
+    cdef int end = 1
+    cdef int i, len_t = len(ts)
+    cdef list pieces = list() # np.empty([0, 3])
+    cdef np.ndarray[np.float64_t, ndim=1] x = np.arange(0, len_t, dtype=float)
+    cdef double epsilon =  np.finfo(float).eps
+    
+    cdef double t_st, t_ed
+    cdef double inc, lastinc, err, lasterr
+    
+    while end < len_t:
 
-    while end < len(ts):
-        inc = ts[end] - ts[start]
-        err = ts[start] + (inc/(end-start))*x[0:end-start+1] - ts[start:end+1]
-        err = np.inner(err, err)
-
+        t_st = ts[start]
+        t_ed = ts[end]
+        inc = t_ed - t_st
+        err = 0.0
+        
+        for i in range(end-start+1):
+            err = err + (t_st + (inc/(end-start))*x[0:end-start+1][i] - ts[start:end+1][i])**2
+        
         if (err <= tol*(end-start-1) + epsilon) and (end-start-1 < max_len):
             (lastinc, lasterr) = (inc, err) 
-            end += 1
+            end = end + 1
         else:
             # pieces = np.vstack([pieces, np.array([end-start-1, lastinc, lasterr])])
             pieces.append([end-start-1, lastinc, lasterr])
@@ -76,37 +85,5 @@ def compress(ts, tol=0.5, max_len=-1):
 
     # pieces = np.vstack([pieces, np.array([end-start-1, lastinc, lasterr])])
     pieces.append([end-start-1, lastinc, lasterr])
+
     return pieces
-
-
-def inverse_compress(pieces, start):
-    """
-    Reconstruct time series from its first value `ts0` and its `pieces`.
-    `pieces` must have (at least) two columns, incremenent and window width, resp.
-    A window width w means that the piece ranges from s to s+w.
-    In particular, a window width of 1 is allowed.
-
-    Parameters
-    ----------
-    start - float
-        First element of original time series. Applies vertical shift in
-        reconstruction.
-
-    pieces - numpy array
-        Numpy array with three columns, each row contains increment, length,
-        error for the segment. Only the first two columns are required.
-
-    Returns
-    -------
-    time_series : Reconstructed time series
-    """
-    
-    pieces = np.array(pieces)
-    time_series = [start]
-    # stitch linear piece onto last
-    for j in range(0, len(pieces)):
-        x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
-        y = time_series[-1] + x
-        time_series = time_series + y[1:].tolist()
-
-    return time_series

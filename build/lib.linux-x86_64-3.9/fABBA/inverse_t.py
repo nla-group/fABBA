@@ -11,8 +11,12 @@ def inv_transform(strings, centers, hashm, start=0):
         Time series in symbolic representation using unicode characters starting
         with character 'a'.
         
-    parameters - Model
-        The parameters strored in PABBA model.
+    centers - numpy array
+        Centers of clusters from clustering algorithm. Each center corresponds
+        to character in string.
+
+    hashm - dict
+        Dictionary associated with labels and symbols.
         
     start - float
         First element of original time series. Applies vertical shift in
