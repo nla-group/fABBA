@@ -1294,7 +1294,10 @@ class fabba_model(Aggregation2D, ABBAbase):
         
 
 def fillna(series, method='zero'):
-    """
+    """Fill the NA values
+    
+    Parameters
+    ----------   
     series - numpy.ndarray or list
         Time series of the shape (1, n_samples).
 
