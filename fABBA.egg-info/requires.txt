@@ -1,0 +1,6 @@
+cython
+numpy
+scipy>=1.2.1
+requests
+pandas
+scikit-learn
