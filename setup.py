@@ -1,6 +1,5 @@
 import logging
 import setuptools
-from Cython.Build import cythonize
 from setuptools.command.build_ext import build_ext
 from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatformError
 import numpy
@@ -55,6 +54,7 @@ setup_args = {'name':"fABBA",
     }
 
 try:
+    from Cython.Build import cythonize
     setuptools.setup(
         ext_modules=cythonize(["fABBA/extmod/*.pyx", "fABBA/separate/*.pyx"], include_path=["fABBA"]), **setup_args
     )
@@ -63,4 +63,5 @@ except ext_errors as ext_reason:
     log.warn("The C extension could not be compiled.")
     if 'build_ext' in setup_args['cmdclass']:
         del setup_args['cmdclass']['build_ext']
-    setup(**setup_args)
+    setuptools.setup(**setup_args)
+    
