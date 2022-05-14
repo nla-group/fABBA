@@ -179,8 +179,8 @@ def symbolsAssign(clusters, alphabet_set=0):
     clusters - list or pd.Series or array
         The list of labels.
             
-    alphabet_set - int or list
-        The list of alphabet letter.
+    alphabet_set - int or list, default=0
+        The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.
         
     ----------
     Return:

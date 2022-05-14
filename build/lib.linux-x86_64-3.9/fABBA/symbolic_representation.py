@@ -34,8 +34,9 @@ import logging
 import collections
 import numpy as np
 import pandas as pd
-from dataclasses import dataclass
 from functools import wraps
+from dataclasses import dataclass
+from sklearn.cluster import KMeans
 from inspect import signature, isclass, Parameter
 # warnings.filterwarnings('ignore')
 
@@ -66,6 +67,7 @@ try:
         warnings.warn("Installation is not using Cython memoryview.")
         
     from .extmod.inverse_tc import *
+    
 except (ModuleNotFoundError, ValueError):
     from .chainApproximation import compress
     from .separate.aggregation import aggregate as aggregate_fc 
@@ -197,7 +199,7 @@ def _deprecate_positional_args(func=None, *, version=None):
     Using the keyword-only argument syntax in pep 3102, arguments after the
     * will issue a warning when passed as a positional argument.
     
-    from: https://github.com/scikit-learn/scikit-learn/blob/2beed5584/sklearn/utils/validation.py#L1034
+    Paste from: https://github.com/scikit-learn/scikit-learn/blob/2beed5584/sklearn/utils/validation.py#L1034
     
     Parameters
     ----------
@@ -319,6 +321,12 @@ def _inverse_compress(pieces, start):
     return inv_compress(pieces, start)
 
 
+
+
+
+    
+    
+    
 
 class ABBAbase:
     def __init__ (self, clustering, tol=0.1, scl=1, verbose=1, max_len=-1):
@@ -529,6 +537,52 @@ class ABBAbase:
     #         pieces[-1,0] = round(pieces[-1,0],0)
     #     return pieces
 
+    
+    
+    
+class ABBA(ABBAbase):
+    def __init__ (self, tol=0.1, k=2, scl=1, verbose=1, max_len=-1):
+        kmeans = KMeans(n_clusters=k, random_state=0, init='k-means++', verbose=0)    
+        super().__init__(clustering=kmeans, tol=0.1, scl=scl, verbose=1, max_len=-1)
+        
+    def digitize(self, pieces, alphabet_set=0):
+        """
+        Greedy 2D clustering of pieces (a Nx2 numpy array),
+        using tolernce tol and len/inc scaling parameter scl.
+
+        In this variant, a 'temporary' cluster center is used 
+        when assigning pieces to clusters. This temporary cluster
+        is the first piece available after appropriate scaling 
+        and sorting of all pieces. It is *not* necessarily the 
+        mean of all pieces in that cluster and hence the final
+        cluster centers, which are just the means, might achieve 
+        a smaller within-cluster tol.
+        """
+        pieces = np.array(pieces)[:,:2]
+        _std = np.std(pieces, axis=0) # prevent zero-division
+        if _std[0] == 0:
+             _std[1] = 1
+        if _std[1] == 0:
+             _std[1] = 1
+                
+        npieces = pieces * np.array([self.scl, 1]) / _std
+        
+        # replace aggregation with other clustering
+        self.clustering.fit(np.unique(npieces, axis=0))
+        
+        labels = self.reassign_labels(self.clustering.fit_predict(npieces)) # some labels might be negative
+        centers = np.zeros((0,2))
+        for c in range(len(np.unique(labels))):
+            indc = np.argwhere(labels==c)
+            center = np.mean(pieces[indc,:], axis=0)
+            centers = np.r_[ centers, center ]
+            
+        # self.centers = centers
+        strings, hashm = symbolsAssign(labels, alphabet_set)
+        parameters = Model(centers, centers, hashm)
+        return strings, parameters
+
+    
     
     
 def get_patches(ts, pieces, string, centers, dictionary):
@@ -1294,7 +1348,10 @@ class fabba_model(Aggregation2D, ABBAbase):
         
 
 def fillna(series, method='zero'):
-    """
+    """Fill the NA values
+    
+    Parameters
+    ----------   
     series - numpy.ndarray or list
         Time series of the shape (1, n_samples).
 
