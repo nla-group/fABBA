@@ -665,7 +665,9 @@ def patched_reconstruction(series, pieces, string, centers, dictionary):
     ditionary - dict
          For mapping from symbols to labels or labels to symbols.
     """
-    
+    if type(string) is list:
+        string = "".join(string)
+         
     patches = get_patches(series, pieces, string, centers, dictionary)
     # Construct mean of each patch
     d = {}
