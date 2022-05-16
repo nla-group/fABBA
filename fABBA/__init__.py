@@ -18,4 +18,4 @@ from .symbolic_representation import (image_compress, image_decompress, ABBAbase
                                       symbolsAssign, fillna)
 from .symbolic_representation import _compress as compress
 from .symbolic_representation import _inverse_compress as inverse_compress
-from .digitization import digitize, inverse_digitize, wcss, calculate_group_centers
+from .digitization import digitize, inverse_digitize, quantize, wcss, calculate_group_centers
