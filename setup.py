@@ -16,7 +16,7 @@ setup_args = {'name':"fABBA",
         'version':"0.9.7",
         'setup_requires':["numpy", "cython"],
         'cmdclass': {'build_ext': build_ext},
-        'install_requires':["numpy", "scipy>=1.2.1", "requests", "pandas", "scikit-learn"],
+        'install_requires':["numpy", "scipy>=1.2.1", "requests", "pandas", "scikit-learn", "matplotlib"],
         'package_data':{"fABBA": [
                                  "extmod/__init__.py",
                                  "separate/__init__.py", 
