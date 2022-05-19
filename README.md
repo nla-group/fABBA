@@ -33,7 +33,7 @@ To ensure successful Cython compiling, please update your NumPy to the latest ve
 
 To install the current release via PIP use:
 
-```pip install fABBA```
+```pip install fabba```
 
 
 Download this repository:
