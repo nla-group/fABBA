@@ -11,7 +11,6 @@
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/fABBA.svg)](https://pypi.python.org/pypi/fABBA/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/nla-group/fABBA/HEAD)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6206977.svg)](https://doi.org/10.5281/zenodo.6206977)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 
 :sparkles: fABBA is a fast and accurate symbolic representation method for temporal data. 
