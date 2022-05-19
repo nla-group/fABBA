@@ -28,6 +28,7 @@ fABBA has the following essential dependencies for its functionality:
 - scipy>=1.2.1
 - requests
 - scikit-learn
+- matplotlib
 
 To ensure successful Cython compiling, please update your NumPy to the latest version>= 1.22.0.
 
