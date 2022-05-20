@@ -194,13 +194,6 @@ g++ -o test runtime.cpp
 ```
 
 
-## :email: Software contributors
-
-Xinye Chen (<xinye.chen@manchester.ac.uk>)
-
-Stefan Güttel (<stefan.guettel@manchester.ac.uk>)
-
-
 ## :paperclip: Citation
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
