@@ -5,6 +5,7 @@ API Reference
    :toctree: _autosummary
    :recursive:
 
-   fABBA.ABBAbase
-   fABBA.fabba_model
+   fABBA.symbolic_representation.ABBAbase
+   fABBA.symbolic_representation.ABBA
+   fABBA.symbolic_representation.fabba_model
 
