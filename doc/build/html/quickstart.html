@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Started with fABBA &mdash; fABBA 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Main components" href="compress.html" />
+    <link rel="prev" title="Welcome to fABBA’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fABBA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Get Started with fABBA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-guide">Installation guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="compress.html">Main components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">Extension</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fABBA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Get Started with fABBA</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="get-started-with-fabba">
+<h1>Get Started with fABBA<a class="headerlink" href="#get-started-with-fabba" title="Permalink to this headline"></a></h1>
+<section id="installation-guide">
+<h2>Installation guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline"></a></h2>
+<p>fABBA has the following essential dependencies for its functionality:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>cython</p></li>
+<li><p>numpy</p></li>
+<li><p>scipy&gt;=1.2.1</p></li>
+<li><p>requests</p></li>
+<li><p>scikit-learn</p></li>
+<li><p>matplotlib</p></li>
+</ul>
+</div></blockquote>
+<ol class="upperroman simple">
+<li><p><strong>pip</strong></p></li>
+</ol>
+<p>To install the current release via PIP use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>To check the installation, simply run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">show</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>If you want to uninstall it, you can use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">uninstall</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<ol class="upperroman simple" start="2">
+<li><p><strong>conda</strong></p></li>
+</ol>
+<p>For conda users, to install this package with conda run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>To check the installation, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="nb">list</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>and uninstall it with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">uninstall</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>Installing <cite>fABBA</cite> from the <cite>conda-forge</cite> channel can also be achieved by adding <cite>conda-forge</cite> to your channels with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="nb">set</span> <span class="n">channel_priority</span> <span class="n">strict</span>
+</pre></div>
+</div>
+<p>Once the <cite>conda-forge</cite> channel has been enabled, <cite>fABBA</cite> can be installed with <cite>conda</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>or with <cite>mamba</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="n">fabba</span>
+</pre></div>
+</div>
+<p>It is possible to list all of the versions of <cite>fABBA</cite> available on your platform with <cite>conda</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">search</span> <span class="n">fabba</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+</pre></div>
+</div>
+<p>or with <cite>mamba</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">search</span> <span class="n">fabba</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+</pre></div>
+</div>
+<p>Alternatively, <cite>mamba repoquery</cite> may provide more information:</p>
+<pre class="literal-block"># Search all versions available on your platform:
+mamba repoquery search fabba --channel conda-forge
+
+# List packages depending on <cite>fABBA</cite>:
+mamba repoquery whoneeds fabba --channel conda-forge
+
+# List dependencies of <cite>fABBA</cite>:
+mamba repoquery depends fabba --channel conda-forge</pre>
+<ol class="upperroman simple" start="3">
+<li><p><strong>download</strong></p></li>
+</ol>
+<p>Download this repository via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">nla</span><span class="o">-</span><span class="n">group</span><span class="o">/</span><span class="n">fABBA</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>If you have any instaling issues, please be free to submit your questions in the <a class="reference external" href="https://github.com/nla-group/fABBA/issues">issues</a>.</p>
+</section>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h2>
+<p>The following example approximately transforms a time series into a symbolic string representation (<cite>fit_transform</cite>) and then converts the string back into a numerical format (<cite>inverse_transform</cite>). fABBA essentially requires two parameters <cite>tol</cite> and <cite>alpha</cite>. The tolerance <cite>tol</cite> determines how closely the polygonal chain approximation follows the original time series. The parameter <cite>alpha</cite> controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller <cite>tol</cite> means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. A smaller <cite>alpha</cite> typically results in a larger number of symbols.</p>
+<p>The choice of parameters depends on the application, but in practice, one often just wants the polygonal chain to mimic the key features in time series and not to approximate any noise. In this example the time series is a sine wave and the chosen parameters result in the symbolic representation <cite>BbAaAaAaAaAaAaAaC</cite>. Note how the periodicity in the time series is nicely reflected in repetitions in its string representation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">fABBA</span> <span class="kn">import</span> <span class="n">fabba_model</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.05</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>  <span class="c1"># original time series</span>
+<span class="n">fabba</span> <span class="o">=</span> <span class="n">fabba_model</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sorting</span><span class="o">=</span><span class="s1">&#39;2-norm&#39;</span><span class="p">,</span> <span class="n">scl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">string</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>            <span class="c1"># string representation of the time series</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>                               <span class="c1"># prints BbAaAaAaAaAaAaAaC</span>
+
+<span class="n">inverse_ts</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># numerical time series reconstruction</span>
+</pre></div>
+</div>
+<p>Now you can plot your reconstruction to see how close it is to the raw data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;time series&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;olive&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">inverse_ts</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reconstruction&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/demo.png" src="_images/demo.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to fABBA’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="compress.html" class="btn btn-neutral float-right" title="Main components" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Stefan Güttel, Xinye Chen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
