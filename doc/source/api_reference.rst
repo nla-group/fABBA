@@ -6,6 +6,5 @@ API Reference
    :recursive:
 
    fABBA.ABBAbase
-   fABBA.ABBA
    fABBA.fabba_model
 
