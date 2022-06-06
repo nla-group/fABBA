@@ -683,7 +683,7 @@ def patched_reconstruction(series, pieces, string, centers, dictionary):
 
 
 
-class fabba_model(Aggregation2D, ABBAbase):
+class fABBA(Aggregation2D, ABBAbase):
     """
     fABBA: A fast sorting-based aggregation method for symbolic time series representation
     
