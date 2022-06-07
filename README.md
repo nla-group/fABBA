@@ -80,7 +80,7 @@ plt.show()
 
 #### :star: *Adaptive polygonal chain approximation*
 
-Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
+Instead of using `fit_transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
 ```python
 import numpy as np
