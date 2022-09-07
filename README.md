@@ -184,8 +184,10 @@ python setup.py build_ext --inplace
 
 ## :love_letter: Others
 
-We also provide C++ implementation for fABBA in the folder ["cpp"](https://github.com/nla-group/fABBA/tree/master/cpp), it would be nice to give a shot!
-
+We also provide C++ implementation for fABBA in the repository ["cpp"](https://github.com/nla-group/cabba), it would be nice to give a shot!
+Also for the original draft, the folder[cpp](https://github.com/nla-group/fABBA/tree/master/cpp) maybe a good reference. 
+ 
+ 
 Run example:
 
 ```
