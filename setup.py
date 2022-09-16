@@ -13,10 +13,12 @@ ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError, IOErro
 
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"0.9.7",
-        'setup_requires':["numpy", "cython"],
+        'version':"1.0.6",
+        'setup_requires':["numpy>=1.3.0", "cython"],
         'cmdclass': {'build_ext': build_ext},
-        'install_requires':["numpy", "scipy>=1.2.1", "requests", "pandas", "scikit-learn", "matplotlib"],
+        'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
+                            "requests", "pandas", 
+                            "scikit-learn", "matplotlib"],
         'package_data':{"fABBA": [
                                  "extmod/__init__.py",
                                  "separate/__init__.py", 
@@ -56,7 +58,7 @@ setup_args = {'name':"fABBA",
 try:
     from Cython.Build import cythonize
     setuptools.setup(
-        ext_modules=cythonize(["fABBA/extmod/*.pyx", "fABBA/separate/*.pyx"], include_path=["fABBA"]), **setup_args
+        ext_modules=cythonize(["fABBA/extmod/*.pyx", "fABBA/separate/*.pyx"], include_path=["fABBA/fABBA"]), **setup_args
     )
 except ext_errors as ext_reason:
     log.warn(ext_reason)

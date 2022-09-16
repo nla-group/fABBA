@@ -32,7 +32,7 @@
 
 
 import numpy as np
-from tqdm import tqdm 
+# from tqdm import tqdm 
 from scipy.sparse.linalg import svds
 
 # python implementation for aggregation

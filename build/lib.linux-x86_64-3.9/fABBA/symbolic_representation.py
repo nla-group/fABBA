@@ -665,7 +665,9 @@ def patched_reconstruction(series, pieces, string, centers, dictionary):
     ditionary - dict
          For mapping from symbols to labels or labels to symbols.
     """
-    
+    if type(string) is list:
+        string = "".join(string)
+         
     patches = get_patches(series, pieces, string, centers, dictionary)
     # Construct mean of each patch
     d = {}
@@ -681,7 +683,7 @@ def patched_reconstruction(series, pieces, string, centers, dictionary):
 
 
 
-class fabba_model(Aggregation2D, ABBAbase):
+class fABBA(Aggregation2D, ABBAbase):
     """
     fABBA: A fast sorting-based aggregation method for symbolic time series representation
     

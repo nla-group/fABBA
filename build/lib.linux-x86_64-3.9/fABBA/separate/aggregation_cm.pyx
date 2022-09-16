@@ -80,8 +80,6 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     cdef Py_ssize_t fdim = data.shape[1] # feature dimension
     cdef Py_ssize_t len_ind = data.shape[0] # size of data
     cdef double[:] sort_vals
-    # cdef double[:] s1
-    cdef double[:, :] cdata = np.empty((len_ind, fdim), dtype=np.float64)
     cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
     cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
     cdef Py_ssize_t sp # starting point index
@@ -94,23 +92,16 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     
     
     if sorting == "norm":
-        cdata[...] = data
-        sort_vals = np.linalg.norm(cdata, ord=2, axis=1)
+        sort_vals = np.linalg.norm(data, ord=2, axis=1)
         ind = np.argsort(sort_vals)
 
-    else: # sorting == "pca":
-        # pca = PCA(n_components=1) 
-        # sort_vals = pca.fit_transform(data_memview).reshape(-1)
-        # ind = np.argsort(sort_vals)
-        
-        # change to svd 
-        # cdata = data - data.mean(axis=0) -- already done in the clustering.fit_transform
-        cdata = data - np.mean(data, axis=0)
+    else:
+        data = data - np.mean(data, axis=0)
         if data.shape[1]>1:
-            U1, s1, _ = svds(cdata, k=1, return_singular_vectors="u")
+            U1, s1, _ = svds(data, k=1, return_singular_vectors="u")
             sort_vals = U1[:,0]*s1[0]
         else:
-            sort_vals = cdata[:,0]
+            sort_vals = data[:,0]
         sort_vals = sort_vals*np.sign(-sort_vals[0]) # flip to enforce deterministic output
         ind = np.argsort(sort_vals)
 
@@ -124,7 +115,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
         if labels[sp] >= 0:
             continue
         
-        clustc = cdata[sp,:] 
+        clustc = data[sp,:] 
         labels[sp] = lab
         num_group = 1
             
@@ -139,7 +130,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
             
             dist = 0
             for coord in range(fdim):
-                dist += (clustc[coord] - cdata[j,coord])**2
+                dist += (clustc[coord] - data[j,coord])**2
             # nr_dist += 1
 
             if dist <= tol**2:
