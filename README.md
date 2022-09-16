@@ -55,10 +55,10 @@ The choice of parameters depends on the application, but in practice, one often 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-from fABBA import fabba_model
+from fABBA import fABBA
 
 ts = [np.sin(0.05*i) for i in range(1000)]  # original time series
-fabba = fabba_model(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
+fabba = fABBA(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
 
 string = fabba.fit_transform(ts)            # string representation of the time series
 print(string)                               # prints BbAaAaAaAaAaAaAaC
