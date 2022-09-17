@@ -133,12 +133,12 @@ import matplotlib.pyplot as plt
 from fABBA.load_datasets import load_images
 from fABBA import image_compress
 from fABBA import image_decompress
-from fABBA import fabba_model
+from fABBA import fABBA
 from cv2 import resize
 img_samples = load_images() # load test images
 img = resize(img_samples[0], (100, 100)) # select the first image for test
 
-fabba = fabba_model(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1)
+fabba = fABBA(tol=0.1, alpha=0.01, sorting='2-norm', scl=1, verbose=1)
 string = image_compress(fabba, img)
 inverse_img = image_decompress(fabba, string)
 ```
