@@ -91,7 +91,7 @@ pieces = compress(ts, tol=0.1)               # pieces is a list of the polygonal
 inverse_ts = inverse_compress(pieces, ts[0]) # reconstruct polygonal chain from pieces
 ```
 
-Similarly, the digitization can be implemented after compression step as belows:
+Similarly, the digitization can be implemented after compression step as below:
 
 ```python
 from fABBA import digitize
