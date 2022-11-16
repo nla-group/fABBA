@@ -44,9 +44,9 @@ cimport numpy as np
 from scipy.sparse.linalg import svds
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
 cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float tol=0.5):
     """aggregate the data
@@ -96,7 +96,7 @@ cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float
     else: 
         data = data - np.mean(data, axis=0)
         if data.shape[1]>1:
-            U1, s1, _ = svds(data, k=1, return_singular_vectors="u")
+            U1, s1, _ = svds(data, k=1, return_singular_vectors=True)
             sort_vals = U1[:,0]*s1[0]
         else:
             sort_vals = data[:,0]

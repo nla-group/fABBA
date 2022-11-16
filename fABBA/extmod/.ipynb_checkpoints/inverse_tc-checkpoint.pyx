@@ -3,9 +3,9 @@ import numpy as np
 cimport numpy as np
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
     
 cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):

@@ -45,9 +45,9 @@ from scipy.sparse.linalg import svds
 # from libc.string cimport strcmp
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
 
 cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting, double tol=0.5):

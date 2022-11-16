@@ -50,11 +50,11 @@ from inspect import signature, isclass, Parameter
 try:
     import scipy
     try:
-        if scipy.__version__ != '1.8.0':
+        if scipy.__version__ <= '1.8.0':
             from .separate.aggregation_cm import aggregate as aggregate_fc 
         else:
             from .separate.aggregation_c import aggregate as aggregate_fc 
-            
+        
         from .extmod.chainApproximation_cm import compress
         # cython with memory view
         from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
@@ -65,10 +65,12 @@ try:
         from .separate.aggregation_c import aggregate as aggregate_fc 
         from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
         warnings.warn("Installation is not using Cython memoryview.")
-        
+    
+    
     from .extmod.inverse_tc import *
     
-except (ModuleNotFoundError, ValueError):
+    
+except (ModuleNotFoundError):
     from .chainApproximation import compress
     from .separate.aggregation import aggregate as aggregate_fc 
     from .fabba_agg import aggregate as aggregate_fabba

@@ -1,9 +1,14 @@
 import logging
 import setuptools
-from setuptools.command.build_ext import build_ext
 from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatformError
-import numpy
+from setuptools import Extension
 
+try:
+    from Cython.Distutils import build_ext
+except ImportError as e:
+    warnings.warn(e.args[0])
+    from setuptools.command.build_ext import build_ext
+    
 with open("README.rst", 'r') as f:
     long_description = f.read()
 
@@ -11,27 +16,23 @@ logging.basicConfig()
 log = logging.getLogger(__file__)
 ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError, IOError, SystemExit)
 
+class CustomBuildExtCommand(build_ext):
+    """build_ext command for use when numpy headers are needed."""
+
+    def run(self):
+        import numpy
+        self.include_dirs.append(numpy.get_include())
+        build_ext.run(self)
+        
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"1.0.6",
-        'setup_requires':["numpy>=1.3.0", "cython"],
-        'cmdclass': {'build_ext': build_ext},
+        'version':"1.0.7",
+        'cmdclass': {'build_ext': CustomBuildExtCommand},
         'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
                             "requests", "pandas", 
                             "scikit-learn", "matplotlib"],
-        'package_data':{"fABBA": [
-                                 "extmod/__init__.py",
-                                 "separate/__init__.py", 
-                                 "extmod/chainApproximation_c.pyx", 
-                                 "extmod/chainApproximation_cm.pyx",
-                                 "separate/aggregation_c.pyx", 
-                                 "separate/aggregation_cm.pyx",
-                                 "separate/aggregation.py", 
-                                 "extmod/fabba_agg_c.pyx",
-                                 "extmod/fabba_agg_cm.pyx",
-                                 "extmod/inverse_tc.pyx"],
-                       },
-        'include_dirs':[numpy.get_include()],
+        'packages':{"fABBA", "fABBA.extmod", "fABBA.separate"},
+        # 'include_dirs':[numpy.get_include()],
         'long_description':long_description,
         'author':"Xinye Chen, Stefan Güttel",
         'author_email':"xinye.chen@manchester.ac.uk, stefan.guettel@manchester.ac.uk",
@@ -55,15 +56,52 @@ setup_args = {'name':"fABBA",
         'license':'BSD 3-Clause'
     }
 
+chainApproximation_c = Extension('fABBA.extmod.chainApproximation_c',
+                        sources=['fABBA/extmod/chainApproximation_c.pyx'])
+
+chainApproximation_cm = Extension('fABBA.extmod.chainApproximation_cm',
+                        sources=['fABBA/extmod/chainApproximation_cm.pyx'])
+
+fabba_agg_c = Extension('fABBA.extmod.fabba_agg_c',
+                        sources=['fABBA/extmod/fabba_agg_c.pyx'])
+
+inverse_tc = Extension('fABBA.extmod.inverse_tc',
+                        sources=['fABBA/extmod/inverse_tc.pyx'])
+
+
+fabba_agg_cm = Extension('fABBA.extmod.fabba_agg_cm',
+                        sources=['fABBA/extmod/fabba_agg_cm.pyx'])
+
+aggregation_c = Extension('fABBA.separate.aggregation_c',
+                        sources=['fABBA/separate/aggregation_c.pyx'])
+
+aggregation_cm = Extension('fABBA.separate.aggregation_cm',
+                        sources=['fABBA/separate/aggregation_cm.pyx'])
+
+
+
 try:
     from Cython.Build import cythonize
     setuptools.setup(
-        ext_modules=cythonize(["fABBA/extmod/*.pyx", "fABBA/separate/*.pyx"], include_path=["fABBA/fABBA"]), **setup_args
+        setup_requires=["cython", "numpy>=1.17.3"],
+        # ext_modules=cythonize(["fABBA/extmod/*.pyx", 
+        #                        "fABBA/separate/*.pyx"], 
+        #                      include_path=["fABBA/fABBA"]), 
+        **setup_args,
+        ext_modules=[chainApproximation_c,
+                     chainApproximation_cm,
+                     fabba_agg_c,
+                     fabba_agg_cm,
+                     inverse_tc,
+                     aggregation_c,
+                     aggregation_cm
+                    ],
     )
+    
 except ext_errors as ext_reason:
     log.warn(ext_reason)
     log.warn("The C extension could not be compiled.")
     if 'build_ext' in setup_args['cmdclass']:
         del setup_args['cmdclass']['build_ext']
-    setuptools.setup(**setup_args)
+    setuptools.setup(setup_requires=["numpy>=1.17.3"], **setup_args)
     

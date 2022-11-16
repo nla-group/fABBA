@@ -45,12 +45,12 @@ from scipy.sparse.linalg import svds
 # from libc.string cimport strcmp
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
 
-cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
+cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting, double tol=0.5):
     """aggregate the data
 
     Parameters
@@ -79,16 +79,16 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     """
     
     cdef Py_ssize_t len_ind = data.shape[0] # size of data
-    cdef double[:] sort_vals
+    cdef np.ndarray[np.float64_t, ndim=1] sort_vals
     # cdef double[:] s1
-    cdef double[:, :] cdata = np.empty((len_ind, 2), dtype=np.float64)
-    cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
-    cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
+    cdef np.ndarray[np.float64_t, ndim=2] cdata = np.empty((len_ind, 2), dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=2] U1, _  # = np.empty((len_ind, ), dtype=float)
+    cdef np.ndarray[np.int64_t, ndim=1] ind # = np.empty((len_ind, ), dtype=int)
     cdef Py_ssize_t sp # starting point index
     cdef unsigned int lab=0, num_group # , nr_dist=0
-    cdef double[:] clustc # starting point coordinates
+    cdef np.ndarray[np.float64_t, ndim=1] clustc # starting point coordinates
     cdef double dist
-    cdef long[:] labels = np.full(len_ind, -1, dtype=int) 
+    cdef np.ndarray[np.int64_t, ndim=1] labels = np.full(len_ind, -1, dtype=int) 
     cdef list splist = list() # list of starting points
     cdef Py_ssize_t i, ii, j
     

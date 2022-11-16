@@ -34,9 +34,9 @@ import numpy as np
 cimport numpy as np 
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
 def compress(np.ndarray[np.float64_t, ndim=1] ts, double tol=0.5, int max_len=-1):
     """

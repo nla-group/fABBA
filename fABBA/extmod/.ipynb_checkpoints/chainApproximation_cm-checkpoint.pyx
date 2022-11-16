@@ -33,9 +33,9 @@ import numpy as np
 cimport numpy as np 
 np.import_array()
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.binding(True)
+# @cython.boundscheck(False)
+# @cython.wraparound(False)
+# @cython.binding(True)
 
 def compress(double[:] ts, double tol=0.5, int max_len=-1):
     """
