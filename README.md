@@ -68,8 +68,8 @@ inverse_ts = fabba.inverse_transform(string, ts[0]) # numerical time series reco
 
 Plot the time series and its polygonal chain reconstruction:
 ```python
-plt.plot(ts, label='time series', c='olive')
-plt.plot(inverse_ts, label='reconstruction', c='darkblue')
+plt.plot(ts, label='time series')
+plt.plot(inverse_ts, label='reconstruction')
 plt.legend()
 plt.grid(True, axis='y')
 plt.show()
