@@ -25,7 +25,7 @@ Furthermore, fABBA is fully tolerance-driven and does not require the number of 
 fABBA has the following essential dependencies for its functionality:
 
 - cython
-- numpy
+- numpy>=1.17.3
 - scipy>=1.2.1
 - requests
 - scikit-learn
