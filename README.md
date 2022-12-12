@@ -137,38 +137,12 @@ Built in ``JABBA`` provide parameter of ``init`` for the specification of ABBA m
 jabba = JABBA(tol=0.0005, init='agg', verbose=1)
 symbols = jabba.fit_transform(train)
 reconst = jabba.inverse_transform(symbols)
-
-# we plot the corresponding top 6 time series
-for i in range(6):
-    plt.figure(figsize=(6,4.8))
-    plt.plot(train[i], c='skyblue', linewidth=5,label='time series')
-    plt.plot(reconst[i], c='tomato', linewidth=5, alpha=0.3, 
-            label='reconstruction'
-            )
-    plt.legend(loc='lower right', framealpha=0.45)
-    plt.grid(False) 
-    plt.xticks([]),plt.yticks([])
-    plt.show()
 ```
 
 For the out-of-sample data, use the function ``transform`` to symbolize the test time series, and reconstruct the symbolization via function  ``inverse_transform``, the code illustration is as follows: 
 ``` Python
 test_symbols, start_set = jabba.transform(test)
 test_reconst = jabba.inverse_transform(test_symbols, start_set)
-
-# we plot the corresponding top 6 time series
-plt.rcParams['axes.facecolor'] = 'white'
-for i in range(6):
-    plt.figure(figsize=(6,4.8))
-    plt.plot(test[i], c='skyblue', linewidth=5,label='time series')
-    plt.plot(test_reconst[i], c='tomato', linewidth=5, alpha=0.3, 
-            label='reconstruction'
-            )
-    plt.legend(loc='lower right', framealpha=0.45)
-    plt.grid(False) 
-    plt.xticks([]),plt.yticks([])
-    plt.savefig('img/demo_test'+str(i)+'.pdf', bbox_inches='tight')
-    plt.show()
 ```
 
 
