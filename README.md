@@ -123,7 +123,7 @@ inverse_ts = abba.inverse_transform(string)        # reconstruction
 ```
 
 
-### For multiple time series data transform
+#### :star: For multiple time series data transform
 
 Load ``JABBA`` package and data:
 
@@ -132,7 +132,7 @@ from fABBA impoort JABBA
 train, test = loadData()
 ```
 
-Built in ``JABBA`` provide parameter of ``init`` for the specification of ABBA methods, if set ``agg``, then it will automatically turn to fABBA method, and if set it to ``k-means``, it will turn to ABBA method automatically. Use \texttt{JABBA} object to fit and symbolize the train set via API ``fit_transform``, and reconstruct the time series from the symbolic representation simply by
+Built in ``JABBA`` provide parameter of ``init`` for the specification of ABBA methods, if set ``agg``, then it will automatically turn to fABBA method, and if set it to ``k-means``, it will turn to ABBA method automatically. Use ``JABBA`` object to fit and symbolize the train set via API ``fit_transform``, and reconstruct the time series from the symbolic representation simply by
 ``` Python
 jabba = JABBA(tol=0.0005, init='agg', verbose=1)
 symbols = jabba.fit_transform(train)
