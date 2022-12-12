@@ -26,12 +26,13 @@ class CustomBuildExtCommand(build_ext):
         
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"1.0.7",
+        'version':"1.0.8",
         'cmdclass': {'build_ext': CustomBuildExtCommand},
         'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
                             "requests", "pandas", 
                             "scikit-learn", "matplotlib"],
-        'packages':{"fABBA", "fABBA.extmod", "fABBA.separate"},
+        'packages':{"fABBA", "fABBA.extmod", "fABBA.separate", "fABBA.jabba"},
+        'package_data':{"fABBA": ["jabba/data/*.npy"]},
         # 'include_dirs':[numpy.get_include()],
         'long_description':long_description,
         'author':"Xinye Chen, Stefan Güttel",
@@ -79,6 +80,15 @@ aggregation_cm = Extension('fABBA.separate.aggregation_cm',
                         sources=['fABBA/separate/aggregation_cm.pyx'])
 
 
+compmem_j = Extension('fABBA.jabba.compmem',
+                        sources=['fABBA/jabba/compmem.pyx'])
+
+aggmem_j = Extension('fABBA.jabba.aggmem',
+                        sources=['fABBA/jabba/aggmem.pyx'])
+
+inversetc_j = Extension('fABBA.jabba.inversetc',
+                        sources=['fABBA/jabba/inversetc.pyx'])
+
 
 try:
     from Cython.Build import cythonize
@@ -94,7 +104,10 @@ try:
                      fabba_agg_cm,
                      inverse_tc,
                      aggregation_c,
-                     aggregation_cm
+                     aggregation_cm,
+                     compmem_j,
+                     aggmem_j,
+                     inversetc_j
                     ],
     )
     
