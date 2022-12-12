@@ -128,7 +128,8 @@ inverse_ts = abba.inverse_transform(string)        # reconstruction
 Load ``JABBA`` package and data:
 
 ``` Python
-from fABBA impoort JABBA
+from fABBA import JABBA
+from fABBA import loadData
 train, test = loadData()
 ```
 
