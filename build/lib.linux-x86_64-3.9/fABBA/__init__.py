@@ -11,7 +11,7 @@ except (ModuleNotFoundError, ValueError):
     from .separate.aggregation import aggregate
     
     
-__version__ = '1.0.8'
+__version__ = '1.0.9'
 from .load_datasets import load_images
 from .symbolic_representation import (image_compress, image_decompress, ABBAbase, ABBA,
                                       get_patches, patched_reconstruction, fABBA,
@@ -23,5 +23,6 @@ from .digitization import digitize, inverse_digitize, quantize, wcss, calculate_
 
 from .jabba.jabba import fastABBA, JABBA
 from .jabba import jabba
+from .jabba import preprocessing
 from .jabba.fkmns import sampledKMeansInter as fkmeans
 from .jabba.loadData import *
