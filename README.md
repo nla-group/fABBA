@@ -123,6 +123,55 @@ inverse_ts = abba.inverse_transform(string)        # reconstruction
 ```
 
 
+### For multiple time series data transform
+
+Load ``JABBA`` package and data:
+
+``` Python
+from fABBA impoort JABBA
+train, test = loadData()
+```
+
+Built in ``JABBA`` provide parameter of ``init`` for the specification of ABBA methods, if set ``agg``, then it will automatically turn to fABBA method, and if set it to ``k-means``, it will turn to ABBA method automatically. Use \texttt{JABBA} object to fit and symbolize the train set via API ``fit_transform``, and reconstruct the time series from the symbolic representation simply by
+``` Python
+jabba = JABBA(tol=0.0005, init='agg', verbose=1)
+symbols = jabba.fit_transform(train)
+reconst = jabba.inverse_transform(symbols)
+
+# we plot the corresponding top 6 time series
+for i in range(6):
+    plt.figure(figsize=(6,4.8))
+    plt.plot(train[i], c='skyblue', linewidth=5,label='time series')
+    plt.plot(reconst[i], c='tomato', linewidth=5, alpha=0.3, 
+            label='reconstruction'
+            )
+    plt.legend(loc='lower right', framealpha=0.45)
+    plt.grid(False) 
+    plt.xticks([]),plt.yticks([])
+    plt.show()
+```
+
+For the out-of-sample data, use the function ``transform`` to symbolize the test time series, and reconstruct the symbolization via function  ``inverse_transform``, the code illustration is as follows: 
+``` Python
+test_symbols, start_set = jabba.transform(test)
+test_reconst = jabba.inverse_transform(test_symbols, start_set)
+
+# we plot the corresponding top 6 time series
+plt.rcParams['axes.facecolor'] = 'white'
+for i in range(6):
+    plt.figure(figsize=(6,4.8))
+    plt.plot(test[i], c='skyblue', linewidth=5,label='time series')
+    plt.plot(test_reconst[i], c='tomato', linewidth=5, alpha=0.3, 
+            label='reconstruction'
+            )
+    plt.legend(loc='lower right', framealpha=0.45)
+    plt.grid(False) 
+    plt.xticks([]),plt.yticks([])
+    plt.savefig('img/demo_test'+str(i)+'.pdf', bbox_inches='tight')
+    plt.show()
+```
+
+
 
 #### :star: *Image compression*
 
