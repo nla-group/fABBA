@@ -51,10 +51,13 @@ try:
     import scipy
     try:
         if scipy.__version__ <= '1.8.0':
-            from .separate.aggregation_cm import aggregate as aggregate_fc 
+           try:
+               from .separate.aggregation_cm import aggregate as aggregate_fc 
+           except ImportError:
+               from .separate.aggregation_c import aggregate as aggregate_fc 
         else:
             from .separate.aggregation_c import aggregate as aggregate_fc 
-        
+
         from .extmod.chainApproximation_cm import compress
         # cython with memory view
         from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
