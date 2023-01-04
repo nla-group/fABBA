@@ -1,7 +1,11 @@
 try:
     import scipy
     if scipy.__version__ != '1.8.0':
-        from .separate.aggregation_cm import aggregate
+        try:
+            from .separate.aggregation_cm import aggregate
+        except ImportError:
+            from .separate.aggregation_c import aggregate
+            
     else:
         from .separate.aggregation_c import aggregate
     from .extmod.inverse_tc import *
