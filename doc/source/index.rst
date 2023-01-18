@@ -17,7 +17,7 @@ The `fABBA` software package includes numerous ABBA methods by providing easy-to
 The documentation provides a comprehensive review and guide for the usage of the package `fABBA`. Current documentation is still going, welcome to join our documentation building, please be free to pull request your contribution code!
 
 
-* :ref:`search`
+# * :ref:`search`
 
     
     
