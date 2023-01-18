@@ -1,8 +1,8 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-autodoc_mock_imports = ['matplotlib']
 
+autodoc_mock_imports = ['matplotlib', 'sklearn']
 # -- Project information -----------------------------------------------------
 import sys
 import os
@@ -11,6 +11,7 @@ import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('../..'))
 
+sys.path.insert(0, os.path.abspath('..'))
 project = 'fABBA'
 copyright = '2022, Stefan Güttel, Xinye Chen'
 author = 'Stefan Güttel, Xinye Chen'
@@ -34,6 +35,9 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 exclude_patterns = []
 locale_dirs = ['locale/']
+#autodoc_mock_imports = ["fABBA"]
+
+
 gettext_compact = False
 
 # List of patterns, relative to source directory, that match files and
