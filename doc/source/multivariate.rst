@@ -9,7 +9,7 @@ Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies
 
     import os
     from scipy.io import arff
-    from PABBA import PABBA
+    from fABBA import JABBA
     import matplotlib.pyplot as plt
     import numpy as np
 

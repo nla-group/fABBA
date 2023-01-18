@@ -5,7 +5,7 @@ API Reference
 
 fABBA
 -------
-.. automodule:: fABBA.symbolic_representation.fABBA
+.. autoclass:: fABBA.symbolic_representation.fABBA
    :members:
  
 
@@ -13,7 +13,7 @@ fABBA
 
 ABBAbase
 -------
-.. automodule:: fABBA.symbolic_representation.ABBAbase
+.. autoclass:: fABBA.symbolic_representation.ABBAbase
    :members:
    
 
@@ -22,7 +22,7 @@ ABBAbase
 
 JABBA
 -------
-.. automodule:: fABBA.jabba.jabba.JABBA
+.. autoclass:: fABBA.jabba.jabba.JABBA
    :members:
    
 
