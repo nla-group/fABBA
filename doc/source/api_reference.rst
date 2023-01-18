@@ -37,19 +37,19 @@ compress
 
 inverse_compress
 -------
-.. autoclass:: fABBA.chainApproximation.inverse_compress
+.. autoclass:: fABBA.compress
    :members:
 
    
 digitize
 -------
-.. autoclass:: fABBA.digitization.digitize
+.. autoclass:: fABBA.digitize
    :members:
    
 
 inverse_digitize
 -------
-.. autoclass:: fABBA.digitization.inverse_digitize
+.. autoclass:: fABBA.inverse_digitize
    :members:
 
 
@@ -58,12 +58,12 @@ We can employ image compressing with ``fABBA`` using the convenient API ``image_
 
 image_compress
 -------
-.. autoclass:: fABBA.symbolic_representation.image_compress
+.. autoclass:: fABBA.image_compress
    :members:
 
 
 
 image_decompress
 -------
-.. autoclass:: fABBA.symbolic_representation.image_decompress
+.. autoclass:: fABBA.image_decompress
    :members:
