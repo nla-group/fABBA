@@ -107,29 +107,6 @@ class Aggregation2D:
     sorting - str, default='2-norm', {'lexi', '1-norm', '2-norm'}
         by which the sorting pieces prior to aggregation
     
-    Examples
-    ----------
-    >>> import numpy as np
-    >>> from fABBA.symbolic_representation import Aggregation
-    >>> n = 50
-    >>> x, y = np.random.randn(n), np.random.randn(n)
-    >>> x, y = np.concatenate((x, 10*x - 3*y + 40)), np.concatenate((y, y+2*x + 15))
-    >>> x, y = x/x.std(), y/y.std()
-    >>> data = np.array((x,y)).T
-    
-    >>> agg = Aggregation2D(sorting='2-norm', alpha=0.5)
-    >>> starting_points, labels = agg.aggregate(data)
-    >>> print(starting_points, '\n\n', labels)
-    [[ 3.80000000e+01  0.00000000e+00 -5.00836436e-03 -1.52431497e-02]
-     [ 5.50000000e+01  1.00000000e+00  5.97646389e-01  1.38612117e+00]
-     [ 8.40000000e+01  2.00000000e+00  1.20378129e+00  1.60670214e+00]
-     [ 8.30000000e+01  3.00000000e+00  1.69650349e+00  1.79137570e+00]
-     [ 5.80000000e+01  4.00000000e+00  2.19519185e+00  1.84120254e+00]
-     [ 8.70000000e+01  5.00000000e+00  2.15647902e+00  2.45209898e+00]
-     [ 9.60000000e+01  6.00000000e+00  2.67780176e+00  2.37982342e+00]] 
-     [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-     0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 4 3 1 4 5 4 3 3 3 3 2 2 2 3 3 4 3 4 3 5 1
-     2 4 6 3 3 3 4 3 4 3 2 3 3 5 3 2 4 3 3 3 4 3 6 4 4 1]
     """
     
     def __init__(self, alpha=0.5, sorting='2-norm'):
@@ -736,30 +713,7 @@ class fABBA(Aggregation2D, ABBAbase):
     
 
     
-    Examples
-    ----------
-    >>> import numpy as np
-    >>> from fABBA.symbolic_representation import model
-    
-    >>> np.random.seed(1)
-    >>> N = 100
-    >>> x = np.random.rand(N)
-    
-    >>> fabba = model(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=np.inf, return_list=True) 
-    >>> print(fabba)
-    fABBA(tol=0.1, alpha=0.5, sorting='lexi', scl=1, verbose=1, max_len=inf, return_list=True)
-    >>> string = fabba.fit_transform(x)
-    >>> inverse_ts = fabba.inverse_transform(string, x[0])
-    
-    >>> import matplotlib.pyplot as plt
-    >>> plt.plot(x, label='time series', c='olive')
-    >>> plt.plot(inverse_ts, label='reconstruction', c='darkblue')
-    >>> plt.legend()
-    >>> plt.grid(True)
-    >>> plt.show()
-    
-    * In addition to fit_transform, the compression and digitization functions are 
-    independent applicable to data. 
+    * In addition to fit_transform, the compression and digitization functions are independent applicable to data. 
     """    
     
     def __init__ (self, tol=0.1, alpha=0.5, 
