@@ -2,10 +2,20 @@
 
 Welcome to fABBA's documentation!
 ===================================
-fABBA is a fast and accurate symbolic representation method for temporal data. It is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. The aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions. In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly. Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user.
+ABBA is a fast and accurate symbolic representation method for temporal data. It is based on a polygonal chain approximation of the time series followed by a mean clustering of the polygonal pieces into groups, which are associated with symbols assignment. The fABBA method is a fast variant of ABBA. In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA's digitization process is sped up by sorting the polygonal pieces and exploiting early termination conditions and avoids repeated within-cluster-sum-of-squares computations by using fast aggregation which reduces its computational complexity significantly. Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. A illustration of the ABBA symbolization is given in the below picture. 
 
-The `fABBA` softare package includes numerous ABBA methods by providing easy-to-use and flexible APIs. In practice, users can define their clustering method and apply it to ABBA method easily with `fABBA`.  The documentation is still under going, welcome to join our documentation building, please be free to pull request your contribution code!
+.. image:: images/abba.png
+    :width: 560
+    
+The `fABBA` software package includes numerous ABBA methods by providing easy-to-use and flexible APIs. In practice, users can define their clustering method and apply it to the ABBA method easily with `fABBA`.  `fABBA` not only allows for the symbolization of a single time series (resp., univariate time series) but also allows for the symbolization of multiple time series (resp., multivariate time series) with unified symbols information. 
 
+The documentation provides a comprehensive review and guide for the usage of the package `fABBA`. Current documentation is still going, welcome to join our documentation building, please be free to pull request your contribution code!
+
+
+* :ref:`search`
+
+    
+    
 Guide
 -------------
 
