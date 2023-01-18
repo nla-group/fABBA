@@ -17,9 +17,7 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="License" href="../license.html" />
-    <link rel="prev" title="fABBA.ABBA" href="fABBA.ABBA.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,16 +37,12 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Get Started with fABBA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compress.html">Main components</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extension.html">Extension</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main_comp.html">Main components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate.html">Multivariate time series symbolization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extension.html">Extensible ABBA</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="fABBA.ABBAbase.html">fABBA.ABBAbase</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fABBA.ABBA.html">fABBA.ABBA</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">fABBA.fabba_model</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -69,7 +63,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
       <li>fABBA.fabba_model</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/fABBA.fabba_model.rst.txt" rel="nofollow"> View page source</a>
@@ -82,178 +75,12 @@
              
   <section id="fabba-fabba-model">
 <h1>fABBA.fabba_model<a class="headerlink" href="#fabba-fabba-model" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="fABBA.fabba_model">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">fabba_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2-norm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fABBA/symbolic_representation.html#fabba_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.fabba_model" title="Permalink to this definition"></a></dt>
-<dd><p>fABBA: A fast sorting-based aggregation method for symbolic time series representation</p>
-<dl class="simple">
-<dt>tol - float, default=0.1</dt><dd><p>Control tolerence for compression.</p>
-</dd>
-<dt>alpha - float, default=0.5</dt><dd><p>Control tolerence for digitization.</p>
-</dd>
-<dt>sorting - str, default=’2-norm’, {‘lexi’, ‘1-norm’, ‘2-norm’}</dt><dd><p>by which the sorting pieces prior to aggregation.</p>
-</dd>
-<dt>scl - int, default=1</dt><dd><p>Scale for length, default as 1, refers to 2d-digitization, otherwise implement 1d-digitization.</p>
-</dd>
-<dt>verbose - int, default=1</dt><dd><p>Verbosity mode, control logs print, default as 1; print logs.</p>
-</dd>
-<dt>max_len - int, default=-1</dt><dd><p>The max length for each segment, optional choice for compression.</p>
-</dd>
-<dt>return_list - boolean, default=True</dt><dd><p>Whether to return with list or not, “False” means return string.</p>
-</dd>
-<dt>n_jobs - int, default=-1 </dt><dd><p>The number of threads to use for the computation.
--1 means no parallel computing.</p>
-</dd>
-</dl>
-<dl>
-<dt>parameters - Model</dt><dd><p>Contains the learnable parameters from the in-sample data.</p>
-<p>Attributes:
-* centers - numpy.ndarray</p>
-<blockquote>
-<div><p>the centers calculated for each group formed by aggregation</p>
-</div></blockquote>
-<ul class="simple">
-<li><dl class="simple">
-<dt>splist - numpy.ndarray</dt><dd><p>the starting point for each group formed by aggregation</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>hashmap - dict</dt><dd><p>store the oen to one key-value pair for labels earmarked for the groups
-and the corresponding character</p>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fABBA.symbolic_representation</span> <span class="kn">import</span> <span class="n">model</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fabba</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sorting</span><span class="o">=</span><span class="s1">&#39;lexi&#39;</span><span class="p">,</span> <span class="n">scl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">return_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">fabba</span><span class="p">)</span>
-<span class="go">fABBA(tol=0.1, alpha=0.5, sorting=&#39;lexi&#39;, scl=1, verbose=1, max_len=inf, return_list=True)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">string</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inverse_ts</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;time series&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;olive&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">inverse_ts</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reconstruction&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>In addition to fit_transform, the compression and digitization functions are</p></li>
-</ul>
-<p>independent applicable to data.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="fABBA.fabba_model.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2-norm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fABBA/symbolic_representation.html#fabba_model.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.fabba_model.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>This class is designed for other clustering based ABBA</p>
-<dl class="simple">
-<dt>tol - float</dt><dd><p>Control tolerence for compression, default as 0.1.</p>
-</dd>
-<dt>scl - int</dt><dd><p>Scale for length, default as 1, means 2d-digitization, otherwise implement 1d-digitization.</p>
-</dd>
-<dt>verbose - int</dt><dd><p>Control logs print, default as 1, print logs.</p>
-</dd>
-<dt>max_len - int</dt><dd><p>The max length for each segment, default as -1.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#fABBA.fabba_model.__init__" title="fABBA.fabba_model.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([tol, alpha, sorting, scl, ...])</p></td>
-<td><p>This class is designed for other clustering based ABBA</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate</span></code>(data)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">compress</span></code>(series[, fillm])</p></td>
-<td><p>Compress time series.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">digitize</span></code>(pieces[, alphabet_set])</p></td>
-<td><p>Greedy 2D clustering of pieces (a Nx2 numpy array), using tolernce alpha and len/inc scaling parameter scl.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>([file])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_transform</span></code>(series[, fillm, alphabet_set])</p></td>
-<td><p>Compress and digitize the time series together.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse_transform</span></code>(strings[, start, parameters])</p></td>
-<td><p>Convert ABBA symbolic representation back to numeric time series representation.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>([file, replace])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_parameters</span></code>(cls)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reassign_labels</span></code>(labels)</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">alpha</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_len</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_jobs</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">return_list</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scl</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sorting</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tol</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">verbose</span></code></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fABBA.ABBA.html" class="btn btn-neutral float-left" title="fABBA.ABBA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

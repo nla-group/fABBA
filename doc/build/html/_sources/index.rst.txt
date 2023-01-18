@@ -13,7 +13,8 @@ Guide
    :maxdepth: 2
    
    quickstart
-   compress
+   main_comp
+   multivariate
    extension
 
 API Reference

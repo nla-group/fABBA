@@ -2,7 +2,8 @@
 Main components
 ======================================
 
-In this section, we mainly introduce the main components of transformation inside fABBA. 
+
+In this section, we mainly introduce the main components of transformation of ``fABBA`` for univariate time series. 
 
 Adaptive polygonal chain approximation
 ------------------------------
@@ -20,10 +21,10 @@ Instead of using ``fit_transform`` which combines the polygonal chain approximat
 
 
 
-Symbols digitization
+Symbolic digitization
 ------------------------------
 
-Similarly, the digitization can be implemented after compression step as belows:
+Similarly, the fABBA digitization can be performed after compression step as belows:
 
 
 .. code:: python
@@ -35,3 +36,6 @@ Similarly, the digitization can be implemented after compression step as belows:
 
     inverse_pieces = inverse_digitize(string, parameters)
     inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series reconstruction
+
+
+

@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="fABBA.ABBAbase" href="_autosummary/fABBA.ABBAbase.html" />
+    <link rel="next" title="License" href="license.html" />
     <link rel="prev" title="Extension" href="extension.html" /> 
 </head>
 
@@ -44,9 +44,15 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/fABBA.ABBAbase.html">fABBA.ABBAbase</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/fABBA.ABBA.html">fABBA.ABBA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/fABBA.fabba_model.html">fABBA.fabba_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fabba">fABBA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#abbabase">ABBAbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jabba">JABBA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compress">compress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inverse-compress">inverse_compress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#digitize">digitize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inverse-digitize">inverse_digitize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#image-compress">image_compress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#image-decompress">image_decompress</a></li>
 </ul>
 </li>
 </ul>
@@ -81,23 +87,530 @@
              
   <section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"></a></h1>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/fABBA.ABBAbase.html#fABBA.ABBAbase" title="fABBA.ABBAbase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fABBA.ABBAbase</span></code></a>(clustering[, tol, scl, ...])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/fABBA.ABBA.html#fABBA.ABBA" title="fABBA.ABBA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fABBA.ABBA</span></code></a>([tol, k, scl, verbose, max_len])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/fABBA.fabba_model.html#fABBA.fabba_model" title="fABBA.fabba_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fABBA.fabba_model</span></code></a>([tol, alpha, sorting, ...])</p></td>
-<td><p>fABBA: A fast sorting-based aggregation method for symbolic time series representation</p></td>
-</tr>
-</tbody>
-</table>
+<p><code class="docutils literal notranslate"><span class="pre">fABBA</span></code> is the API of the symbolic representation transformation for univariate time series.</p>
+<section id="fabba">
+<h2>fABBA<a class="headerlink" href="#fabba" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.symbolic_representation.fABBA">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.symbolic_representation.</span></span><span class="sig-name descname"><span class="pre">fABBA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2-norm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#fABBA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.symbolic_representation.fABBA" title="Permalink to this definition"></a></dt>
+<dd><p>fABBA: A fast sorting-based aggregation method for symbolic time series representation</p>
+<dl class="simple">
+<dt>tol - float, default=0.1</dt><dd><p>Control tolerence for compression.</p>
+</dd>
+<dt>alpha - float, default=0.5</dt><dd><p>Control tolerence for digitization.</p>
+</dd>
+<dt>sorting - str, default=’2-norm’, {‘lexi’, ‘1-norm’, ‘2-norm’}</dt><dd><p>by which the sorting pieces prior to aggregation.</p>
+</dd>
+<dt>scl - int, default=1</dt><dd><p>Scale for length, default as 1, refers to 2d-digitization, otherwise implement 1d-digitization.</p>
+</dd>
+<dt>verbose - int, default=1</dt><dd><p>Verbosity mode, control logs print, default as 1; print logs.</p>
+</dd>
+<dt>max_len - int, default=-1</dt><dd><p>The max length for each segment, optional choice for compression.</p>
+</dd>
+<dt>return_list - boolean, default=True</dt><dd><p>Whether to return with list or not, “False” means return string.</p>
+</dd>
+<dt>n_jobs - int, default=-1 </dt><dd><p>The number of threads to use for the computation.
+-1 means no parallel computing.</p>
+</dd>
+</dl>
+<dl>
+<dt>parameters - Model</dt><dd><p>Contains the learnable parameters from the in-sample data.</p>
+<p>Attributes:
+* centers - numpy.ndarray</p>
+<blockquote>
+<div><p>the centers calculated for each group formed by aggregation</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>splist - numpy.ndarray</dt><dd><p>the starting point for each group formed by aggregation</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>hashmap - dict</dt><dd><p>store the oen to one key-value pair for labels earmarked for the groups
+and the corresponding character</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fABBA.symbolic_representation</span> <span class="kn">import</span> <span class="n">model</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fabba</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sorting</span><span class="o">=</span><span class="s1">&#39;lexi&#39;</span><span class="p">,</span> <span class="n">scl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">return_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">fabba</span><span class="p">)</span>
+<span class="go">fABBA(tol=0.1, alpha=0.5, sorting=&#39;lexi&#39;, scl=1, verbose=1, max_len=inf, return_list=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">string</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inverse_ts</span> <span class="o">=</span> <span class="n">fabba</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;time series&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;olive&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">inverse_ts</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reconstruction&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>In addition to fit_transform, the compression and digitization functions are</p></li>
+</ul>
+<p>independent applicable to data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.symbolic_representation.fABBA.compress">
+<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfill'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#fABBA.compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.symbolic_representation.fABBA.compress" title="Permalink to this definition"></a></dt>
+<dd><p>Compress time series.</p>
+<dl>
+<dt>series - numpy.ndarray or list</dt><dd><p>Time series of the shape (1, n_samples).</p>
+</dd>
+<dt>fillm - str, default = ‘zero’</dt><dd><p>Fill NA/NaN values using the specified method.
+‘Zero’: Fill the holes of series with value of 0.
+‘Mean’: Fill the holes of series with mean value.
+‘Median’: Fill the holes of series with mean value.
+‘ffill’: Forward last valid observation to fill gap.</p>
+<blockquote>
+<div><p>If the first element is nan, then will set it to zero.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>‘bfill’: Use next valid observation to fill gap. </dt><dd><p>If the last element is nan, then will set it to zero.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.symbolic_representation.fABBA.digitize">
+<span class="sig-name descname"><span class="pre">digitize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pieces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#fABBA.digitize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.symbolic_representation.fABBA.digitize" title="Permalink to this definition"></a></dt>
+<dd><p>Greedy 2D clustering of pieces (a Nx2 numpy array),
+using tolernce alpha and len/inc scaling parameter scl.
+A ‘temporary’ group center, which we call it starting point,
+is used  when assigning pieces to clusters. This temporary
+cluster is the first piece available after appropriate scaling 
+and sorting of all pieces. After finishing the grouping procedure,
+the centers are calculated the mean value of the objects within 
+the clusters.</p>
+<dl class="simple">
+<dt>pieces - numpy.ndarray</dt><dd><p>The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression.</p>
+</dd>
+<dt>alphabet_set - int or list</dt><dd><p>The list of alphabet letter.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>string - str or list)</dt><dd><p>String sequence.</p>
+</dd>
+<dt>parameters - Model</dt><dd><p>The parameters of model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.symbolic_representation.fABBA.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#fABBA.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.symbolic_representation.fABBA.fit_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Compress and digitize the time series together.</p>
+<dl>
+<dt>series - numpy.ndarray or list</dt><dd><p>Time series of the shape (1, n_samples).</p>
+</dd>
+<dt>fillm - str, default = ‘zero’</dt><dd><p>Fill NA/NaN values using the specified method.
+‘Zero’: Fill the holes of series with value of 0.
+‘Mean’: Fill the holes of series with mean value.
+‘Median’: Fill the holes of series with mean value.
+‘ffill’: Forward last valid observation to fill gap.</p>
+<blockquote>
+<div><p>If the first element is nan, then will set it to zero.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>‘bfill’: Use next valid observation to fill gap. </dt><dd><p>If the last element is nan, then will set it to zero.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>string (str): The string transformed by fABBA.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.symbolic_representation.fABBA.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#fABBA.inverse_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.symbolic_representation.fABBA.inverse_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Convert ABBA symbolic representation back to numeric time series representation.</p>
+<dl class="simple">
+<dt>string - string</dt><dd><p>Time series in symbolic representation using unicode characters starting
+with character ‘a’.</p>
+</dd>
+<dt>start - float</dt><dd><p>First element of original time series. Applies vertical shift in
+reconstruction. If not specified, the default is 0.</p>
+</dd>
+<dt>parameters - Model</dt><dd><p>The parameters of model.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>series - list</dt><dd><p>Reconstruction of the time series.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p><code class="docutils literal notranslate"><span class="pre">ABBA</span></code> is the API of the symbolic representation transformation for univariate time series, which allows for ABBA method with various clustering techniques.</p>
+</section>
+<section id="abbabase">
+<h2>ABBAbase<a class="headerlink" href="#abbabase" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.ABBAbase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">ABBAbase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clustering</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#ABBAbase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.ABBAbase" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="fABBA.ABBAbase.compress">
+<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfill'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#ABBAbase.compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.ABBAbase.compress" title="Permalink to this definition"></a></dt>
+<dd><p>Compress time series.</p>
+<dl>
+<dt>series - numpy.ndarray or list</dt><dd><p>Time series of the shape (1, n_samples).</p>
+</dd>
+<dt>fillm - str, default = ‘zero’</dt><dd><p>Fill NA/NaN values using the specified method.
+‘Zero’: Fill the holes of series with value of 0.
+‘Mean’: Fill the holes of series with mean value.
+‘Median’: Fill the holes of series with mean value.
+‘ffill’: Forward last valid observation to fill gap.</p>
+<blockquote>
+<div><p>If the first element is nan, then will set it to zero.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>‘bfill’: Use next valid observation to fill gap. </dt><dd><p>If the last element is nan, then will set it to zero.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.ABBAbase.digitize">
+<span class="sig-name descname"><span class="pre">digitize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pieces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#ABBAbase.digitize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.ABBAbase.digitize" title="Permalink to this definition"></a></dt>
+<dd><p>Greedy 2D clustering of pieces (a Nx2 numpy array),
+using tolernce tol and len/inc scaling parameter scl.</p>
+<p>In this variant, a ‘temporary’ cluster center is used 
+when assigning pieces to clusters. This temporary cluster
+is the first piece available after appropriate scaling 
+and sorting of all pieces. It is <em>not</em> necessarily the 
+mean of all pieces in that cluster and hence the final
+cluster centers, which are just the means, might achieve 
+a smaller within-cluster tol.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.ABBAbase.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#ABBAbase.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.ABBAbase.fit_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Compress and digitize the time series together.</p>
+<dl>
+<dt>series - array or list</dt><dd><p>Time series.</p>
+</dd>
+<dt>alpha - float</dt><dd><p>Control tolerence for digitization, default as 0.5.</p>
+</dd>
+<dt>string_form - boolean</dt><dd><p>Whether to return with string form, default as True.</p>
+</dd>
+<dt>fillm - str, default = ‘zero’</dt><dd><p>Fill NA/NaN values using the specified method.
+‘Zero’: Fill the holes of series with value of 0.
+‘Mean’: Fill the holes of series with mean value.
+‘Median’: Fill the holes of series with mean value.
+‘ffill’: Forward last valid observation to fill gap.</p>
+<blockquote>
+<div><p>If the first element is nan, then will set it to zero.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>‘bfill’: Use next valid observation to fill gap. </dt><dd><p>If the last element is nan, then will set it to zero.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.ABBAbase.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#ABBAbase.inverse_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.ABBAbase.inverse_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Convert ABBA symbolic representation back to numeric time series representation.</p>
+<dl class="simple">
+<dt>string - string</dt><dd><p>Time series in symbolic representation using unicode characters starting
+with character ‘a’.</p>
+</dd>
+<dt>start - float</dt><dd><p>First element of original time series. Applies vertical shift in
+reconstruction. If not specified, the default is 0.</p>
+</dd>
+<dt>parameters - Model</dt><dd><p>The parameters of model.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>series - list</dt><dd><p>Reconstruction of the time series.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p><code class="docutils literal notranslate"><span class="pre">ABBA</span></code> is the API of the symbolic representation ransformation for multivariate (rep., multiple univariate) time series.</p>
+</section>
+<section id="jabba">
+<h2>JABBA<a class="headerlink" href="#jabba" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.JABBA">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">JABBA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'agg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'norm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2022</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ffill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_digitize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA" title="Permalink to this definition"></a></dt>
+<dd><p>Parallel version of ABBA with fast implementation.</p>
+<dl class="simple">
+<dt>tol - double, default=0.5</dt><dd><p>Tolerance for compression.</p>
+</dd>
+<dt>k - int, default=1</dt><dd><p>The number of clusters (distinct symbols) specified for ABBA.</p>
+</dd>
+<dt>r - float, default=0.5</dt><dd><p>The rate of data sampling to perform k-means.</p>
+</dd>
+<dt>alpha - double, default=0.5 </dt><dd><p>Tolerance for digitization.</p>
+</dd>
+<dt>init - str, default=’agg’</dt><dd><p>The clustering algorithm in digitization. optional: ‘f-kmeans’, ‘kmeans’.</p>
+</dd>
+<dt>sorting - str, default=”norm”.</dt><dd><p>Apply sorting data before aggregation (inside digitization). Alternative option: “pca”.</p>
+</dd>
+<dt>max_len - int</dt><dd><p>The max length of series contained in each compression pieces.</p>
+</dd>
+<dt>max_iter - int, default=2</dt><dd><p>The max iteration for fast k-means algorithm.</p>
+</dd>
+<dt>batch_size - int, default=1024</dt><dd><p>Size of the mini batches for mini-batch kmeans in digitization. For faster compuations, 
+you can set the batch_size greater than 256 * number of cores to enable parallelism on all cores.</p>
+</dd>
+<dt>verbose - int or boolean, default=1</dt><dd><p>Enable verbose output.</p>
+</dd>
+<dt>partition_rate - float or int, default=None</dt><dd><p>This parameter is to get the number of partitions of time series. 
+when this parameter is not None, the partitions will be 
+n_jobs*int(np.round(np.exp(1/self.partition_rate), 0))</p>
+</dd>
+<dt>partition - int:</dt><dd><p>The number of subsequences for time series to be partitioned.</p>
+</dd>
+<dt>scl - int or float, default=1</dt><dd><p>Scale the length of compression pieces. The larger the value is, the more important of the length information is.
+Therefore, it can solve some problem resulted from peak shift.</p>
+</dd>
+<dt>auto_digitize - boolean, default=True</dt><dd><p>Enable auto digitization without prior knowledge of alpha.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>params: dict</dt><dd><p>Parameters of trained model.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.digitize">
+<span class="sig-name descname"><span class="pre">digitize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pieces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.digitize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.digitize" title="Permalink to this definition"></a></dt>
+<dd><p>Digitization</p>
+<dl class="simple">
+<dt>pieces - numpy.ndarray</dt><dd><p>The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression</p>
+</dd>
+<dt>len_ts - int</dt><dd><p>The length of time series.</p>
+</dd>
+<dt>num_pieces - int</dt><dd><p>The number of pieces.</p>
+</dd>
+<dt>init - str</dt><dd><p>Use aggregation, fast-kmeans or kmeans for digitization to get symbols.</p>
+</dd>
+<dt>alphabet_set - int or list, default=0</dt><dd><p>The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.fit" title="Permalink to this definition"></a></dt>
+<dd><p>Fitted the numerical series.</p>
+<dl class="simple">
+<dt>series - numpy.ndarray, 2-dimension or 1-dimension</dt><dd><p>Univariate or multivariate time series</p>
+</dd>
+<dt>n_jobs - int, default=-1</dt><dd><p>The mumber of processors used for parallelism. When n_jobs &lt; 0, use all of available 
+processors the machine allows. Note: For the univariate time series, if n_jobs = 1, 
+PABBA will degenerate to fABBA, but the result may be diferent since PABBA use 
+aggregated groups starting points for reconstruction instead of aggregated groups
+centers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_start_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.fit_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Fitted the numerical series and transform them into symbolic representation.</p>
+<dl class="simple">
+<dt>series - numpy.ndarray, 2-dimension or 1-dimension</dt><dd><p>Univariate or multivariate time series</p>
+</dd>
+<dt>n_jobs - int, default=-1</dt><dd><p>The mumber of processors used for parallelism. When n_jobs &lt; 0, use all of available 
+processors the machine allows. Note: For the univariate time series, if n_jobs = 1, 
+PABBA will degenerate to fABBA, but the result may be diferent since PABBA use 
+aggregated groups starting points for reconstruction instead of aggregated groups
+centers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols_sequences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.inverse_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.inverse_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Reconstruct the symbolic sequences to numerical sequences.</p>
+<dl class="simple">
+<dt>symbols_sequences: list</dt><dd><p>Univariate or multivariate symbolic time series</p>
+</dd>
+<dt>start_set: list</dt><dd><p>starting value for each symbolic time series reconstruction.</p>
+</dd>
+<dt>hstack: boolean, default=False</dt><dd><p>Determine if concate multiple reconstructed time series into a single time series, 
+which will be useful in the parallelism in univariate time series reconstruction.</p>
+</dd>
+<dt>n_jobs: int, default=-1</dt><dd><p>The mumber of processors used for parallelism. When n_jobs &lt; 0, use all of processors 
+the machine allows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.n_jobs_init">
+<span class="sig-name descname"><span class="pre">n_jobs_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.n_jobs_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.n_jobs_init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize parameter n_jobs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.parallel_compress">
+<span class="sig-name descname"><span class="pre">parallel_compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.parallel_compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.parallel_compress" title="Permalink to this definition"></a></dt>
+<dd><p>Compress the numerical series in a parallel manner.</p>
+<dl class="simple">
+<dt>series - numpy.ndarray, 2-dimension or 1-dimension</dt><dd><p>Univariate or multivariate time series</p>
+</dd>
+<dt>n_jobs - int, default=-1</dt><dd><p>The mumber of processors used for parallelism. When n_jobs &lt; 0, use all of available 
+processors the machine allows. Note: For the univariate time series, if n_jobs = 1, 
+PABBA will degenerate to fABBA, but the result may be diferent since PABBA use 
+aggregated groups starting points for reconstruction instead of aggregated groups
+centers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.piece_to_symbol">
+<span class="sig-name descname"><span class="pre">piece_to_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">piece</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.piece_to_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.piece_to_symbol" title="Permalink to this definition"></a></dt>
+<dd><p>Transform a piece to symbol.</p>
+<dl class="simple">
+<dt>piece: numpy.ndarray</dt><dd><p>A piece from compression pieces.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.symbols_separation">
+<span class="sig-name descname"><span class="pre">symbols_separation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pieces</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.symbols_separation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.symbols_separation" title="Permalink to this definition"></a></dt>
+<dd><p>Separate symbols into symbolic subsequence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Transform multiple series (numerical sequences) to symbolic sequences.</p>
+<dl class="simple">
+<dt>series: numpy.ndarray, 2-dimension or 1-dimension</dt><dd><p>Univariate or multivariate time series</p>
+</dd>
+<dt>n_jobs: int, default=-1</dt><dd><p>The mumber of processors used for parallelism. When n_jobs &lt; 0, use all of processors 
+the machine allows.  Note: if n_jobs = 1, PABBA will degenerate to fABBA for transfomation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fABBA.JABBA.transform_single_series">
+<span class="sig-name descname"><span class="pre">transform_single_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/jabba/jabba.html#JABBA.transform_single_series"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.JABBA.transform_single_series" title="Permalink to this definition"></a></dt>
+<dd><p>Transform a single series to symbols.</p>
+<dl class="simple">
+<dt>series: numpy.ndarray, 1-dimension</dt><dd><p>Univariate time series</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>We illustrate some main components of <code class="docutils literal notranslate"><span class="pre">fABBA</span></code> below.</p>
+</section>
+<section id="compress">
+<h2>compress<a class="headerlink" href="#compress" title="Permalink to this headline"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fABBA.compress">
+<span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">compress</span></span><a class="headerlink" href="#fABBA.compress" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">fABBA.symbolic_representation._compress</span></code></p>
+</dd></dl>
+
+</section>
+<section id="inverse-compress">
+<h2>inverse_compress<a class="headerlink" href="#inverse-compress" title="Permalink to this headline"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fABBA.inverse_compress">
+<span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">inverse_compress</span></span><a class="headerlink" href="#fABBA.inverse_compress" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">fABBA.symbolic_representation._inverse_compress</span></code></p>
+</dd></dl>
+
+</section>
+<section id="digitize">
+<h2>digitize<a class="headerlink" href="#digitize" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.digitize">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">digitize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pieces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'norm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabet_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/digitization.html#digitize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.digitize" title="Permalink to this definition"></a></dt>
+<dd><p>Greedy 2D clustering of pieces (a Nx2 numpy array),
+using tolernce alpha and len/inc scaling parameter scl.
+A ‘temporary’ group center, which we call it starting point,
+is used  when assigning pieces to clusters. This temporary
+cluster is the first piece available after appropriate scaling 
+and sorting of all pieces. After finishing the grouping procedure,
+the centers are calculated the mean value of the objects within 
+the clusters</p>
+<dl class="simple">
+<dt>pieces - numpy.ndarray</dt><dd><p>The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>string (str or list)</dt><dd><p>string sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="inverse-digitize">
+<h2>inverse_digitize<a class="headerlink" href="#inverse-digitize" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.inverse_digitize">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">inverse_digitize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/digitization.html#inverse_digitize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.inverse_digitize" title="Permalink to this definition"></a></dt>
+<dd><p>Convert symbolic representation back to compressed representation for reconstruction.</p>
+<dl class="simple">
+<dt>string - string</dt><dd><p>Time series in symbolic representation using unicode characters starting
+with character ‘a’.</p>
+</dd>
+<dt>centers - numpy array</dt><dd><p>centers of clusters from clustering algorithm. Each centre corresponds
+to character in string.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>pieces - np.array</dt><dd><p>Time series in compressed format. See compression.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>We can employ image compressing with <code class="docutils literal notranslate"><span class="pre">fABBA</span></code> using the convenient API <code class="docutils literal notranslate"><span class="pre">image_compress</span></code> and <code class="docutils literal notranslate"><span class="pre">image_decompress</span></code>.</p>
+</section>
+<section id="image-compress">
+<h2>image_compress<a class="headerlink" href="#image-compress" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.image_compress">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">image_compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fabba</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#image_compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.image_compress" title="Permalink to this definition"></a></dt>
+<dd><p>image compression.</p>
+</dd></dl>
+
+</section>
+<section id="image-decompress">
+<h2>image_decompress<a class="headerlink" href="#image-decompress" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fABBA.image_decompress">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">fABBA.</span></span><span class="sig-name descname"><span class="pre">image_decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fabba</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fABBA/symbolic_representation.html#image_decompress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fABBA.image_decompress" title="Permalink to this definition"></a></dt>
+<dd><p>image decompression.</p>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -105,7 +618,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="extension.html" class="btn btn-neutral float-left" title="Extension" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="_autosummary/fABBA.ABBAbase.html" class="btn btn-neutral float-right" title="fABBA.ABBAbase" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

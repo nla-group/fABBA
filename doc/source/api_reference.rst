@@ -1,12 +1,7 @@
 API Reference
 ======================================
 
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
-   
-   fABBA
-
+``fABBA`` is the API of the symbolic representation transformation for univariate time series.
 
 fABBA
 -------
@@ -14,11 +9,16 @@ fABBA
    :members:
  
 
+``ABBA`` is the API of the symbolic representation transformation for univariate time series, which allows for ABBA method with various clustering techniques. 
+
 ABBAbase
 -------
-.. autoclass:: fABBA.symbolic_representation.ABBAbase
+.. autoclass:: fABBA.ABBAbase
    :members:
    
+
+``ABBA`` is the API of the symbolic representation ransformation for multivariate (rep., multiple univariate) time series.
+
 
 JABBA
 -------
@@ -26,4 +26,44 @@ JABBA
    :members:
    
 
+We illustrate some main components of ``fABBA`` below.
  
+
+compress
+-------
+.. autoclass:: fABBA.compress
+   :members:
+   
+
+inverse_compress
+-------
+.. autoclass:: fABBA.inverse_compress
+   :members:
+
+   
+digitize
+-------
+.. autoclass:: fABBA.digitize
+   :members:
+   
+
+inverse_digitize
+-------
+.. autoclass:: fABBA.inverse_digitize
+   :members:
+
+
+We can employ image compressing with ``fABBA`` using the convenient API ``image_compress`` and ``image_decompress``.
+
+
+image_compress
+-------
+.. autoclass:: fABBA.image_compress
+   :members:
+
+
+
+image_decompress
+-------
+.. autoclass:: fABBA.image_decompress
+   :members:

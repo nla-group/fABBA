@@ -1,5 +1,4 @@
-
-Extension
+Extensible ABBA
 ======================================
 
 We also provide other clustering based ABBA methods for extesion, it is easy to use with the support of scikit-learn tools. For users who want to develop their own clustering based ABBA, this tutorial is quite useful, in particular to research comparsion. The user guidance is as follows

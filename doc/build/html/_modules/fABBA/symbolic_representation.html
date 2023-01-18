@@ -124,11 +124,14 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">scipy</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span> <span class="o">!=</span> <span class="s1">&#39;1.8.0&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.separate.aggregation_cm</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
+        <span class="k">if</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;=</span> <span class="s1">&#39;1.8.0&#39;</span><span class="p">:</span>
+           <span class="k">try</span><span class="p">:</span>
+               <span class="kn">from</span> <span class="nn">.separate.aggregation_cm</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
+           <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+               <span class="kn">from</span> <span class="nn">.separate.aggregation_c</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
         <span class="k">else</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.separate.aggregation_c</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
-            
+
         <span class="kn">from</span> <span class="nn">.extmod.chainApproximation_cm</span> <span class="kn">import</span> <span class="n">compress</span>
         <span class="c1"># cython with memory view</span>
         <span class="kn">from</span> <span class="nn">.extmod.fabba_agg_cm</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fabba</span> 
@@ -139,10 +142,12 @@
         <span class="kn">from</span> <span class="nn">.separate.aggregation_c</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
         <span class="kn">from</span> <span class="nn">.extmod.fabba_agg_c</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fabba</span> 
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Installation is not using Cython memoryview.&quot;</span><span class="p">)</span>
-        
+    
+    
     <span class="kn">from</span> <span class="nn">.extmod.inverse_tc</span> <span class="kn">import</span> <span class="o">*</span>
     
-<span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+    
+<span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.chainApproximation</span> <span class="kn">import</span> <span class="n">compress</span>
     <span class="kn">from</span> <span class="nn">.separate.aggregation</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fc</span> 
     <span class="kn">from</span> <span class="nn">.fabba_agg</span> <span class="kn">import</span> <span class="n">aggregate</span> <span class="k">as</span> <span class="n">aggregate_fabba</span>
@@ -402,7 +407,7 @@
     
     
 
-<div class="viewcode-block" id="ABBAbase"><a class="viewcode-back" href="../../_autosummary/fABBA.ABBAbase.html#fABBA.ABBAbase">[docs]</a><span class="k">class</span> <span class="nc">ABBAbase</span><span class="p">:</span>
+<div class="viewcode-block" id="ABBAbase"><a class="viewcode-back" href="../../api_reference.html#fABBA.ABBAbase">[docs]</a><span class="k">class</span> <span class="nc">ABBAbase</span><span class="p">:</span>
 <div class="viewcode-block" id="ABBAbase.__init__"><a class="viewcode-back" href="../../_autosummary/fABBA.ABBAbase.html#fABBA.ABBAbase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clustering</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">scl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class is designed for other clustering based ABBA</span>
@@ -431,7 +436,7 @@
         
         
     
-    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="ABBAbase.fit_transform"><a class="viewcode-back" href="../../api_reference.html#fABBA.ABBAbase.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Compress and digitize the time series together.</span>
 <span class="sd">        </span>
@@ -467,11 +472,11 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Compression: Reduced series of length </span><span class="si">{0}</span><span class="s2"> to </span><span class="si">{1}</span><span class="s2"> segments.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pieces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="sd">&quot;&quot;&quot;Digitization: Reduced {} pieces&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strings</span><span class="p">)),</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;symbols.&quot;</span><span class="p">)</span>  
         <span class="n">strings</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">strings</span>
+        <span class="k">return</span> <span class="n">strings</span></div>
     
     
     
-    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ABBAbase.inverse_transform"><a class="viewcode-back" href="../../api_reference.html#fABBA.ABBAbase.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert ABBA symbolic representation back to numeric time series representation.</span>
 <span class="sd">        </span>
@@ -504,12 +509,12 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please train the model using ``fit_transform`` first.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">series</span> <span class="o">=</span> <span class="n">inv_transform</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">centers</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">hashm</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span> 
-        <span class="k">return</span> <span class="n">series</span>
+        <span class="k">return</span> <span class="n">series</span></div>
 
     
     
     
-    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ABBAbase.compress"><a class="viewcode-back" href="../../api_reference.html#fABBA.ABBAbase.compress">[docs]</a>    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compress time series.</span>
 <span class="sd">        </span>
@@ -530,11 +535,11 @@
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="k">return</span> <span class="n">_compress</span><span class="p">(</span><span class="n">series</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="n">fillm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_compress</span><span class="p">(</span><span class="n">series</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="n">fillm</span><span class="p">)</span></div>
     
     
     
-    <span class="k">def</span> <span class="nf">digitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieces</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="ABBAbase.digitize"><a class="viewcode-back" href="../../api_reference.html#fABBA.ABBAbase.digitize">[docs]</a>    <span class="k">def</span> <span class="nf">digitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieces</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Greedy 2D clustering of pieces (a Nx2 numpy array),</span>
 <span class="sd">        using tolernce tol and len/inc scaling parameter scl.</span>
@@ -567,7 +572,7 @@
         <span class="c1"># self.centers = centers</span>
         <span class="n">strings</span><span class="p">,</span> <span class="n">hashm</span> <span class="o">=</span> <span class="n">symbolsAssign</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">hashm</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">strings</span><span class="p">,</span> <span class="n">parameters</span>
+        <span class="k">return</span> <span class="n">strings</span><span class="p">,</span> <span class="n">parameters</span></div>
 
 
     
@@ -757,7 +762,7 @@
 
 
 
-<div class="viewcode-block" id="fabba_model"><a class="viewcode-back" href="../../_autosummary/fABBA.fabba_model.html#fABBA.fabba_model">[docs]</a><span class="k">class</span> <span class="nc">fabba_model</span><span class="p">(</span><span class="n">Aggregation2D</span><span class="p">,</span> <span class="n">ABBAbase</span><span class="p">):</span>
+<div class="viewcode-block" id="fABBA"><a class="viewcode-back" href="../../api_reference.html#fABBA.fABBA">[docs]</a><span class="k">class</span> <span class="nc">fABBA</span><span class="p">(</span><span class="n">Aggregation2D</span><span class="p">,</span> <span class="n">ABBAbase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    fABBA: A fast sorting-based aggregation method for symbolic time series representation</span>
 <span class="sd">    </span>
@@ -831,7 +836,7 @@
 <span class="sd">    independent applicable to data. </span>
 <span class="sd">    &quot;&quot;&quot;</span>    
     
-<div class="viewcode-block" id="fabba_model.__init__"><a class="viewcode-back" href="../../_autosummary/fABBA.fabba_model.html#fABBA.fabba_model.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> 
+    <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> 
                   <span class="n">sorting</span><span class="o">=</span><span class="s1">&#39;2-norm&#39;</span><span class="p">,</span> <span class="n">scl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                   <span class="n">max_len</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_list</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         
@@ -843,7 +848,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_list</span> <span class="o">=</span> <span class="n">return_list</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span> <span class="c1"># For the moment, we don&#39;t use this parameter.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span> <span class="c1"># For the moment, we don&#39;t use this parameter.</span>
         <span class="c1"># self.compress = compress</span>
 
         
@@ -870,7 +875,7 @@
     
     
     
-    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="fABBA.fit_transform"><a class="viewcode-back" href="../../api_reference.html#fABBA.fABBA.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Compress and digitize the time series together.</span>
 <span class="sd">        </span>
@@ -915,11 +920,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_list</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
             
-        <span class="k">return</span> <span class="n">string</span>
+        <span class="k">return</span> <span class="n">string</span></div>
 
 
 
-    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fABBA.inverse_transform"><a class="viewcode-back" href="../../api_reference.html#fABBA.fABBA.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert ABBA symbolic representation back to numeric time series representation.</span>
 <span class="sd">        </span>
@@ -952,7 +957,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">series</span> <span class="o">=</span> <span class="n">inv_transform</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">centers</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">hashm</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span> 
     
-        <span class="k">return</span> <span class="n">series</span>
+        <span class="k">return</span> <span class="n">series</span></div>
     
     
     
@@ -1037,7 +1042,7 @@
     <span class="c1">#     return np.array(pieces)</span>
 
 
-    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="fABBA.compress"><a class="viewcode-back" href="../../api_reference.html#fABBA.fABBA.compress">[docs]</a>    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compress time series.</span>
 <span class="sd">        </span>
@@ -1058,11 +1063,11 @@
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="k">return</span> <span class="n">_compress</span><span class="p">(</span><span class="n">series</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="n">fillm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_compress</span><span class="p">(</span><span class="n">series</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="n">fillm</span><span class="o">=</span><span class="n">fillm</span><span class="p">)</span></div>
     
     
     
-    <span class="nd">@_deprecate_positional_args</span>
+<div class="viewcode-block" id="fABBA.digitize"><a class="viewcode-back" href="../../api_reference.html#fABBA.fABBA.digitize">[docs]</a>    <span class="nd">@_deprecate_positional_args</span>
     <span class="k">def</span> <span class="nf">digitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieces</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Greedy 2D clustering of pieces (a Nx2 numpy array),</span>
@@ -1119,7 +1124,7 @@
         <span class="n">string</span><span class="p">,</span> <span class="n">hashm</span> <span class="o">=</span> <span class="n">symbolsAssign</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">alphabet_set</span><span class="p">)</span>
         
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">splist</span><span class="p">),</span> <span class="n">hashm</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">string</span><span class="p">,</span> <span class="n">parameters</span>
+        <span class="k">return</span> <span class="n">string</span><span class="p">,</span> <span class="n">parameters</span></div>
 
     
     
