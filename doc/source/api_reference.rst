@@ -10,13 +10,13 @@ API Reference
 
 fABBA
 -------
-.. autoclass:: fABBA.fABBA
+.. autoclass:: fABBA.symbolic_representation.fABBA
    :members:
  
 
 ABBAbase
 -------
-.. autoclass:: fABBA.ABBAbase
+.. autoclass:: fABBA.symbolic_representation.ABBAbase
    :members:
    
 
