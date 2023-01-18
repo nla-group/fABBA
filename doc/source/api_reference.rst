@@ -5,12 +5,25 @@ API Reference
    :toctree: _autosummary
    :recursive:
    
-   fABBA.fABBA
-   fABBA.ABBAbase
-   fABBA.JABBA
-   fABBA.load_datasets
-   fABBA.compress
-   fABBA.inverse_compress
-   fABBA.digitize
-   fABBA.inverse_digitize
-   fABBA.jabba.fkmns
+   fABBA
+
+
+fABBA
+-------
+.. autoclass:: fABBA.fABBA
+   :members:
+ 
+
+ABBAbase
+-------
+.. autoclass:: fABBA.ABBAbase
+   :members:
+   
+
+JABBA
+-------
+.. autoclass:: fABBA.JABBA
+   :members:
+   
+
+ 
