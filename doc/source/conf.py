@@ -2,7 +2,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-autodoc_mock_imports = ['matplotlib', 'sklearn']
+autodoc_mock_imports = ['matplotlib', 'sklearn', 'joblib']
 # -- Project information -----------------------------------------------------
 import sys
 import os
