@@ -244,10 +244,3 @@ If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ## 📝 License
 This project is licensed under the terms of the [BSD-3-Clause](https://github.com/nla-group/fABBA/blob/master/LICENSE).
-
-
-<p align="left">
-  <a>
-    <img alt="CLASSIX" src="https://raw.githubusercontent.com/nla-group/classix/master/docs/_images/nla_group.png" width="240" />
-  </a>
-</p>
