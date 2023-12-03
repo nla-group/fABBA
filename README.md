@@ -9,7 +9,6 @@
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
@@ -21,7 +20,7 @@ In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Know
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## :rocket: Install
-fABBA has the following essential dependencies for its functionality:
+fABBA support Linux, Windows, and MaxOS operating system [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba). fABBA has the following essential dependencies for its functionality:
 
 - cython
 - numpy>=1.17.3
