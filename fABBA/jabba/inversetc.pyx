@@ -8,7 +8,7 @@ np.import_array()
 @cython.binding(True)
 
     
-def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, np.ndarray[str, ndim=1] alphabets, double start=0):
+def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, list alphabets, double start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -22,7 +22,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, np.nda
         centers of clusters from clustering algorithm. Each centre corresponds
         to character in string.
 
-    alphabets - numpy.ndarray
+    alphabets - list
         The alphabet set for symbols reversing.
         
     start - float
@@ -35,7 +35,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, np.nda
         Reconstruction of the time series.
     """
 
-    cdef double[:, :] pieces = inv_digitize(strings, centers, alphabets.tolist())
+    cdef double[:, :] pieces = inv_digitize(strings, centers, alphabets)
 
     pieces = quantize(pieces)
     cdef list time_series = inv_compress(pieces, start)

@@ -8,7 +8,7 @@ np.import_array()
 # @cython.binding(True)
 
     
-cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):
+cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, list alphabets, double start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -22,7 +22,7 @@ cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict 
         Centers of clusters from clustering algorithm. Each center corresponds
         to character in string.
 
-    hashm - dict
+    alphabets - list
         Dictionary associated with labels and symbols.
         
     start - float
@@ -35,7 +35,7 @@ cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict 
         Reconstruction of the time series.
     """
 
-    cdef np.ndarray[np.float64_t, ndim=2] pieces = inv_digitize(strings, centers, hashm)
+    cdef np.ndarray[np.float64_t, ndim=2] pieces = inv_digitize(strings, centers, alphabets)
 
     pieces = quantize(pieces)
     cdef list time_series = inv_compress(pieces, start)
@@ -43,7 +43,7 @@ cpdef inv_transform(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict 
 
 
 
-cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):
+cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, list alphabets):
     """
     Convert symbolic representation back to compressed representation for reconstruction.
 
@@ -57,20 +57,17 @@ cpdef inv_digitize(str strings, np.ndarray[np.float64_t, ndim=2] centers, dict h
         centers of clusters from clustering algorithm. Each centre corresponds
         to character in string.
 
-        
+    alphabets - numpy.ndarray
+        Dictionary associated with labels and symbols.
+
     Returns
     -------
     pieces - np.array
         Time series in compressed format. See compression.
     """
     
-    cdef str p 
-    cdef np.ndarray[np.float64_t, ndim=2] pieces = np.empty([0,2])
-    cdef np.ndarray[np.float64_t, ndim=1] pc
-    
-    for p in strings:
-        pc = centers[int(hashm[p])]
-        pieces = np.vstack([pieces, pc])
+    cdef np.ndarray[np.float64_t, ndim=2] pieces
+    pieces = np.vstack([centers[alphabets.index(p)][:2] for p in strings])
 
     return pieces
 
@@ -83,7 +80,6 @@ cpdef quantize(np.ndarray[np.float64_t, ndim=2] pieces):
     Parameters
     ----------
     pieces: Time series in compressed representation.
-
 
     Returns
     -------
@@ -118,13 +114,13 @@ cpdef inv_compress(np.ndarray[np.float64_t, ndim=2] pieces, double start):
 
     Parameters
     ----------
-    start - float
-        First element of original time series. Applies vertical shift in
-        reconstruction.
-
     pieces - numpy array
         Numpy array with three columns, each row contains increment, length,
         error for the segment. Only the first two columns are required.
+
+    start - float
+        First element of original time series. Applies vertical shift in
+        reconstruction.
 
     Returns
     -------
