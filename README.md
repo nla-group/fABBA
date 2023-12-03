@@ -21,6 +21,7 @@ Furthermore, fABBA is fully tolerance-driven and does not require the number of 
 
 ## :rocket: Install
 fABBA support Linux, Windows, and MaxOS operating system [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba). 
+
 fABBA has the following essential dependencies for its functionality:
 
 - cython
