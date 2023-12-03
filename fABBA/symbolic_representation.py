@@ -1390,30 +1390,32 @@ def symbolsAssign(clusters, alphabet_set=0):
         
     ----------
     Return:
-    string(list of string), alphabetsap(dict): repectively for the
-    corresponding symbolic sequence and the alphabetsap for mapping from symbols to labels or 
-    labels to symbols.
+
+    string (list of string), alphabets(numpy.ndarray): for the
+    corresponding symbolic sequence and for mapping from symbols to labels or 
+    labels to symbols, repectively.
+
     """
     
     if alphabet_set == 0:
-        alphabet = ['A','a','B','b','C','c','D','d','E','e',
+        alphabets = ['A','a','B','b','C','c','D','d','E','e',
                     'F','f','G','g','H','h','I','i','J','j',
                     'K','k','L','l','M','m','N','n','O','o',
                     'P','p','Q','q','R','r','S','s','T','t',
                     'U','u','V','v','W','w','X','x','Y','y','Z','z']
     
     elif alphabet_set == 1:
-        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+        alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
                     'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
     
-    elif isinstance(alphabet_set, list) and len(alphabet):
-        alphabet = alphabet_set
+    elif isinstance(alphabet_set, list) and len(alphabets):
+        alphabets = alphabet_set
        
     else:
-        alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+        alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
                     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
                     'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
                     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
@@ -1427,11 +1429,12 @@ def symbolsAssign(clusters, alphabet_set=0):
     for ind, el in enumerate(counter.most_common()):
         cluster_sort[ind] = el[0]
 
-    if N >= len(alphabet):
-        alphabet = [chr(i+33) for i in range(0, N)]
+    if N >= len(alphabets):
+        alphabets = [chr(i+33) for i in range(0, N)]
     else:
-        alphabet = alphabet[:N]
+        alphabets = alphabets[:N]
 
-    alphabets = np.asarray(alphabet)
+    alphabets = np.asarray(alphabets)
     string = alphabets[clusters]
     return string, alphabets
+
