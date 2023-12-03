@@ -10,9 +10,13 @@ def inv_transform(strings, centers, alphabets, start=0):
     string - string
         Time series in symbolic representation using unicode characters starting
         with character 'a'.
-        
-    parameters - Model
-        The parameters strored in PABBA model.
+
+    centers - numpy array
+        centers of clusters from clustering algorithm. Each centre corresponds
+        to character in string.
+
+    alphabets - numpy.ndarray
+        The alphabet set for symbols reversing.
         
     start - float
         First element of original time series. Applies vertical shift in
@@ -46,6 +50,8 @@ def inv_digitize(strings, centers, alphabets):
         centers of clusters from clustering algorithm. Each centre corresponds
         to character in string.
 
+    alphabets - numpy.ndarray
+        The alphabet set for symbols reversing.
         
     Returns
     -------
