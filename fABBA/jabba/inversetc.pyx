@@ -115,13 +115,13 @@ cpdef inv_compress(double[:, :] pieces, double start):
 
     Parameters
     ----------
-    start - float
-        First element of original time series. Applies vertical shift in
-        reconstruction.
-
     pieces - numpy array
         Numpy array with three columns, each row contains increment, length,
         error for the segment. Only the first two columns are required.
+
+    start - float
+        First element of original time series. Applies vertical shift in
+        reconstruction.
 
     Returns
     -------
