@@ -40,7 +40,7 @@ def symbolsAssign(clusters, alphabet_set=0):
         
     ----------
     Return:
-
+    
     string (list of string), alphabets(numpy.ndarray): for the
     corresponding symbolic sequence and for mapping from symbols to labels or 
     labels to symbols, repectively.
