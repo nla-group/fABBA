@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def inv_transform(strings, centers, hashm, start=0):
+def inv_transform(strings, centers, alphabets, start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -24,7 +24,7 @@ def inv_transform(strings, centers, hashm, start=0):
         Reconstruction of the time series.
     """
 
-    pieces = inv_digitize(strings, centers, hashm)
+    pieces = inv_digitize(strings, centers, alphabets.tolist())
 
     pieces = quantize(pieces)
     time_series = inv_compress(pieces, start)
@@ -32,7 +32,7 @@ def inv_transform(strings, centers, hashm, start=0):
 
 
 
-def inv_digitize(strings, centers, hashm):
+def inv_digitize(strings, centers, alphabets):
     """
     Convert symbolic representation back to compressed representation for reconstruction.
 
@@ -52,14 +52,7 @@ def inv_digitize(strings, centers, hashm):
     pieces - np.array
         Time series in compressed format. See compression.
     """
-
-    pieces = np.empty([0,2])
-
-    for p in strings:
-        pc = centers[int(hashm[p])]
-        pieces = np.vstack([pieces, pc[:2]])
-
-    return pieces
+    return np.vstack([centers[alphabets.index(p)][:2] for p in strings])
 
 
 

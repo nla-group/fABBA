@@ -1,15 +1,10 @@
 try:
-    import scipy
-    if scipy.__version__ != '1.8.0':
-        try:
-            from .separate.aggregation_cm import aggregate
-        except ImportError:
-            from .separate.aggregation_c import aggregate
-            
-    else:
+    try:
+        from .separate.aggregation_cm import aggregate
+    except:
         from .separate.aggregation_c import aggregate
-    from .extmod.inverse_tc import *
     
+    from .extmod.inverse_tc import *
     
 except (ModuleNotFoundError, ValueError):
     from .separate.aggregation import aggregate

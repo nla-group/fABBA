@@ -8,7 +8,7 @@ np.import_array()
 @cython.binding(True)
 
     
-def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm, double start=0):
+def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, np.ndarray[str, ndim=1] alphabets, double start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -31,7 +31,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict h
         Reconstruction of the time series.
     """
 
-    cdef double[:, :] pieces = inv_digitize(strings, centers, hashm)
+    cdef double[:, :] pieces = inv_digitize(strings, centers, alphabets.tolist())
 
     pieces = quantize(pieces)
     cdef list time_series = inv_compress(pieces, start)
@@ -39,7 +39,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict h
 
 
 
-cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict hashm):
+cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, list alphabets):
     """
     Convert symbolic representation back to compressed representation for reconstruction.
 
@@ -60,13 +60,8 @@ cpdef inv_digitize(list strings, np.ndarray[np.float64_t, ndim=2] centers, dict 
         Time series in compressed format. See compression.
     """
     
-    cdef str p 
-    cdef np.ndarray[np.float64_t, ndim=2] pieces = np.empty([0,2])
-    cdef np.ndarray[np.float64_t, ndim=1] pc
-    
-    for p in strings:
-        pc = centers[int(hashm[p])]
-        pieces = np.vstack([pieces, pc[:2]])
+    cdef np.ndarray[np.float64_t, ndim=2] pieces
+    pieces = np.vstack([centers[alphabets.index(p)][:2] for p in strings])
 
     return memoryview(pieces)
 

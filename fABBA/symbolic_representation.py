@@ -1,32 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# Copyright (c) 2021, 
+# Authors: Stefan Güttel, Xinye Chen
 
-'''
-Copyright (c) 2021, Stefan Güttel, Xinye Chen
-All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+# All rights reserved.
 
-import os
+
 import copy
 import pickle
 import warnings
@@ -37,29 +14,12 @@ import pandas as pd
 from functools import wraps
 from dataclasses import dataclass
 from sklearn.cluster import KMeans
-from inspect import signature, isclass, Parameter
-# warnings.filterwarnings('ignore')
-
-
-
-
-# # %load_ext Cython
-# !python3 setup.py build_ext --inplace
-# from .cagg import aggregate
+from inspect import signature, Parameter
 
 try:
-    import scipy
-    try:
-        if scipy.__version__ <= '1.8.0':
-           try:
-               from .separate.aggregation_cm import aggregate as aggregate_fc 
-           except ImportError:
-               from .separate.aggregation_c import aggregate as aggregate_fc 
-        else:
-            from .separate.aggregation_c import aggregate as aggregate_fc 
-
+    try:# cython with memory view
+        from .separate.aggregation_cm import aggregate as aggregate_fc 
         from .extmod.chainApproximation_cm import compress
-        # cython with memory view
         from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
         
         
@@ -67,8 +27,7 @@ try:
         from .extmod.chainApproximation_c import compress
         from .separate.aggregation_c import aggregate as aggregate_fc 
         from .extmod.fabba_agg_c import aggregate as aggregate_fabba 
-        warnings.warn("Installation is not using Cython memoryview.")
-    
+        warnings.warn("Installation is not using Cython typed memoryviews.")
     
     from .extmod.inverse_tc import *
     
@@ -80,7 +39,14 @@ except (ModuleNotFoundError):
     from .inverse_t import *
     warnings.warn("This installation is not using Cython.")
 
-    
+
+
+class NotFittedError(ValueError, AttributeError):
+    """Exception class to raise if estimator is used before fitting.
+    """
+
+
+
 @dataclass
 class Model:
     """
@@ -90,7 +56,7 @@ class Model:
     splist: np.ndarray # store start point data
     
     """ dictionary """
-    hashm: dict # labels -> symbols, symbols -> labels
+    alphabets: np.ndarray # labels -> symbols, symbols -> labels
 
 
 
@@ -238,20 +204,20 @@ def image_compress(fabba, data, adjust=True):
         if _std == 0:
             _std = 1
         ts = (ts - _mean) / _std
-        strings = fabba.fit_transform(ts)
+        string = fabba.fit_transform(ts)
         fabba.img_norm = (_mean, _std)
     else:
         fabba.img_norm = None
-        strings = fabba.fit_transform(ts)
+        string = fabba.fit_transform(ts)
     fabba.img_start = ts[0]
     fabba.img_shape = data.shape
-    return strings
+    return string
 
 
 
-def image_decompress(fabba, strings):
+def image_decompress(fabba, string):
     """ image decompression. """
-    reconstruction = np.array(fabba.inverse_transform(strings, start=fabba.img_start))
+    reconstruction = np.array(fabba.inverse_transform(string, start=fabba.img_start))
     if fabba.img_norm != None:
         reconstruction = reconstruction*fabba.img_norm[1] + fabba.img_norm[0]
     reconstruction = reconstruction.round().reshape(fabba.img_shape).astype(np.uint8)
@@ -338,7 +304,46 @@ class ABBAbase:
         self.clustering = clustering
         
         
+    def fit(self, series, fillm='bfill', alphabet_set=0):
+        """ 
+        Compress and digitize the time series together.
+        
+        Parameters
+        ----------
+        series - array or list
+            Time series.
+            
+        alpha - float
+            Control tolerence for digitization, default as 0.5.
+            
+        string_form - boolean
+            Whether to return with string form, default as True.
+            
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero.   
+        """
+
+        if np.sum(np.isnan(series)) > 0:
+            series = fillna(series, method=fillm)
+        series = np.array(series).astype(np.float64)
+        pieces = np.array(self.compress(series))
+        self.string_, self.parameters = self.digitize(pieces[:,0:2], alphabet_set)
+        self.compression_rate = pieces.shape[0] / series.shape[0]
+        self.digitization_rate = self.parameters.centers.shape[0] / pieces.shape[0]
+        if self.verbose in [1, 2]:
+            print("""Compression: Reduced series of length {0} to {1} segments.""".format(series.shape[0], pieces.shape[0]),
+                """Digitization: Reduced {} pieces""".format(len(self.string_)), "to", self.parameters.centers.shape[0], "symbols.")  
+        self.string_ = ''.join(self.string_)
+        return self
     
+
     def fit_transform(self, series, fillm='bfill', alphabet_set=0):
         """ 
         Compress and digitize the time series together.
@@ -364,22 +369,12 @@ class ABBAbase:
             'bfill': Use next valid observation to fill gap. 
                 If the last element is nan, then will set it to zero.   
         """
-        if np.sum(np.isnan(series)) > 0:
-            series = fillna(series, method=fillm)
-        series = np.array(series).astype(np.float64)
-        pieces = np.array(self.compress(series))
-        strings, self.parameters = self.digitize(pieces[:,0:2], alphabet_set)
-        self.compression_rate = pieces.shape[0] / series.shape[0]
-        self.digitization_rate = self.parameters.centers.shape[0] / pieces.shape[0]
-        if self.verbose in [1, 2]:
-            print("""Compression: Reduced series of length {0} to {1} segments.""".format(series.shape[0], pieces.shape[0]),
-                """Digitization: Reduced {} pieces""".format(len(strings)), "to", self.parameters.centers.shape[0], "symbols.")  
-        strings = ''.join(strings)
-        return strings
+        
+        return self.fit(series, fillm, alphabet_set).string_
     
     
     
-    def inverse_transform(self, strings, start=0, parameters=None):
+    def inverse_transform(self, string, start=0, parameters=None):
         """
         Convert ABBA symbolic representation back to numeric time series representation.
         
@@ -402,16 +397,16 @@ class ABBAbase:
         series - list
             Reconstruction of the time series.
         """
-        if type(strings) != str:
-            strings = "".join(strings)
+        if type(string) != str:
+            string = "".join(string)
             
         if parameters is None:
             try:
-                series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+                series = inv_transform(string, self.parameters.centers, self.parameters.alphabets, start) 
             except:
-                raise ValueError("Please train the model using ``fit_transform`` first.")
+                raise NotFittedError("Please train the model using ``fit_transform`` first.")
         else:
-            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
+            series = inv_transform(string, parameters.centers, parameters.alphabets, start) 
         return series
 
     
@@ -473,9 +468,9 @@ class ABBAbase:
             centers = np.r_[ centers, center ]
             
         # self.centers = centers
-        strings, hashm = symbolsAssign(labels, alphabet_set)
-        parameters = Model(centers, centers, hashm)
-        return strings, parameters
+        string, alphabets = symbolsAssign(labels, alphabet_set)
+        parameters = Model(centers, centers, alphabets)
+        return string, parameters
 
 
     
@@ -490,17 +485,17 @@ class ABBAbase:
     
     
     
-    # def inverse_transform(self, strings, start=0):
-    #     pieces = self.inverse_digitize(strings, self.parameters.centers, self.parameters.hashm)
+    # def inverse_transform(self, string, start=0):
+    #     pieces = self.inverse_digitize(string, self.parameters.centers, self.parameters.alphabets)
     #     pieces = self.quantize(pieces)
     #     series = self.inverse_compress(pieces, start)
     #     return series
     # 
     # 
-    # def inverse_digitize(self, strings, centers, hashmap):
+    # def inverse_digitize(self, string, centers, alphabetsap):
     #     pieces = np.empty([0,2])
-    #     for p in strings:
-    #         pc = centers[int(hashmap[p])]
+    #     for p in string:
+    #         pc = centers[int(alphabetsap[p])]
     #         pieces = np.vstack([pieces, pc])
     #     return pieces[:,0:2]
     # 
@@ -525,7 +520,7 @@ class ABBAbase:
 class ABBA(ABBAbase):
     def __init__ (self, tol=0.1, k=2, scl=1, verbose=1, max_len=-1):
         kmeans = KMeans(n_clusters=k, random_state=0, init='k-means++', verbose=0)    
-        super().__init__(clustering=kmeans, tol=0.1, scl=scl, verbose=1, max_len=-1)
+        super().__init__(clustering=kmeans, tol=tol, scl=scl, verbose=verbose, max_len=max_len)
         
     def digitize(self, pieces, alphabet_set=0):
         """
@@ -560,9 +555,9 @@ class ABBA(ABBAbase):
             centers = np.r_[ centers, center ]
             
         # self.centers = centers
-        strings, hashm = symbolsAssign(labels, alphabet_set)
-        parameters = Model(centers, centers, hashm)
-        return strings, parameters
+        string, alphbets = symbolsAssign(labels, alphabet_set)
+        parameters = Model(centers, centers, alphbets)
+        return string, parameters
 
     
     
@@ -707,10 +702,12 @@ class fABBA(Aggregation2D, ABBAbase):
             the centers calculated for each group formed by aggregation
         * splist - numpy.ndarray
             the starting point for each group formed by aggregation
-        * hashmap - dict
+        * alphabetsap - dict
             store the oen to one key-value pair for labels earmarked for the groups
             and the corresponding character
     
+    string_ - str or list
+        Contains the ABBA representation.
 
     
     * In addition to fit_transform, the compression and digitization functions are independent applicable to data. 
@@ -754,8 +751,7 @@ class fABBA(Aggregation2D, ABBAbase):
         return "%s(%r)" % ("fABBA", parameters_dict)
     
     
-    
-    def fit_transform(self, series, fillm='bfill', alphabet_set=0):
+    def fit(self, series, fillm='bfill', alphabet_set=0):
         """ 
         Compress and digitize the time series together.
         
@@ -788,23 +784,49 @@ class fABBA(Aggregation2D, ABBAbase):
         #     # pieces = self.compress(ts=series)
         pieces = self.compress(series)
             
-        string, self.parameters = self.digitize(
+        self.string_, self.parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2], alphabet_set=alphabet_set
         )
         
         if self.verbose:
             _info = "Digitization: Reduced pieces of length {}".format(
-                len(string)) + " to {} ".format(len(self.parameters.centers)) + " symbols"
+                len(self.string_)) + " to {} ".format(len(self.parameters.centers)) + " symbols"
             self.logger.info(_info)
 
         if not self.return_list:
-            string = "".join(string)
+            self.string_ = "".join(self.string_)
             
-        return string
+        return self
+    
+
+    def fit_transform(self, series, fillm='bfill', alphabet_set=0):
+        """ 
+        Compress and digitize the time series together.
+        
+        Parameters
+        ----------
+        series - numpy.ndarray or list
+            Time series of the shape (1, n_samples).
+            
+        fillm - str, default = 'zero'
+            Fill NA/NaN values using the specified method.
+            'Zero': Fill the holes of series with value of 0.
+            'Mean': Fill the holes of series with mean value.
+            'Median': Fill the holes of series with mean value.
+            'ffill': Forward last valid observation to fill gap.
+                If the first element is nan, then will set it to zero.
+            'bfill': Use next valid observation to fill gap. 
+                If the last element is nan, then will set it to zero. 
+                
+        Returns
+        ----------
+        string (str): The string transformed by fABBA.
+        """
+        return self.fit(series, fillm, alphabet_set).string_
 
 
 
-    def inverse_transform(self, strings, start=0, parameters=None):
+    def inverse_transform(self, string, start=0, parameters=None):
         """
         Convert ABBA symbolic representation back to numeric time series representation.
         
@@ -827,15 +849,15 @@ class fABBA(Aggregation2D, ABBAbase):
             Reconstruction of the time series.
         """
         
-        if type(strings) != str:
-            strings = "".join(strings)
+        if type(string) != str:
+            string = "".join(string)
         if parameters is None:
             try:
-                series = inv_transform(strings, self.parameters.centers, self.parameters.hashm, start) 
+                series = inv_transform(string, self.parameters.centers, self.parameters.alphabets, start) 
             except:
                 raise ValueError("Please train the model using ``fit_transform`` first.") 
         else:
-            series = inv_transform(strings, parameters.centers, parameters.hashm, start) 
+            series = inv_transform(string, parameters.centers, parameters.alphabets, start) 
     
         return series
     
@@ -1001,15 +1023,15 @@ class fABBA(Aggregation2D, ABBAbase):
             center = np.mean(pieces[indc,:], axis=0)
             centers = np.r_[ centers, center ]
         
-        string, hashm = symbolsAssign(labels, alphabet_set)
+        string, alphabets = symbolsAssign(labels, alphabet_set)
         
-        parameters = Model(centers, np.array(splist), hashm)
+        parameters = Model(centers, np.array(splist), alphabets)
         return string, parameters
 
     
     
     # [DEPRECATED]
-    # def inverse_transform(self, strings, parameters=None, start=0):
+    # def inverse_transform(self, string, parameters=None, start=0):
     #     """
     #     Convert ABBA symbolic representation back to numeric time series representation.
     #     
@@ -1030,9 +1052,9 @@ class fABBA(Aggregation2D, ABBAbase):
     #     """
     #
     #     if parameters == None:
-    #         pieces = self.inverse_digitize(strings, self.parameters)
+    #         pieces = self.inverse_digitize(string, self.parameters)
     #     else:
-    #         pieces = self.inverse_digitize(strings, parameters)
+    #         pieces = self.inverse_digitize(string, parameters)
     #         
     #     pieces = self.quantize(pieces)
     #     series = self.inverse_compress(pieces, start)
@@ -1040,7 +1062,7 @@ class fABBA(Aggregation2D, ABBAbase):
     # 
     # 
     # 
-    # def inverse_digitize(self, strings, parameters):
+    # def inverse_digitize(self, string, parameters):
     #     """
     #     Convert symbolic representation back to compressed representation for reconstruction.
     #     
@@ -1061,8 +1083,8 @@ class fABBA(Aggregation2D, ABBAbase):
     #     """
     #     
     #     pieces = np.empty([0,2])
-    #     for p in strings:
-    #         pc = parameters.centers[int(parameters.inverse_hashm[p])]
+    #     for p in string:
+    #         pc = parameters.centers[int(parameters.inverse_alphabets[p])]
     #         pieces = np.vstack([pieces, pc])
     #     return pieces[:,0:2]
     # 
@@ -1158,8 +1180,8 @@ class fABBA(Aggregation2D, ABBAbase):
     def print_parameters(cls):
         print("Centers:")
         print(cls.parameters.centers)
-        print("\nHashmap:")
-        for i, item in enumerate(cls.parameters.hashm.items()):
+        print("\nalphabetsap:")
+        for i, item in enumerate(cls.parameters.alphabets.items()):
             print(item)
 
             
@@ -1368,8 +1390,8 @@ def symbolsAssign(clusters, alphabet_set=0):
         
     ----------
     Return:
-    strings(list of string), hashmap(dict): repectively for the
-    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
+    string(list of string), alphabetsap(dict): repectively for the
+    corresponding symbolic sequence and the alphabetsap for mapping from symbols to labels or 
     labels to symbols.
     """
     
@@ -1409,6 +1431,7 @@ def symbolsAssign(clusters, alphabet_set=0):
         alphabet = [chr(i+33) for i in range(0, N)]
     else:
         alphabet = alphabet[:N]
-    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
-    strings = [hashm[i] for i in clusters]
-    return strings, hashm
+
+    alphabets = np.asarray(alphabet)
+    string = alphabets[clusters]
+    return string, alphabets

@@ -1,11 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# Copyright (c) 2021, 
+# Authors: Stefan Güttel, Xinye Chen
 
-'''
-Copyright (c) 2021, 
-Authors: Stefan Güttel, Xinye Chen
-All rights reserved.
-'''
+# All rights reserved.
+
 
 # load demo image samples
 
@@ -22,11 +19,11 @@ def loadData(name="Beef"):
     "To do"
     current_dir, current_filename = os.path.split(__file__)
     
-    if name is "Beef":
+    if name == "Beef":
         train = np.load(os.path.join(current_dir, "jabba/data/beef_train.npy"))
         test = np.load(os.path.join(current_dir, "jabba/data/beef_test.npy"))
             
-    elif name is 'BasicMotions':
+    elif name == 'BasicMotions':
         train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+os.path.join(name, name+'_TRAIN.arff')))
         train = preprocess(train)
 

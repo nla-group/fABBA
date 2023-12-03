@@ -28,7 +28,7 @@ except ModuleNotFoundError:
 
 def symbolsAssign(clusters, alphabet_set=0):
     """
-    Automatically assign symbols to different groups, we provide different symbol orders.
+    Automatically assign symbols to different groups, start with '!'
     
     Parameters
     ----------
@@ -40,8 +40,8 @@ def symbolsAssign(clusters, alphabet_set=0):
         
     ----------
     Return:
-    strings(list of string), hashmap(dict): repectively for the
-    corresponding symbolic sequence and the hashmap for mapping from symbols to labels or 
+    string(list of string), alphabetsap(dict): repectively for the
+    corresponding symbolic sequence and the alphabetsap for mapping from symbols to labels or 
     labels to symbols.
     """
     
@@ -58,13 +58,6 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
-        
-    elif alphabet_set == 2:
-        alphabet = ['a','A','b','B','c','C','d','D','e','E',
-                    'f','F','g','G','h','H','i','I','j','J',
-                    'k','K','l','L','m','M','n','N','o','O',
-                    'p','P','q','Q','r','R','s','S','t','T',
-                    'u','U','v','V','w','W','x','X','y','Y','z','Z']
     
     elif isinstance(alphabet_set, list) and len(alphabet):
         alphabet = alphabet_set
@@ -88,9 +81,11 @@ def symbolsAssign(clusters, alphabet_set=0):
         alphabet = [chr(i+33) for i in range(0, N)]
     else:
         alphabet = alphabet[:N]
-    hashm = dict(zip(cluster_sort + alphabet, alphabet + cluster_sort))
-    strings = [hashm[i] for i in clusters]
-    return strings, hashm
+
+    alphabets = np.asarray(alphabet)
+    string = alphabets[clusters]
+    return string, alphabets
+
 
 
 @dataclass
@@ -101,7 +96,7 @@ class Model:
     centers: np.ndarray # store aggregation centers
     
     """ dictionary """
-    hashm: dict # labels -> symbols,  symbols -> labels
+    alphabets: np.ndarray # labels -> symbols,  symbols -> labels
     
     
 
@@ -205,7 +200,9 @@ class JABBA(object):
     ----------
     params: dict
         Parameters of trained model.
-        
+    
+    string_ - str or list
+        Contains the ABBA representation.
     """
     
     def __init__(self, tol=0.2, init='agg', k=2, r=0.5, alpha=None, 
@@ -258,9 +255,9 @@ class JABBA(object):
         
         self.fit(series, n_jobs=n_jobs, alphabet_set=alphabet_set)
         if return_start_set:
-            return self.symbols_, self.start_set
+            return self.string_, self.start_set
         else:
-            return self.symbols_
+            return self.string_
         
                 
     def fit(self, series, n_jobs=-1, alphabet_set=0):
@@ -281,7 +278,7 @@ class JABBA(object):
         """
         
         self.pieces = self.parallel_compress(series, n_jobs=n_jobs)
-        self.symbols_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
+        self.string_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
         return self
         
     
@@ -451,16 +448,15 @@ class JABBA(object):
         if self.scl == 0:
             centers[:, 0] = one_D_centers(len_pieces, labels, self.k)
 
-        _, mapping = symbolsAssign(labels, alphabet_set)
-        self.parameters = Model(centers, mapping)
+        string, alphabets = symbolsAssign(labels, alphabet_set)
+        self.parameters = Model(centers, alphabets)
         
         self.num_grp = self.parameters.centers.shape[0]
         if self.verbose:
             print("Generate {} symbols".format(self.num_grp))
         
-        symbols = [self.parameters.hashm[i] for i in labels]
-        symbols_sequences = self.symbols_separation(symbols, num_pieces)
-        return symbols_sequences
+        string_sequences = self.string_separation(string, num_pieces)
+        return string_sequences
         
         
         
@@ -495,25 +491,25 @@ class JABBA(object):
         else:
             self.return_series_univariate = False
             
-        symbols_sequences = list()
+        string_sequences = list()
         start_set = list()
         if n_jobs != 1:
             p = Pool(n_jobs)
             for ts in series:
                 start_set.append(ts[0])
-                symbols_sequences.append(
+                string_sequences.append(
                     p.apply_async(self.transform_single_series, args=(ts,))
                 )
 
             p.close()
             p.join()
-            symbols_sequences = [p.get() for p in symbols_sequences]
+            string_sequences = [p.get() for p in string_sequences]
         else:
             for ts in series:
                 start_set.append(ts[0])
-                symbols_sequences.append(self.transform_single_series(ts,))
+                string_sequences.append(self.transform_single_series(ts,))
         
-        return symbols_sequences, start_set
+        return string_sequences, start_set
         
         
         
@@ -539,13 +535,13 @@ class JABBA(object):
 
         
         
-    def inverse_transform(self, symbols_sequences, start_set=None, n_jobs=1):
+    def inverse_transform(self, string_sequences, start_set=None, n_jobs=1):
         """
         Reconstruct the symbolic sequences to numerical sequences.
         
         Parameters
         ----------        
-        symbols_sequences: list
+        string_sequences: list
             Univariate or multivariate symbolic time series
         
         start_set: list
@@ -561,7 +557,7 @@ class JABBA(object):
         """
         
         n_jobs = self.n_jobs_init(n_jobs)
-        count = len(symbols_sequences)
+        count = len(string_sequences)
         if start_set is None:
             start_set = self.start_set
             if start_set is None:
@@ -573,9 +569,9 @@ class JABBA(object):
             for i in range(count):
                 inverse_sequences.append(
                     p.apply_async(inv_transform,
-                                  args=(symbols_sequences[i],
+                                  args=(string_sequences[i],
                                         self.parameters.centers,
-                                        self.parameters.hashm,
+                                        self.parameters.alphabets,
                                         start_set[i])
                                  )
                 )
@@ -584,9 +580,9 @@ class JABBA(object):
             inverse_sequences = [p.get() for p in inverse_sequences]
         else:
             for i in range(count):
-                inverse_sequence = inv_transform(symbols_sequences[i], 
+                inverse_sequence = inv_transform(string_sequences[i], 
                                                  self.parameters.centers,
-                                                 self.parameters.hashm,
+                                                 self.parameters.alphabets,
                                                  start_set[i]
                                                 )
                 inverse_sequences.append(inverse_sequence)
@@ -611,21 +607,21 @@ class JABBA(object):
         """
         
         splabels = np.argmin(np.linalg.norm(self.parameters.centers  - piece, ord=2, axis=1))
-        return self.parameters.hashm[splabels]
+        return self.parameters.alphabets[splabels]
     
     
     
     
-    def symbols_separation(self, symbols, num_pieces):
+    def string_separation(self, symbols, num_pieces):
         """
         Separate symbols into symbolic subsequence.
         """
         
-        symbols_sequences = list()
+        string_sequences = list()
         num_pieces_csum = np.cumsum([0] + num_pieces)
         for index in range(len(num_pieces)):
-            symbols_sequences.append(symbols[num_pieces_csum[index]:num_pieces_csum[index+1]])
-        return symbols_sequences
+            string_sequences.append(symbols[num_pieces_csum[index]:num_pieces_csum[index+1]])
+        return string_sequences
 
 
 
@@ -842,7 +838,7 @@ class fastABBA(object):
         self.alphabet_set = alphabet_set
         self.kmeans = None
         self.max_iter = max_iter
-        self.n_jobs = 1
+        self.n_jobs = n_jobs
 
     def transform(self, series):
         series = np.array(series)
@@ -860,7 +856,7 @@ class fastABBA(object):
             with parallel_backend('threading', n_jobs=self.n_jobs):
                 labels = self.kmeans.predict(pieces)
                 
-            return [self.parameters.hashm[i] for i in labels]
+            return self.parameters.alphabets[labels]
 
         else:
             raise ValueError("Please train the model first.")
@@ -904,19 +900,18 @@ class fastABBA(object):
             centers = self.kmeans.cluster_centers_ * self._std
             centers[:, 0] = one_D_centers(len_pieces, labels, self.k)
 
-        _, mapping = symbolsAssign(labels, self.alphabet_set)
-        self.parameters = Model(centers, mapping)
+        self.string_, alphabets = symbolsAssign(labels, self.alphabet_set)
+        self.parameters = Model(centers, alphabets)
         
         self.num_grp = self.parameters.centers.shape[0]
         if self.verbose:
             print("Generate {} symbols".format(self.num_grp))
         
-        symbols = [self.parameters.hashm[i] for i in labels]
-        return symbols
+        return self.string_
 
 
     def inverse_transform(self, strings, start):
-        return inv_transform(strings,  self.parameters.centers, self.parameters.hashm, start)
+        return inv_transform(strings,  self.parameters.centers, self.parameters.alphabets, start)
 
 
 

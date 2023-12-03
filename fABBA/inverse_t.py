@@ -1,7 +1,14 @@
+# Copyright (c) 2021, 
+# Authors: Stefan Güttel, Xinye Chen
+
+# All rights reserved.
+
+
+
 import numpy as np
 
 
-def inv_transform(strings, centers, hashm, start=0):
+def inv_transform(strings, centers, alphabets, start=0):
     """
     Convert ABBA symbolic representation back to numeric time series representation.
 
@@ -15,7 +22,7 @@ def inv_transform(strings, centers, hashm, start=0):
         Centers of clusters from clustering algorithm. Each center corresponds
         to character in string.
 
-    hashm - dict
+    alphabets - numpy array
         Dictionary associated with labels and symbols.
         
     start - float
@@ -28,7 +35,7 @@ def inv_transform(strings, centers, hashm, start=0):
         Reconstruction of the time series.
     """
 
-    pieces = inv_digitize(strings, centers, hashm)
+    pieces = inv_digitize(strings, centers, alphabets.tolist())
 
     pieces = quantize(pieces)
     time_series = inv_compress(pieces, start)
@@ -36,7 +43,7 @@ def inv_transform(strings, centers, hashm, start=0):
 
 
 
-def inv_digitize(strings, centers, hashm):
+def inv_digitize(strings, centers, alphabets):
     """
     Convert symbolic representation back to compressed representation for reconstruction.
 
@@ -57,12 +64,7 @@ def inv_digitize(strings, centers, hashm):
         Time series in compressed format. See compression.
     """
 
-    pieces = np.empty([0,2])
-
-    for p in strings:
-        pc = centers[int(hashm[p])]
-        pieces = np.vstack([pieces, pc])
-
+    pieces = np.vstack([centers[alphabets.index(p)] for p in strings])
     return pieces
 
 
