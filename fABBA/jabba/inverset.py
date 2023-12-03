@@ -50,7 +50,7 @@ def inv_digitize(strings, centers, alphabets):
         centers of clusters from clustering algorithm. Each centre corresponds
         to character in string.
 
-    alphabets - numpy.ndarray
+    alphabets - list
         The alphabet set for symbols reversing.
         
     Returns
