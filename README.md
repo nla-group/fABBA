@@ -20,7 +20,8 @@ In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Know
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## :rocket: Install
-fABBA support Linux, Windows, and MaxOS operating system [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba). fABBA has the following essential dependencies for its functionality:
+fABBA support Linux, Windows, and MaxOS operating system [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba). 
+fABBA has the following essential dependencies for its functionality:
 
 - cython
 - numpy>=1.17.3
