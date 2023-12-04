@@ -6,7 +6,6 @@
 </h3>
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/version.svg)](https://anaconda.org/conda-forge/fabba)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=orange)](https://pypi.org/project/fABBA/)
@@ -242,4 +241,5 @@ If you use fABBA in a scientific publication, we would appreciate your citing:
 
 
 ## 📝 License
-This project is licensed under the terms of the [BSD-3-Clause](https://github.com/nla-group/fABBA/blob/master/LICENSE).
+This project is licensed under the terms of the [BSD-3-Clause](https://github.com/nla-group/fABBA/blob/master/LICENSE) 
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
