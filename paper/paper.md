@@ -95,3 +95,6 @@ Symbolic representations enhance time series processing by a large number of pow
 
 # Acknowledgement
 Stefan Güttel acknowledges a Royal Society Industry Fellowship IF/R1/231032.
+
+# References
+
