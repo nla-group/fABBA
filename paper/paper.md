@@ -1,5 +1,5 @@
 ---
-title: '\textit{fABBA}: A Python library for the fast symbolic approximation~of time series'
+title: '*fABBA*: A Python library for the fast symbolic approximation~of time series'
 tags:
   - Python
   - time series
@@ -36,15 +36,15 @@ Adaptive Brownian bridge-based aggregation (ABBA) [@EG19b] is a symbolic time se
 ABBA follows a two-phase approach to symbolize time series, namely compression and digitization. The first phase aims to reduce the time series dimension by polygonal chain approximation, and the second phase assigns symbols to the polygonal pieces. Both phases operate together to ensure that the essential time series features are best reflected by the symbols, controlled by a user-chosen error tolerance. The advantages of the ABBA representation against other symbolic representations include (1) better preservation of essential shape features, e.g., when compared against the popular SAX representation~[@SAX03; @EG19b]; (2) effective representation of local up and down trends in the time series which supports motif detection; (3) demonstrably reduced sensitivity to hyperparameters of neural network models and the initialization of random weights in forecasting applications~[@EG20b].  
 
 
-\textit{fABBA} is a Python library to compute ABBA symbolic time series representations on Linux, Windows, and MacOS systems. With Cython compilation and typed memoryviews, it significantly outperforms existing ABBA implementations. The \textit{fABBA} library also includes a new ABBA variant, fABBA [@CG22a], which uses an alternative digitization method (``greedy aggregation'') instead of k-means clustering~[@1056489], providing significant speedup and improved tolerance-based digitization (without the need to specify the number $k$ of symbols a priori). The experiments in [@CG22a] demonstrate that fABBA compares favorably to the original ABBA module\footnote{https://github.com/nla-group/ABBA} in terms of runtime. \textit{fABBA} is an open-source library and licensed under the 3-Clause BSD License. Its redistribution and use, with or without modification, are permitted under conditions described in \url{https://opensource.org/license/bsd-3-clause/}.
+*fABBA* is a Python library to compute ABBA symbolic time series representations on Linux, Windows, and MacOS systems. With Cython compilation and typed memoryviews, it significantly outperforms existing ABBA implementations. The *fABBA* library also includes a new ABBA variant, fABBA [@CG22a], which uses an alternative digitization method (``greedy aggregation'') instead of k-means clustering~[@1056489], providing significant speedup and improved tolerance-based digitization (without the need to specify the number $k$ of symbols a priori). The experiments in [@CG22a] demonstrate that fABBA compares favorably to the original ABBA module\footnote{https://github.com/nla-group/ABBA} in terms of runtime. *fABBA* is an open-source library and licensed under the 3-Clause BSD License. Its redistribution and use, with or without modification, are permitted under conditions described in \url{https://opensource.org/license/bsd-3-clause/}.
 
 # Examples
-\textit{fABBA}  can installed via the Python Package Index or conda forge. Detailed documentation for its installation, usage, API reference, and quick start examples can be found on~\url{https://fabba.readthedocs.io/en/latest/}. Below we provide a brief demonstration. 
+*fABBA*  can installed via the Python Package Index or conda forge. Detailed documentation for its installation, usage, API reference, and quick start examples can be found on~\url{https://fabba.readthedocs.io/en/latest/}. Below we provide a brief demonstration. 
 
 
 
 ## Compress and reconstruct a time series
-The following example approximately transforms a time series into a symbolic string representation (\texttt{transform()}) and then converts the string back into a numerical format (\texttt{inverse\_transform()}). fABBA requires two parameters, \texttt{tol} and \texttt{alpha}. The tolerance \texttt{tol} determines how closely the polygonal chain approximation follows the original time series. The parameter \texttt{alpha} controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller \texttt{tol} means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. Similarly, a smaller \texttt{alpha} typically results in more accurate symbolic digitization but a larger number of symbols.
+The following example approximately transforms a time series into a symbolic string representation (`transform()`) and then converts the string back into a numerical format (`inverse_transform()`). fABBA requires two parameters, `tol` and `alpha`. The tolerance `tol` determines how closely the polygonal chain approximation follows the original time series. The parameter `alpha` controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller `tol` means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. Similarly, a smaller `alpha` typically results in more accurate symbolic digitization but a larger number of symbols.
 
 ```python
 import numpy as np
@@ -81,7 +81,7 @@ inverse_ts = abba.inverse_transform(string)        # reconstruct numerical time 
 
 
 # Statement of Need
-Symbolic representations enhance time series processing by a large number of powerful techniques developed, e.g., by the natural language processing or bioinformatics communities~[@SAX03; @lin2007experiencing]. \textit{fABBA} is a Python module for computing such symbolic time series representations very efficiently, enabling their use for downstream tasks such as time series classification, forecasting, and anomaly detection. 
+Symbolic representations enhance time series processing by a large number of powerful techniques developed, e.g., by the natural language processing or bioinformatics communities~[@SAX03; @lin2007experiencing]. *fABBA* is a Python module for computing such symbolic time series representations very efficiently, enabling their use for downstream tasks such as time series classification, forecasting, and anomaly detection. 
 
 # Acknowledgement
 Stefan G\"{u}ttel acknowledges a Royal Society Industry Fellowship IF/R1/231032.
