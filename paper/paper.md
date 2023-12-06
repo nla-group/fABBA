@@ -53,13 +53,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from fABBA import fABBA
 
-ts = [np.sin(0.05*i) for i in range(1000)]  # original time series
+# original time series
+ts = [np.sin(0.05*i) for i in range(1000)] 
 fabba = fABBA(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0) 
 
-string = fabba.fit_transform(ts)            # symbolic representation of the time series
-print(string)                               # prints aBbCbCbCbCbCbCbCA
+# symbolic representation of the time series
+string = fabba.fit_transform(ts)
+# prints aBbCbCbCbCbCbCbCA            
+print(string)                               
 
-inverse_ts = fabba.inverse_transform(string, ts[0]) # reconstruct numerical time series
+# reconstruct numerical time series
+inverse_ts = fabba.inverse_transform(string, ts[0]) 
 ```
 
 
@@ -71,14 +75,19 @@ import numpy as np
 from sklearn.cluster import KMeans
 from fABBA import ABBAbase
 
-ts = [np.sin(0.05*i) for i in range(1000)]         # original time series
-kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0) # k-means clustering with 5 symbols
+# original time series
+ts = [np.sin(0.05*i) for i in range(1000)]
+# k-means clustering with 5 symbols         
+kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0) 
 abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
 
-string = abba.fit_transform(ts)                    # symbolic representation of the time series
-print(string)                                      # prints BbAaAaAaAaAaAaAaC
+# symbolic representation of the time series
+string = abba.fit_transform(ts)
+# prints BbAaAaAaAaAaAaAaC                  
+print(string)                                      
 
-inverse_ts = abba.inverse_transform(string)        # reconstruct numerical time series
+# reconstruct numerical time series
+inverse_ts = abba.inverse_transform(string)        
 ```
 
 
