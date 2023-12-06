@@ -54,7 +54,7 @@ pygments_style = 'lovelace'
 #
 html_theme = "sphinx_rtd_theme" # html_theme = 'alabaster'
 html_theme_options = {
-    'logo_only': True,
+    'logo_only': False,
     'navigation_depth': 5,
 }
 # Add any paths that contain custom static files (such as style sheets) here,
