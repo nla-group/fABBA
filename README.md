@@ -7,7 +7,7 @@
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
-[![!pypi](https://img.shields.io/pypi/v/fABBA?color=pink)](https://pypi.org/project/fABBA/)
+[![!pypi](https://img.shields.io/pypi/v/fABBA?color=indigo)](https://pypi.org/project/fABBA/)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10358352.svg)](https://doi.org/10.5281/zenodo.10358352)
