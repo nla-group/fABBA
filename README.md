@@ -1,5 +1,5 @@
 <h1 align="left">
-  fABBA :frog:
+  fABBA
 </h1>
 <h3 align="left">
   An efficient symbolic aggregate approximation for temporal data :dolphin:
