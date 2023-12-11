@@ -225,14 +225,18 @@ g++ -o test runtime.cpp
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
-@article{CG22a,
-  title   = {An efficient aggregation method for the symbolic representation of temporal data},
-  author  = {Chen, Xinye and G\"{u}ttel, Stefan},
-  year    = {2022},
-  number  = {},
-  pages   = {},
-  journal = {Accepted for publication in ACM Transactions on Knowledge Discovery from Data},
-  url     = {https://arxiv.org/abs/2201.05697}
+@article{10.1145/3532622,
+author = {Chen, Xinye and G\"{u}ttel, Stefan},
+title = {An Efficient Aggregation Method for the Symbolic Representation of Temporal Data},
+year = {2023},
+publisher = {ACM},
+address = {USA},
+volume = {17},
+number = {1},
+url = {https://doi.org/10.1145/3532622},
+doi = {10.1145/3532622},
+journal = {ACM Transactions on Knowledge Discovery from Data},
+numpages = {22},
 }
 ```
 
