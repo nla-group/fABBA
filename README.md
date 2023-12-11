@@ -13,7 +13,7 @@
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 
 
-(https://zenodo.org/badge/DOI/10.5281/zenodo.10358352.svg)](https://doi.org/10.5281/zenodo.10358352): fABBA is a fast and accurate symbolic representation method for temporal data. 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10358352.svg)](https://doi.org/10.5281/zenodo.10358352): fABBA is a fast and accurate symbolic representation method for temporal data. 
 It is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. 
 The aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions. 
 In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
