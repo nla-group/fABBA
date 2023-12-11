@@ -7,7 +7,6 @@
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/version.svg)](https://anaconda.org/conda-forge/fabba)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=pink)](https://pypi.org/project/fABBA/)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
@@ -42,7 +41,7 @@ Download this repository:
 
 ```git clone https://github.com/nla-group/fABBA.git```
 
-
+It also supports conda-forge install: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/version.svg)](https://anaconda.org/conda-forge/fabba)
 
 ## :checkered_flag: Examples 
 
