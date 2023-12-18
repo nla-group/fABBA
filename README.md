@@ -43,7 +43,10 @@ Download this repository:
 
 It also supports conda-forge install: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/version.svg)](https://anaconda.org/conda-forge/fabba)
 
-## :checkered_flag: Examples 
+To install this package via conda-forge, run the following:
+```conda install -c conda-forge fabba```
+
+### :checkered_flag: Examples 
 
 #### :star: *Compress and reconstruct a time series*
 
