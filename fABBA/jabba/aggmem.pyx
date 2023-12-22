@@ -76,7 +76,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
         # cdata = data - data.mean(axis=0) -- already done in the clustering.fit_transform
         cdata = data - np.mean(data, axis=0)
         if data.shape[1]>1:
-            U1, s1, _ = svds(cdata, k=1, return_singular_vectors=True)
+            U1, s1, _ = svds(cdata.base, k=1, return_singular_vectors=True)
             sort_vals = U1[:,0]*s1[0]
         else:
             sort_vals = cdata[:,0]
