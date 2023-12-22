@@ -74,7 +74,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     else:
         data = data - np.mean(data, axis=0)
         if data.shape[1]>1:
-            U1, s1, _ = svds(data, k=1, return_singular_vectors=True)
+            U1, s1, _ = svds(data.base, k=1, return_singular_vectors=True)
             sort_vals = U1[:,0]*s1[0]
         else:
             sort_vals = data[:,0]
