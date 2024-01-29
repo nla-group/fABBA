@@ -435,7 +435,7 @@ class JABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init=1, 
+                                            n_init="auto", 
                                             random_state=self.random_state)
                 kmeans.sampled_fit(pieces)
                 
@@ -448,7 +448,7 @@ class JABBA(object):
                 warnings.warn("k is larger than the unique pieces size, so k reduces to unique pieces size.")
             
             with parallel_backend('threading', n_jobs=n_jobs):
-                kmeans = KMeans(n_clusters=self.k, random_state=0).fit(pieces)
+                kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
                 
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
