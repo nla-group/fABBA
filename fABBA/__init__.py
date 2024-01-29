@@ -10,7 +10,7 @@ except (ModuleNotFoundError, ValueError):
     from .separate.aggregation import aggregate
     
     
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 from .load_datasets import load_images
 from .fabba import (image_compress, image_decompress, ABBAbase, ABBA,
                                       get_patches, patched_reconstruction, fABBA,
