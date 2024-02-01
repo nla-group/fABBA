@@ -101,7 +101,7 @@ Similarly, the digitization can be implemented after compression step as below:
 from fABBA import digitize
 from fABBA import inverse_digitize
 string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon
-print(''.join(string))                                 # prints BbAaAaAaAaAaAaAaC
+print(''.join(string))                                 # prints aBbCbCbCbCbCbCbCA
 
 inverse_pieces = inverse_digitize(string, parameters)
 inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series reconstruction
