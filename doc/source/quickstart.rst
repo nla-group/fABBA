@@ -54,8 +54,10 @@ and uninstall it with
 .. parsed-literal::
 
     conda uninstall fabba
+
+.. admonition:: Note
    
-   
+   Some machine may raise the Cython issue, most of them happens since their machine have security issue - e.g., firewall - or without VC++ installed. 
 
 Installing `fABBA` from the `conda-forge` channel can also be achieved by adding `conda-forge` to your channels with:
 
