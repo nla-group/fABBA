@@ -66,7 +66,7 @@ inverse_ts = fabba.inverse_transform(string, ts[0])
 ```
 
 
-## More ABBA variants}
+## More ABBA variants
 Other clustering-based ABBA variants are also provided, supported by the clustering methods in the *scikit-learn* library [@scikit-learn]. Below is a basic code example.
 
 ```python
