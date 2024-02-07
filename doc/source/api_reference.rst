@@ -14,7 +14,7 @@ fABBA
 .. autoclass:: fABBA.load_images
    :members:
 
-``ABBA`` is the API of the symbolic representation transformation for univariate time series, which allows for ABBA method with various clustering techniques. 
+
 
 ABBAbase
 -------
@@ -22,11 +22,12 @@ ABBAbase
    :members:
    
 
-``ABBA`` is the API of the symbolic representation ransformation for multivariate (rep., multiple univariate) time series.
-
-
 JABBA
 -------
+
+``JABBA`` is the API of the symbolic representation transformation for univariate time series, multivariate (rep., multiple univariate) time series, which allows for the combination of ABBA method with various clustering techniques. 
+
+
 .. autoclass:: fABBA.jabba.jabba.JABBA
    :members:
    
