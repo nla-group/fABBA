@@ -63,7 +63,7 @@ You can also load dataset via ``loadData``:
 .. code:: python
     
     from fABBA import loadData
-    train, test = loadData(name='Beef') # currently only support Beef dataset. 
+    train, test = loadData(name='Beef') # currently only support Beef and BasicMotions dataset. 
 
     # Then perform JABBA
     jabba = JABBA(tol=0.0002, verbose=1)
