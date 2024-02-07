@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import collections
+import platform
 from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
@@ -16,7 +17,11 @@ try:
     # # %load_ext Cython
     # !python3 setup.py build_ext --inplace
     from .compmem import compress
-    from .aggmem import aggregate # cython with memory view
+    if platform.system() == 'Linux':
+        from .aggmem import aggregate # cython with memory view
+    else:
+        from .aggc import aggregate # cython with memory view
+    
     from .inversetc import *
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
@@ -640,7 +645,7 @@ class JABBA(object):
         """
         Initialize parameter n_jobs.
         """
-        import platform
+        
         
         if n_jobs > _max:
             n_jobs = _max
