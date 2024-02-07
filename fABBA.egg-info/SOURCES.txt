@@ -22,8 +22,8 @@ fABBA/extmod/fabba_agg_cm.pyx
 fABBA/extmod/inverse_tc.pyx
 fABBA/jabba/__init__.py
 fABBA/jabba/agg.py
-fABBA/jabba/aggc.pyx
 fABBA/jabba/aggmem.pyx
+fABBA/jabba/aggwin.pyx
 fABBA/jabba/comp.py
 fABBA/jabba/compmem.pyx
 fABBA/jabba/fkmns.py
