@@ -5,7 +5,7 @@ API Reference
 
 fABBA
 -------
-.. autoclass:: fABBA.fabba.fABBA
+.. autoclass:: fABBA.fABBA
    :members:
  
 .. autoclass:: fABBA.loadData
@@ -18,7 +18,7 @@ fABBA
 
 ABBAbase
 -------
-.. autoclass:: fABBA.fabba.ABBAbase
+.. autoclass:: fABBA.ABBAbase
    :members:
    
 
