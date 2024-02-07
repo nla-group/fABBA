@@ -26,7 +26,7 @@ class CustomBuildExtCommand(build_ext):
         
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"1.1.4",
+        'version':"1.1.5",
         'cmdclass': {'build_ext': CustomBuildExtCommand},
         'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
                             "requests", "pandas", 
@@ -80,8 +80,8 @@ aggregation_cm = Extension('fABBA.separate.aggregation_cm',
 compmem_j = Extension('fABBA.jabba.compmem',
                         sources=['fABBA/jabba/compmem.pyx'])
 
-aggc_j = Extension('fABBA.jabba.aggc',
-                        sources=['fABBA/jabba/aggc.pyx'])
+aggwin_j = Extension('fABBA.jabba.aggwin',
+                        sources=['fABBA/jabba/aggwin.pyx'])
 
 aggmem_j = Extension('fABBA.jabba.aggmem',
                         sources=['fABBA/jabba/aggmem.pyx'])

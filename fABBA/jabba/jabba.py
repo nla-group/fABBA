@@ -20,7 +20,7 @@ try:
     if platform.system() == 'Linux':
         from .aggmem import aggregate # cython with memory view
     else:
-        from .aggc import aggregate # cython with memory view
+        from .aggwin import aggregate # cython with memory view
     
     from .inversetc import *
 except ModuleNotFoundError:

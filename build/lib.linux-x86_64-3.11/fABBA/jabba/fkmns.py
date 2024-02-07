@@ -142,7 +142,6 @@ def uniform_sample(X, size=100, random_state=42):
 
 
 
-
 def calculate_cluster_centers(data, labels):
     """Calculate the mean centers of clusters from given data."""
     classes = np.unique(labels)
@@ -155,17 +154,18 @@ def calculate_cluster_centers(data, labels):
 class sampledKMeansInter(KMeans):
     def __init__(self, 
                  n_clusters=1,
-                 r=0.5,
+                 r=0.1,
                  init='k-means++',
                  max_iter=300, 
-                 random_state=4022, 
-                 tol=1e-4, n_init=1):
+                 random_state=42, 
+                 tol=1e-4):
         
         super().__init__(n_clusters=n_clusters, 
                          init=init,
                          max_iter=max_iter,
                          random_state=random_state, 
-                         tol=tol, n_init=n_init)
+                         n_init=1, # consistent to the default setting of sklearn k-means
+                         tol=tol)
         self.r = r
         self.size = None
         
@@ -177,10 +177,10 @@ class sampledKMeansInter(KMeans):
         if self.n_clusters >= self.size:
             self.size = self.n_clusters
             
-        core_pts = uniform_sample(X, self.size, self.random_state)
+        self.core_pts = uniform_sample(X, self.size, self.random_state)
         labels_ = np.zeros(X.shape[0], dtype=int)
         index = np.zeros(X.shape[0], dtype=bool)
-        index[core_pts] = True
+        index[self.core_pts] = True
         labels_[index] = self.fit_predict(X[index])
         inverse_labels = ~index 
         if np.any(inverse_labels):

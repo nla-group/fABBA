@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import collections
+import platform
 from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
@@ -16,7 +17,11 @@ try:
     # # %load_ext Cython
     # !python3 setup.py build_ext --inplace
     from .compmem import compress
-    from .aggmem import aggregate # cython with memory view
+    if platform.system() == 'Linux':
+        from .aggmem import aggregate # cython with memory view
+    else:
+        from .aggc import aggregate # cython with memory view
+    
     from .inversetc import *
 except ModuleNotFoundError:
     warnings.warn("cython fail.")
@@ -435,7 +440,7 @@ class JABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init=1, 
+                                            n_init="auto", 
                                             random_state=self.random_state)
                 kmeans.sampled_fit(pieces)
                 
@@ -448,7 +453,7 @@ class JABBA(object):
                 warnings.warn("k is larger than the unique pieces size, so k reduces to unique pieces size.")
             
             with parallel_backend('threading', n_jobs=n_jobs):
-                kmeans = KMeans(n_clusters=self.k, random_state=0).fit(pieces)
+                kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
                 
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
@@ -641,6 +646,7 @@ class JABBA(object):
         Initialize parameter n_jobs.
         """
         
+        
         if n_jobs > _max:
             n_jobs = _max
             warnings.warn("n_jobs init warning, 'n_jobs' is set to maximum {}.".format(n_jobs))
@@ -652,7 +658,10 @@ class JABBA(object):
                 "Please feed an correct value for n_jobs.")
             
         if n_jobs == None or n_jobs == -1:
-            n_jobs = len(os.sched_getaffinity(0)) 
+            if platform.system() == 'Linux':
+                n_jobs = len(os.sched_getaffinity(0)) 
+            else:
+                n_jobs = os.cpu_count()
             # int(mp.cpu_count()) , return the available usable CPUs
         else:
             n_jobs = n_jobs
