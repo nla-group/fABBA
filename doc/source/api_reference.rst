@@ -8,6 +8,11 @@ fABBA
 .. autoclass:: fABBA.symbolic_representation.fABBA
    :members:
  
+.. autoclass:: fABBA.loadData
+   :members:
+
+.. autoclass:: fABBA.load_images
+   :members:
 
 ``ABBA`` is the API of the symbolic representation transformation for univariate time series, which allows for ABBA method with various clustering techniques. 
 
