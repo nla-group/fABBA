@@ -26,7 +26,7 @@ class CustomBuildExtCommand(build_ext):
         
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"1.1.5",
+        'version':"1.1.6",
         'cmdclass': {'build_ext': CustomBuildExtCommand},
         'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
                             "requests", "pandas", 
@@ -106,7 +106,7 @@ try:
                      aggregation_c,
                      aggregation_cm,
                      compmem_j,
-                     aggc_j,
+                     aggwin_j,
                      aggmem_j,
                      inversetc_j
                     ],
