@@ -16,7 +16,22 @@ import sys
 
 
 def loadData(name="Beef"):
-    "To do"
+    """Load the example data. 
+    
+    Parameters
+    ----------
+    name : str
+        The dataset name, current support "BasicMotions" and "Beef". 
+        For more datasets, we refer the users to https://www.timeseriesclassification.com/ 
+        or https://archive.ics.uci.edu/datasets. 
+        
+        
+    Returns
+    -------
+    train, test : numpy.ndarray
+        Return data for train and test, respectively.
+        
+    """
     current_dir, current_filename = os.path.split(__file__)
     
     if name == "Beef":
@@ -48,6 +63,19 @@ def load_synthetic_sample(length=1000, freq=20):
 
 
 def load_images():
+    """Load the example images (a total of 24 images for test). 
+    
+    Parameters
+    ----------
+    No parameter input.
+        
+    Returns
+    -------
+    images : list
+        Return list storing image data.
+    
+    
+    """
     samples_list = [ 'n02086646_2069.jpg',
                      'n02088094_3593.jpg',
                      'n02089078_2021.jpg',
