@@ -640,6 +640,7 @@ class JABBA(object):
         """
         Initialize parameter n_jobs.
         """
+        import platform
         
         if n_jobs > _max:
             n_jobs = _max
@@ -652,7 +653,10 @@ class JABBA(object):
                 "Please feed an correct value for n_jobs.")
             
         if n_jobs == None or n_jobs == -1:
-            n_jobs = len(os.sched_getaffinity(0)) 
+            if platform.system() == 'Linux':
+                n_jobs = len(os.sched_getaffinity(0)) 
+            else:
+                n_jobs = os.cpu_count()
             # int(mp.cpu_count()) , return the available usable CPUs
         else:
             n_jobs = n_jobs
