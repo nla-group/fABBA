@@ -11,7 +11,7 @@ except (ModuleNotFoundError, ValueError):
     
     
 __version__ = '1.1.6'
-from .load_datasets import load_images
+from .load_datasets import load_images, loadData
 from .fabba import (image_compress, image_decompress, ABBAbase, ABBA,
                                       get_patches, patched_reconstruction, fABBA,
                                       symbolsAssign, fillna)
@@ -24,4 +24,3 @@ from .jabba.jabba import fastABBA, JABBA
 from .jabba import jabba
 from .jabba import preprocessing
 from .jabba.fkmns import sampledKMeansInter as fkmeans
-from .jabba.loadData import *
