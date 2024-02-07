@@ -54,8 +54,19 @@ Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies
     plt.show()
 
 
-
-
-
 .. image:: images/jabba/all_BasicMotions56.png
     :width: 720
+
+
+You can also load dataset via ``loadData``:
+
+.. code:: python
+    
+    from fABBA import loadData
+    train, test = loadData(name='Beef') # currently only support Beef dataset. 
+
+    # Then perform JABBA
+    jabba = JABBA(tol=0.0002, verbose=1)
+    symbols_series = jabba.fit_transform(train)
+    reconstruction = jabba.inverse_transform(symbols_series)
+    
