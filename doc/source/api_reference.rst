@@ -5,7 +5,7 @@ API Reference
 
 fABBA
 -------
-.. autoclass:: fABBA.symbolic_representation.fABBA
+.. autoclass:: fABBA.fabba.fABBA
    :members:
  
 .. autoclass:: fABBA.loadData
@@ -18,7 +18,7 @@ fABBA
 
 ABBAbase
 -------
-.. autoclass:: fABBA.symbolic_representation.ABBAbase
+.. autoclass:: fABBA.fabba.ABBAbase
    :members:
    
 
