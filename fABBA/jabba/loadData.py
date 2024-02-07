@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 def loadData(name="Beef"):
-    "To do"
+    "The funcationality is to load example dataset for demonstration."
     current_dir, current_filename = os.path.split(__file__)
     
     if name == "Beef":
