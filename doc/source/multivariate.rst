@@ -66,7 +66,7 @@ You can also load dataset via ``loadData``:
     train, test = loadData(name='Beef') 
     # Then perform JABBA
     jabba = JABBA(tol=0.0002, verbose=1)
-    symbols_series = jabba.fit_transform(train)
+    symbols_series = jabba.fit_transform(train[0])
     reconstruction = jabba.inverse_transform(symbols_series)
 
 .. admonition:: Note
