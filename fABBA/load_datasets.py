@@ -44,11 +44,10 @@ def loadData(name="Beef"):
              'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels', 
             ]:
         train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
-        train = preprocess(train)
 
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
-        train = preprocess(train)
-    return train, test
+        test = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TEST.arff'))
+                
+    return preprocess(train), preprocess(test)
 
 
         
