@@ -21,7 +21,9 @@ def loadData(name="Beef"):
     Parameters
     ----------
     name : str
-        The dataset name, current support "BasicMotions" and "Beef". 
+        The dataset name, current support 'AtrialFibrillation', 'BasicMotions', 'Beef', 
+              'CharacterTrajectories', 'LSST', 'Epilepsy', 
+              'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'. 
         For more datasets, we refer the users to https://www.timeseriesclassification.com/ 
         or https://archive.ics.uci.edu/datasets. 
         
