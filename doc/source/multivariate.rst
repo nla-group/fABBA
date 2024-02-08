@@ -63,10 +63,11 @@ You can also load dataset via ``loadData``:
 .. code:: python
     
     from fABBA import loadData
-    train, test = loadData(name='Beef') # currently only support Beef and BasicMotions dataset. 
-
+    train, test = loadData(name='Beef') 
     # Then perform JABBA
     jabba = JABBA(tol=0.0002, verbose=1)
     symbols_series = jabba.fit_transform(train)
     reconstruction = jabba.inverse_transform(symbols_series)
-    
+
+
+Current support datasets: 'AtrialFibrillation', 'BasicMotions', 'Beef', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'
