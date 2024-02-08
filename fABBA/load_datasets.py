@@ -38,7 +38,9 @@ def loadData(name="Beef"):
         train = np.load(os.path.join(current_dir, "jabba/data/beef_train.npy"))
         test = np.load(os.path.join(current_dir, "jabba/data/beef_test.npy"))
             
-    elif name == 'BasicMotions':
+    elif name in ['AtrialFibrillation', 'BasicMotions', 'CharacterTrajectories', 'LSST',
+             'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels', 
+            ]:
         train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
         train = preprocess(train)
 
