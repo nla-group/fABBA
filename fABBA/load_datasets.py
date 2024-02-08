@@ -43,11 +43,10 @@ def loadData(name="Beef"):
     elif name in ['AtrialFibrillation', 'BasicMotions', 'CharacterTrajectories', 'LSST',
              'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels', 
             ]:
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
-
-        test = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TEST.arff'))
+        train = preprocess(arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff')))
+        test = preprocess(arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TEST.arff')))
                 
-    return preprocess(train), preprocess(test)
+    return train, test
 
 
         
