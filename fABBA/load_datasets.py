@@ -39,10 +39,10 @@ def loadData(name="Beef"):
         test = np.load(os.path.join(current_dir, "jabba/data/beef_test.npy"))
             
     elif name == 'BasicMotions':
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+os.path.join(name, name+'_TRAIN.arff')))
+        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
         train = preprocess(train)
 
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+os.path.join(name, name+'_TEST.arff')))
+        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff'))
         train = preprocess(train)
     return train, test
 
