@@ -69,5 +69,6 @@ You can also load dataset via ``loadData``:
     symbols_series = jabba.fit_transform(train)
     reconstruction = jabba.inverse_transform(symbols_series)
 
+.. admonition:: Note
 
-Current support datasets: 'AtrialFibrillation', 'BasicMotions', 'Beef', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'
+    ``loadData`` currently supports datasets: 'AtrialFibrillation', 'BasicMotions', 'Beef', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'.
