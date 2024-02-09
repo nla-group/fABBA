@@ -144,7 +144,7 @@ symbols = jabba.fit_transform(train)
 reconst = jabba.inverse_transform(symbols)
 ```
 
-Note:  function ``loadData()`` is a lightweight API for time series dataset loading, which only supports part of data in UEA or UCR Archive, please refer to the document for full use detail. JABBA is used to process multiple time series as well as multivariate time series, so the input should be ensured to be 2-dimensional, for example, when loading the UCI dataset, e.g., ``Beef``, use  ``symbols = jabba.fit_transform(train) ``, when loading UEA dataset, e.g., ``BasicMotions``, use  ``symbols = jabba.fit_transform(train[0]) ``. For details, we refer to ([https://www.cs.ucr.edu/~eamonn/time_series_data_2018/](https://www.timeseriesclassification.com/)) for details. 
+Note:  function ``loadData()`` is a lightweight API for time series dataset loading, which only supports part of data in UEA or UCR Archive, please refer to the document for full use detail. JABBA is used to process multiple time series as well as multivariate time series, so the input should be ensured to be 2-dimensional, for example, when loading the UCI dataset, e.g., ``Beef``, use  ``symbols = jabba.fit_transform(train) ``, when loading UEA dataset, e.g., ``BasicMotions``, use  ``symbols = jabba.fit_transform(train[0]) ``. For details, we refer to ([https://www.cs.ucr.edu/~eamonn/time_series_data_2018/](https://www.timeseriesclassification.com/)). 
 
 
 
