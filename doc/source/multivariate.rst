@@ -71,4 +71,6 @@ You can also load dataset via ``loadData``:
 
 .. admonition:: Note
 
-    ``loadData`` currently supports datasets: 'AtrialFibrillation', 'BasicMotions', 'Beef', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'.
+    function loadData() is a lightweight API for time series dataset loading, which only supports part of data in UEA or UCR Archive, please refer to the document for full use detail. JABBA is used to process multiple time series as well as multivariate time series, so the input should be ensured to be 2-dimensional, for example, when loading the UCI dataset, e.g., Beef, use symbols = jabba.fit_transform(train) , when loading UEA dataset, e.g., BasicMotions, use symbols = jabba.fit_transform(train[0]) . For details, we refer to `UCR/UEA time series dataset <https://www.timeseriesclassification.com/>`_.
+    Functionality of ``loadData()`` currently supports datasets: (1) UEA Archive: 'AtrialFibrillation', 'BasicMotions', 'BasicMotions', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'; (2) UCR Archive: 'Beef'.
+
