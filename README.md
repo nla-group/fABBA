@@ -81,6 +81,8 @@ plt.show()
 
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
+To play fABBA further with real datasets, we recommend users start with [UCI Repository](https://archive.ics.uci.edu/datasets?skip=0&take=10&sort=desc&orderBy=NumHits&search=&Types=Time-Series)
+and [UCR Archive](https://www.cs.ucr.edu/%7Eeamonn/time_series_data_2018/).
 
 #### :star: *Adaptive polygonal chain approximation*
 
