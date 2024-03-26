@@ -7,12 +7,14 @@ Installation guide
 ------------------------------
 fABBA has the following essential dependencies for its functionality:
 
-    * cython
-    * numpy
-    * scipy>=1.2.1
+    * cython (>= 0.29.7)
+    * numpy (>= 1.19.5)
+    * scipy (>=1.2.1)
     * requests
-    * scikit-learn
+    * scikit-learn (>=0.17.1)
+    * threadpoolctl (>= 2.0.0)
     * matplotlib
+
 
 
 I. **pip**
