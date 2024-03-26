@@ -25,12 +25,13 @@ Furthermore, fABBA is fully tolerance-driven and does not require the number of 
 
 fABBA has the following essential dependencies for its functionality:
 
-- cython
-- numpy>=1.17.3
-- scipy>=1.2.1
-- requests
-- scikit-learn
-- matplotlib
+    * cython (>= 0.29.7)
+    * numpy (>= 1.19.5)
+    * scipy (>=1.2.1)
+    * requests
+    * scikit-learn (>=0.17.1)
+    * threadpoolctl (>= 2.0.0)
+    * matplotlib
 
 #### To ensure successful Cython compiling, please update your NumPy to the latest version>= 1.22.0.
 
