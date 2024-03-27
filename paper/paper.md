@@ -94,7 +94,7 @@ inverse_ts = abba.inverse_transform(string)
 Symbolic representations enhance time series processing by a large number of powerful techniques developed, e.g., by the natural language processing or bioinformatics communities [@SAX03; @lin2007experiencing]. *fABBA* is a Python module for computing such symbolic time series representations very efficiently, enabling their use for downstream tasks such as time series classification, forecasting, and anomaly detection. 
 
 # Acknowledgement
-Stefan Güttel acknowledges a Royal Society Industry Fellowship IF/R1/231032.
+Stefan Güttel acknowledges a Royal Society Industry Fellowship IF/R1/231032. Xinye Chen is supported by the European Union (ERC, inEXASCALE, 101075632). Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Council. Neither the European Union nor the granting authority can be held responsible for them.
 
 # References
 
