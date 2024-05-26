@@ -58,6 +58,22 @@ Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies
     :width: 720
 
 
+fABBA enable symbolic approximation of multidimentioanl array. Users simply can recontruct the symbols into original shape via ``recast_shape`` . 
+
+.. code:: python
+    
+    from fABBA import JABBA
+    import numpy as np
+    mts = np.random.randn(10, 20, 30) # 6000 time series values
+    
+    jabba = JABBA(tol=0.01, alpha=0.01, verbose=1)
+    symbols = jabba.fit_transform(mts)
+    reconst = jabba.inverse_transform(symbols) # convert into array
+    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
+    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+
+If one would like to ensure the ``recast_shape`` for shape reconstruction, the input to ``fit_transform`` must be numpy.ndarray.
+
 You can also load dataset via ``loadData``:
 
 .. code:: python
