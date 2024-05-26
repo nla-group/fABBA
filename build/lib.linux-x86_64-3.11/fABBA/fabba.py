@@ -20,8 +20,12 @@ try:
     try:# cython with memory view
         from .separate.aggregation_cm import aggregate as aggregate_fc 
         from .extmod.chainApproximation_cm import compress
-        from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
+        import platform
         
+        if platform.system() != 'Windows':
+            from .extmod.fabba_agg_cm import aggregate as aggregate_fabba 
+        else:
+            from .extmod.fabba_agg_cm_win import aggregate as aggregate_fabba 
         
     except ModuleNotFoundError:
         from .extmod.chainApproximation_c import compress
@@ -580,7 +584,7 @@ class ABBAbase:
     
 class ABBA(ABBAbase):
     def __init__ (self, tol=0.1, k=2, scl=1, verbose=1, max_len=-1):
-        kmeans = KMeans(n_clusters=k, random_state=0, init='k-means++', verbose=0)    
+        kmeans = KMeans(n_clusters=k, random_state=0, verbose=0)    
         super().__init__(clustering=kmeans, tol=tol, scl=scl, verbose=verbose, max_len=max_len)
         
     def digitize(self, pieces, alphabet_set=0):

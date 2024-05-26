@@ -21,7 +21,9 @@ def loadData(name="Beef"):
     Parameters
     ----------
     name : str
-        The dataset name, current support "BasicMotions" and "Beef". 
+        The dataset name, current support 'AtrialFibrillation', 'BasicMotions', 'Beef', 
+              'CharacterTrajectories', 'LSST', 'Epilepsy', 
+              'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'. 
         For more datasets, we refer the users to https://www.timeseriesclassification.com/ 
         or https://archive.ics.uci.edu/datasets. 
         
@@ -38,12 +40,12 @@ def loadData(name="Beef"):
         train = np.load(os.path.join(current_dir, "jabba/data/beef_train.npy"))
         test = np.load(os.path.join(current_dir, "jabba/data/beef_test.npy"))
             
-    elif name == 'BasicMotions':
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+os.path.join(name, name+'_TRAIN.arff')))
-        train = preprocess(train)
-
-        train = arff.loadarff(os.path.join(current_dir, "jabba/data/"+os.path.join(name, name+'_TEST.arff')))
-        train = preprocess(train)
+    elif name in ['AtrialFibrillation', 'BasicMotions', 'CharacterTrajectories', 'LSST',
+             'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels', 
+            ]:
+        train = preprocess(arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TRAIN.arff')))
+        test = preprocess(arff.loadarff(os.path.join(current_dir, "jabba/data/"+name+'_TEST.arff')))
+                
     return train, test
 
 

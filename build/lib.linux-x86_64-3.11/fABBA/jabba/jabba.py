@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import collections
 import platform
+import itertools
 from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
@@ -241,6 +242,7 @@ class JABBA(object):
         self.eta = None # The coefficient applied to auto digitization. Needless to specify.
         self.fillna = fillna
         self.random_state = random_state
+        self.recap_shape = None
         
         
         
@@ -314,13 +316,29 @@ class JABBA(object):
             centers.
         """
         
-        series = np.asarray(series)
-        if series.dtype !=  'float64':
-            series = np.asarray(series).astype('float64')
-            
+
         len_ts = len(series)
-        n_jobs = self.n_jobs_init(n_jobs, _max=len_ts)            
-        if len(series.shape) == 1:
+        n_jobs = self.n_jobs_init(n_jobs, _max=len_ts)     
+        
+        if isinstance(series, np.ndarray):
+            if len(series.shape) == 1:
+                uni_dim = True
+            else:
+                uni_dim = False
+                
+        elif isinstance(series, list):
+            if not isinstance(series[0], list):
+                uni_dim = True
+            else:
+                uni_dim = False
+        else:
+            raise ValueError('Please enter time series with correct shape.')
+                
+        if uni_dim:
+            series = np.asarray(series)
+            if series.dtype !=  'float64':
+                series = np.asarray(series).astype('float64')
+                
             # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
             self.return_series_univariate = True # means the series is univariate,
                                        # so the reconstruction can automatically 
@@ -353,14 +371,18 @@ class JABBA(object):
                 print("Init {} processors.".format(n_jobs))
         else:
             self.return_series_univariate = False
-        
+            if isinstance(series, np.ndarray):
+                if len(series.shape) > 2:
+                    self.recap_shape = series.shape
+                    series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+            
         pieces = list()
         self.start_set = list()
         
         p = Pool(n_jobs)
 
         self.start_set = [ts[0] for ts in series]
-        pieces = [p.apply_async(compress, args=(fillna(ts, self.fillna), self.tol, self.max_len)) for ts in series]
+        pieces = [p.apply_async(compress, args=(fillna(np.asarray(ts).astype(np.double), self.fillna), self.tol, self.max_len)) for ts in series]
 
         p.close()
         p.join()
@@ -420,8 +442,11 @@ class JABBA(object):
 
         if self.init == 'agg':
             if self.auto_digitize:
-                # eta = 0.01
-                self.alpha = pow(60*sum_of_length*(sum_of_length - max_k)*(self.tol**2)/(max_k*(self.eta**2)*(3*(sum_of_length**4)+2-5*(max_k**2))),1/4)
+                self.alpha = pow(
+                        60*sum_of_length*(
+                            np.abs(sum_of_length - max_k))*(self.tol**2)/(max_k*(self.eta**2)*(3*(sum_of_length**4)+2-5*(max_k**2))
+                                                                 ),
+                    1/4)
 
             labels, splist = aggregate(pieces, self.sorting, self.alpha)
             splist = np.array(splist)
@@ -627,7 +652,17 @@ class JABBA(object):
     
     
     
-    
+    def recast_shape(self, reconstruct_list, pad_token=-1):
+        if self.recap_shape is not None:
+            padded = zip(*itertools.zip_longest(*reconstruct_list, fillvalue=pad_token))
+            padded = list(padded)
+            padded = np.asarray(padded).reshape(self.recap_shape)
+        else:
+            print(f"""Please ensure your fitted series (not this function input) is numpy.ndarray type with dimensions > 2.""")
+            
+        return padded
+            
+            
     def string_separation(self, symbols, num_pieces):
         """
         Separate symbols into symbolic subsequence.
@@ -637,6 +672,7 @@ class JABBA(object):
         num_pieces_csum = np.cumsum([0] + num_pieces)
         for index in range(len(num_pieces)):
             string_sequences.append(symbols[num_pieces_csum[index]:num_pieces_csum[index+1]])
+            
         return string_sequences
 
 
