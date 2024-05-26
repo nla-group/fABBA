@@ -26,7 +26,7 @@ class CustomBuildExtCommand(build_ext):
         
 setup_args = {'name':"fABBA",
         'packages':setuptools.find_packages(),
-        'version':"1.2.1",
+        'version':"1.2.2",
         'cmdclass': {'build_ext': CustomBuildExtCommand},
         'install_requires':["numpy>=1.3.0", "scipy>=0.7.0", 
                             "requests", "pandas", 
@@ -54,6 +54,7 @@ setup_args = {'name':"fABBA",
         'license':'BSD 3-Clause'
     }
 
+
 chainApproximation_c = Extension('fABBA.extmod.chainApproximation_c',
                         sources=['fABBA/extmod/chainApproximation_c.pyx'])
 
@@ -69,6 +70,9 @@ inverse_tc = Extension('fABBA.extmod.inverse_tc',
 
 fabba_agg_cm = Extension('fABBA.extmod.fabba_agg_cm',
                         sources=['fABBA/extmod/fabba_agg_cm.pyx'])
+
+fabba_agg_cm_win = Extension('fABBA.extmod.fabba_agg_cm_win',
+                        sources=['fABBA/extmod/fabba_agg_cm_win.pyx'])
 
 aggregation_c = Extension('fABBA.separate.aggregation_c',
                         sources=['fABBA/separate/aggregation_c.pyx'])
@@ -102,6 +106,7 @@ try:
                      chainApproximation_cm,
                      fabba_agg_c,
                      fabba_agg_cm,
+                     fabba_agg_cm_win,
                      inverse_tc,
                      aggregation_c,
                      aggregation_cm,
