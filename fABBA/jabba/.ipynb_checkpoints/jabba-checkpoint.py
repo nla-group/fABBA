@@ -517,8 +517,23 @@ class JABBA(object):
         if series.dtype !=  'float64':
             series = series.astype('float64')
             
+        if isinstance(series, np.ndarray):
+            if len(series.shape) == 1:
+                uni_dim = True
+            else:
+                uni_dim = False
+                
+        elif isinstance(series, list):
+            if not isinstance(series[0], list):
+                uni_dim = True
+            else:
+                uni_dim = False
+        else:
+            raise ValueError('Please enter time series with correct shape.')
+            
         n_jobs = self.n_jobs_init(n_jobs)
-        if len(series.shape) == 1: 
+        
+        if uni_dim: 
             # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
             self.return_series_univariate = True # means the series is univariate,
                                        # so the reconstruction can automatically 
@@ -529,6 +544,15 @@ class JABBA(object):
                     series = np.vstack([series[i*interval : (i+1)*interval] for i in range(n_jobs)])
         else:
             self.return_series_univariate = False
+            
+            if self.recap_shape is not None:
+                if not isinstance(series, np.ndarray):
+                    series = np.asarray(series)
+
+                    if series.shape != self.recap_shape:
+                        raise ValueError('Please enter the input with consistent dimensions.')
+
+                series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
             
         string_sequences = list()
         start_set = list()
