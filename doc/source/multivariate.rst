@@ -74,6 +74,17 @@ fABBA enable symbolic approximation of multidimentioanl array. Users simply can 
 
 If one would like to ensure the ``recast_shape`` for shape reconstruction, the input to ``fit_transform`` must be numpy.ndarray.
 
+
+Regarding the transformation of out-of-sample data, use
+
+.. code:: python
+
+    mts = np.random.randn(20, 20, 30) # new 6000 time series values
+    symbols_trans, start_set = jabba.transform(mts) # Perform transform with fitted model
+    reconst = jabba.inverse_transform(symbols_trans, start_set)
+    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+
+
 You can also load dataset via ``loadData``:
 
 .. code:: python
