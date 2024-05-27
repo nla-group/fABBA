@@ -130,6 +130,15 @@ print(string)                                      # prints BbAaAaAaAaAaAaAaC
 inverse_ts = abba.inverse_transform(string)        # reconstruction
 ```
 
+```fABBA``` is an extensive package, which includes all ABBA variants, you can use the original ABBA method via 
+
+```python
+from fABBA import ABBA
+abba = ABBA(tol=0.1, scl=1, k=5, verbose=0)
+string = abba.fit_transform(ts)
+print(string)
+inverse_ts = abba.inverse_transform(string, ts[0])
+```
 
 #### :star: For multiple time series data transform
 
