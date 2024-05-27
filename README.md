@@ -14,8 +14,7 @@
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10885652.svg)](https://doi.org/10.5281/zenodo.10885652)
 
- The ABBA methods performs a fast and accurate symbolic representation method for temporal data. ``fABBA`` is an Python library for efficient implementation of ABBA methods.
-ABBA is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. The ``fABBA`` library supports different ABBA methods, for example, ABBA and fABBA (in constrast to the software ``fABBA``), whose aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions.  In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
+ The ABBA methods performs a fast and accurate symbolic representation method for temporal data. ``fABBA`` is an Python library for efficient implementation of ABBA methods, which is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. The ``fABBA`` library supports different ABBA methods, for example, ABBA and fABBA (in constrast to the software ``fABBA``), whose aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions.  In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 ## :rocket: Install
