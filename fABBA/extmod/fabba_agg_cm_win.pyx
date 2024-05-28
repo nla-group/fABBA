@@ -64,7 +64,7 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     cdef double[:] clustc # starting point coordinates
     cdef double dist
     
-    cdef np.ndarray[int, ndim=1] labels = np.full(len_ind, -1, dtype=int) 
+    cdef list labels = [-1] * len_ind
         
     cdef list splist = list() # list of starting points
     cdef Py_ssize_t i, ii, j
@@ -78,9 +78,6 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
         ind = np.argsort(sort_vals)
     else:
         ind = np.lexsort((data[:,1], data[:,0]), axis=0) 
-
-    # else: # no sorting
-    #     ind = np.arange(len_ind)
 
     for i in range(len_ind): 
         sp = ind[i] # starting point
@@ -119,5 +116,5 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
         
         lab += 1
         
-    return labels, splist # , nr_dist
+    return np.asarray(labels), splist # , nr_dist
 
