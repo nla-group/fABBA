@@ -85,6 +85,29 @@ Regarding the transformation of out-of-sample data, use
     np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
 
 
+.. 
+
+Note that ``jabba`` use init='agg' as default, one can set it to ``k-means++`` for improved performance while resulting in slower speed. If one switch to ``k-means++`` method, the hyperparameter of ``alpha`` and ``auto_digitize`` is disabled, instead of using them, one should tune the hyperparameter of ``k``, which refers to the number of clusters (distinct symbols) will be used. 
+
+.. code:: python
+ 
+    mts = np.random.randn(20, 20, 30) # new 6000 time series values
+    
+    # For aggregation, init='agg' is default
+    jabba = JABBA(tol=0.01, alpha=0.01, verbose=1)
+    symbols = jabba.fit_transform(mts)
+    reconst = jabba.inverse_transform(symbols) # convert into array
+    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
+    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+
+    # For kmeans, init='k-means++'
+    jabba = JABBA(tol=0.01, k=100, init='k-means++', verbose=1) # use 100 distinct symbols
+    symbols = jabba.fit_transform(mts)
+    reconst = jabba.inverse_transform(symbols) # convert into array
+    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
+    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+
+
 You can also load dataset via ``loadData``:
 
 .. code:: python
