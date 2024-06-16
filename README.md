@@ -6,6 +6,7 @@
 </h3>
 
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
+![Static Badge](https://img.shields.io/badge/Compiler-8A2BE2?label=Cython-Accelerated)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/license.svg)](https://anaconda.org/conda-forge/fabba)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=cyan)](https://pypi.org/project/fABBA/)
