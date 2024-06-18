@@ -201,7 +201,7 @@ class JABBA(object):
         Scale the length of compression pieces. The larger the value is, the more important of the length information is.
         Therefore, it can solve some problem resulted from peak shift.
         
-    auto_digitize - boolean, default=True
+    auto_digitize - boolean, default=False
         Enable auto digitization without prior knowledge of alpha.
         
         
