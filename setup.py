@@ -95,7 +95,7 @@ inversetc_j = Extension('fABBA.jabba.inversetc',
 
 
 try:
-    from Cython.Build import cythonize
+    # from Cython.Build import cythonize
     setuptools.setup(
         setup_requires=["cython", "numpy>=1.17.3"],
         # ext_modules=cythonize(["fABBA/extmod/*.pyx", 
