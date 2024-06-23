@@ -676,15 +676,33 @@ class JABBA(object):
     
     
     
-    def recast_shape(self, reconstruct_list, pad_token=-1):
+    def recast_shape(self, reconstruct_list):
+        """Reshape the multiarray to the same shape of the input, the shape might be expanded or squeezed."""
+        size_list = [len(i) for i in reconstruct_list]
+        fixed_len = self.recap_shape[1] * self.recap_shape[2]
+        
+        if fixed_len > np.max(size_list):
+            warnings.warn('The reconstructed shape has been expanded.', ShapeWarning)
+            
+        elif fixed_len < np.max(size_list):
+            warnings.warn('The reconstructed shape has been squeezed.', ShapeWarning)
+        
+        org_size = len(reconstruct_list)
+        
         if self.recap_shape is not None:
-            padded = zip(*itertools.zip_longest(*reconstruct_list, fillvalue=pad_token))
+            reconstruct_list.append(fixed_len * [-1])
+            pad_token = [np.mean(i) for i in reconstruct_list]
+            padded = zip(*zip_longest(*reconstruct_list, fillvalue=pad_token))
+
             padded = list(padded)
-            padded = np.asarray(padded).reshape(self.recap_shape)
+            padded = np.asarray(padded)
+            padded = padded[:org_size, :fixed_len].reshape(-1, *self.recap_shape[1:])
+            
         else:
             print(f"""Please ensure your fitted series (not this function input) is numpy.ndarray type with dimensions > 2.""")
             
         return padded
+    
             
             
     def string_separation(self, symbols, num_pieces):
@@ -1144,3 +1162,32 @@ def fillna(series, method='ffill'):
         series[np.isnan(series)] = 0
 
     return series
+
+
+
+
+class ShapeWarning(EncodingWarning):
+    pass
+
+
+def zip_longest(*iterables, fillvalue=None):
+    # zip_longest('ABCD', 'xy', fillvalue='-') → Ax By C- D-
+
+    iterators = list(map(iter, iterables))
+    num_active = len(iterators)
+    if not num_active:
+        return
+
+    while True:
+        values = []
+        for i, iterator in enumerate(iterators):
+            try:
+                value = next(iterator)
+            except StopIteration:
+                num_active -= 1
+                if not num_active:
+                    return
+                iterators[i] = itertools.repeat(fillvalue[i])
+                value = fillvalue[i]
+            values.append(value)
+        yield tuple(values)
