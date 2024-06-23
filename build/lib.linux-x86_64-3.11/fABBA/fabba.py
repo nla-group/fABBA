@@ -584,7 +584,7 @@ class ABBAbase:
     
 class ABBA(ABBAbase):
     def __init__ (self, tol=0.1, k=2, scl=1, verbose=1, max_len=-1):
-        kmeans = KMeans(n_clusters=k, random_state=0, verbose=0)    
+        kmeans = KMeans(n_clusters=k, n_init="auto", random_state=0, verbose=0)    
         super().__init__(clustering=kmeans, tol=tol, scl=scl, verbose=verbose, max_len=max_len)
         
     def digitize(self, pieces, alphabet_set=0):
