@@ -67,7 +67,7 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
     
-    elif isinstance(alphabet_set, list) and len(alphabets):
+    elif isinstance(alphabet_set, list):
         alphabets = alphabet_set
        
     else:
