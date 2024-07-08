@@ -289,7 +289,7 @@ def symbolsAssign(clusters, alphabet_set=0):
         
     ----------
     Return:
-
+    
     string (list of string), alphabets(numpy.ndarray): for the
     corresponding symbolic sequence and for mapping from symbols to labels or 
     labels to symbols, repectively.
@@ -310,8 +310,11 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
     
-    elif isinstance(alphabet_set, list) and len(alphabets):
-        alphabets = alphabet_set
+    elif isinstance(alphabet_set, list):
+        if len(clusters) <= len(alphabet_set):
+            alphabets = alphabet_set
+        else:
+            raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
        
     else:
         alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -335,7 +338,7 @@ def symbolsAssign(clusters, alphabet_set=0):
 
     alphabets = np.asarray(alphabets)
     string = alphabets[clusters]
-    return string, alphabets
+    return string.tolist(), alphabets
 
     
     
