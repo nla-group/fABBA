@@ -68,7 +68,10 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'w', 'x', 'y', 'z']
     
     elif isinstance(alphabet_set, list):
-        alphabets = alphabet_set
+        if len(clusters) <= len(alphabet_set):
+            alphabets = alphabet_set
+        else:
+            raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
        
     else:
         alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
