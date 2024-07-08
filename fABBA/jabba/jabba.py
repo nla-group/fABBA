@@ -685,10 +685,10 @@ class JABBA(object):
         fixed_len = self.recap_shape[1] * self.recap_shape[2]
         
         if fixed_len > np.max(size_list):
-            warnings.warn('The reconstructed shape has been expanded.', ShapeWarning)
+            warnings.warn('The reconstructed shape has been expanded.')
             
         elif fixed_len < np.max(size_list):
-            warnings.warn('The reconstructed shape has been squeezed.', ShapeWarning)
+            warnings.warn('The reconstructed shape has been squeezed.')
         
         org_size = len(reconstruct_list)
         
@@ -1167,10 +1167,6 @@ def fillna(series, method='ffill'):
     return series
 
 
-
-
-class ShapeWarning(EncodingWarning):
-    pass
 
 
 def zip_longest(*iterables, fillvalue=None):
