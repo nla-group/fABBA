@@ -338,7 +338,7 @@ def symbolsAssign(clusters, alphabet_set=0):
 
     alphabets = np.asarray(alphabets)
     string = alphabets[clusters]
-    return string.tolist(), alphabets
+    return string, alphabets
 
     
     
