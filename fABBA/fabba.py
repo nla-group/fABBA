@@ -296,6 +296,7 @@ def symbolsAssign(clusters, alphabet_set=0):
     labels to symbols, repectively.
 
     """
+    clusters = pd.Series(clusters)
     N = len(clusters.unique())
     
     if alphabet_set == 0:
@@ -325,8 +326,6 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
                     'W', 'X', 'Y', 'Z']
         
-    clusters = pd.Series(clusters)
-
     cluster_sort = [0] * N 
     counter = collections.Counter(clusters)
     for ind, el in enumerate(counter.most_common()):
