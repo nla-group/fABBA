@@ -67,8 +67,11 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
     
-    elif isinstance(alphabet_set, list) and len(alphabets):
-        alphabets = alphabet_set
+    elif isinstance(alphabet_set, list):
+        if len(clusters) <= len(alphabet_set):
+            alphabets = alphabet_set
+        else:
+            raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
        
     else:
         alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -201,7 +204,7 @@ class JABBA(object):
         Scale the length of compression pieces. The larger the value is, the more important of the length information is.
         Therefore, it can solve some problem resulted from peak shift.
         
-    auto_digitize - boolean, default=True
+    auto_digitize - boolean, default=False
         Enable auto digitization without prior knowledge of alpha.
         
         
@@ -676,15 +679,33 @@ class JABBA(object):
     
     
     
-    def recast_shape(self, reconstruct_list, pad_token=-1):
+    def recast_shape(self, reconstruct_list):
+        """Reshape the multiarray to the same shape of the input, the shape might be expanded or squeezed."""
+        size_list = [len(i) for i in reconstruct_list]
+        fixed_len = np.prod(self.recap_shape[1:])
+        
+        if fixed_len > np.max(size_list):
+            warnings.warn('The reconstructed shape has been expanded.')
+            
+        elif fixed_len < np.max(size_list):
+            warnings.warn('The reconstructed shape has been squeezed.')
+        
+        org_size = len(reconstruct_list)
+        
         if self.recap_shape is not None:
-            padded = zip(*itertools.zip_longest(*reconstruct_list, fillvalue=pad_token))
+            reconstruct_list.append(fixed_len * [-1])
+            pad_token = [np.mean(i) for i in reconstruct_list]
+            padded = zip(*zip_longest(*reconstruct_list, fillvalue=pad_token))
+
             padded = list(padded)
-            padded = np.asarray(padded).reshape(self.recap_shape)
+            padded = np.asarray(padded)
+            padded = padded[:org_size, :fixed_len].reshape(-1, *self.recap_shape[1:])
+            
         else:
             print(f"""Please ensure your fitted series (not this function input) is numpy.ndarray type with dimensions > 2.""")
             
         return padded
+    
             
             
     def string_separation(self, symbols, num_pieces):
@@ -1144,3 +1165,28 @@ def fillna(series, method='ffill'):
         series[np.isnan(series)] = 0
 
     return series
+
+
+
+
+def zip_longest(*iterables, fillvalue=None):
+    # zip_longest('ABCD', 'xy', fillvalue='-') → Ax By C- D-
+
+    iterators = list(map(iter, iterables))
+    num_active = len(iterators)
+    if not num_active:
+        return
+
+    while True:
+        values = []
+        for i, iterator in enumerate(iterators):
+            try:
+                value = next(iterator)
+            except StopIteration:
+                num_active -= 1
+                if not num_active:
+                    return
+                iterators[i] = itertools.repeat(fillvalue[i])
+                value = fillvalue[i]
+            values.append(value)
+        yield tuple(values)

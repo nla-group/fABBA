@@ -682,7 +682,7 @@ class JABBA(object):
     def recast_shape(self, reconstruct_list):
         """Reshape the multiarray to the same shape of the input, the shape might be expanded or squeezed."""
         size_list = [len(i) for i in reconstruct_list]
-        fixed_len = self.recap_shape[1] * self.recap_shape[2]
+        fixed_len = np.prod(self.recap_shape[1:])
         
         if fixed_len > np.max(size_list):
             warnings.warn('The reconstructed shape has been expanded.')

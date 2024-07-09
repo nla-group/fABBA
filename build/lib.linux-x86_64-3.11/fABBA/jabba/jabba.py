@@ -67,8 +67,11 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
                     'w', 'x', 'y', 'z']
     
-    elif isinstance(alphabet_set, list) and len(alphabets):
-        alphabets = alphabet_set
+    elif isinstance(alphabet_set, list):
+        if len(clusters) <= len(alphabet_set):
+            alphabets = alphabet_set
+        else:
+            raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
        
     else:
         alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -679,13 +682,13 @@ class JABBA(object):
     def recast_shape(self, reconstruct_list):
         """Reshape the multiarray to the same shape of the input, the shape might be expanded or squeezed."""
         size_list = [len(i) for i in reconstruct_list]
-        fixed_len = self.recap_shape[1] * self.recap_shape[2]
+        fixed_len = np.prod(self.recap_shape[1:])
         
         if fixed_len > np.max(size_list):
-            warnings.warn('The reconstructed shape has been expanded.', ShapeWarning)
+            warnings.warn('The reconstructed shape has been expanded.')
             
         elif fixed_len < np.max(size_list):
-            warnings.warn('The reconstructed shape has been squeezed.', ShapeWarning)
+            warnings.warn('The reconstructed shape has been squeezed.')
         
         org_size = len(reconstruct_list)
         
@@ -1164,10 +1167,6 @@ def fillna(series, method='ffill'):
     return series
 
 
-
-
-class ShapeWarning(EncodingWarning):
-    pass
 
 
 def zip_longest(*iterables, fillvalue=None):
