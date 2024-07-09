@@ -52,6 +52,7 @@ def symbolsAssign(clusters, alphabet_set=0):
     labels to symbols, repectively.
 
     """
+    N = len(clusters.unique())
     
     if alphabet_set == 0:
         alphabets = ['A','a','B','b','C','c','D','d','E','e',
@@ -68,7 +69,7 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'w', 'x', 'y', 'z']
     
     elif isinstance(alphabet_set, list):
-        if len(clusters) <= len(alphabet_set):
+        if N <= len(alphabet_set):
             alphabets = alphabet_set
         else:
             raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
@@ -81,7 +82,6 @@ def symbolsAssign(clusters, alphabet_set=0):
                     'W', 'X', 'Y', 'Z']
         
     clusters = pd.Series(clusters)
-    N = len(clusters.unique())
 
     cluster_sort = [0] * N 
     counter = collections.Counter(clusters)
