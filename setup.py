@@ -118,8 +118,8 @@ try:
     )
     
 except ext_errors as ext_reason:
-    log.warn(ext_reason)
-    log.warn("The C extension could not be compiled.")
+    log.warning(ext_reason)
+    log.warning("The C extension could not be compiled.")
     if 'build_ext' in setup_args['cmdclass']:
         del setup_args['cmdclass']['build_ext']
     setuptools.setup(setup_requires=["numpy>=1.17.3"], **setup_args)
