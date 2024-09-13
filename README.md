@@ -248,16 +248,6 @@ g++ -o test runtime.cpp
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
 ```bibtex
-@article{Chen2024, 
-doi = {10.21105/joss.06294}, 
-year = {2024}, publisher = {The Open Journal}, volume = {9}, number = {95}, pages = {6294},
-author = {Xinye Chen and Stefan Güttel}, 
-title = {fABBA: A Python library for the fast symbolic approximation of time series}, 
-journal = {Journal of Open Source Software} 
-}
-```
-
-```bibtex
 @article{10.1145/3532622,
 author = {Chen, Xinye and G\"{u}ttel, Stefan},
 title = {An Efficient Aggregation Method for the Symbolic Representation of Temporal Data},
