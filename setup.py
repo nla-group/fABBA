@@ -2,6 +2,7 @@ import logging
 import setuptools
 from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatformError
 from setuptools import Extension
+import warnings
 
 try:
     from Cython.Distutils import build_ext
