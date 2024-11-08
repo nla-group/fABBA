@@ -17,6 +17,20 @@ logging.basicConfig()
 log = logging.getLogger(__file__)
 ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError, IOError, SystemExit)
 
+
+__package__ = "fABBA"
+
+
+def get_version(fname):
+    with open(fname) as f:
+        for line in f:
+            if line.startswith("__version__ = '"):
+                return line.split("'")[1]
+    raise RuntimeError('Error in parsing version string.')
+
+
+__version__ = get_version(__package__+'/__init__.py')
+
 class CustomBuildExtCommand(build_ext):
     """build_ext command for use when numpy headers are needed."""
 
@@ -25,7 +39,7 @@ class CustomBuildExtCommand(build_ext):
         self.include_dirs.append(numpy.get_include())
         build_ext.run(self)
         
-setup_args = {'name':"fABBA",
+setup_args = {'name': __package__,
         'packages':setuptools.find_packages(),
         'version':"1.2.8",
         'cmdclass': {'build_ext': CustomBuildExtCommand},
