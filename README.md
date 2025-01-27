@@ -244,6 +244,21 @@ g++ -o test runtime.cpp
 
 ## :paperclip: Citation
 
+If you use fABBA software for your benchmarking,  we would appreciate your citing: 
+```bibtex
+@article{Chen2024, 
+doi = {10.21105/joss.06294}, 
+url = {https://doi.org/10.21105/joss.06294}, 
+year = {2024}, 
+publisher = {The Open Journal}, 
+volume = {9}, 
+number = {95}, 
+pages = {6294}, 
+author = {Xinye Chen and Stefan Güttel}, 
+title = {fABBA: A Python library for the fast symbolic approximation of time series},
+journal = {Journal of Open Source Software}
+}
+```
 
 If you use fABBA in a scientific publication, we would appreciate your citing:
 
