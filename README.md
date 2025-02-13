@@ -1,7 +1,9 @@
-<h1 align="left">
-  fABBA: An efficient symbolic aggregate approximation for temporal data  :dolphin:
+<h1 align="center">
+  fABBA
 </h1>
-
+<h2 align="left">
+  An efficient symbolic aggregate approximation for temporal data  :dolphin:
+</h2>
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
