@@ -1,12 +1,11 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 1.2.8
+Version: 1.3.0
 Summary: An efficient aggregation method for the symbolic representation of temporal data
 Home-page: https://github.com/nla-group/fABBA
 Author: Xinye Chen, Stefan Güttel
 Author-email: xinye.chen@manchester.ac.uk, stefan.guettel@manchester.ac.uk
 License: BSD 3-Clause
-Platform: UNKNOWN
 Classifier: Intended Audience :: Science/Research
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python
@@ -17,6 +16,14 @@ Classifier: Operating System :: Unix
 Classifier: Programming Language :: Python :: 3
 Description-Content-Type: text/x-rst
 License-File: LICENSE
+Requires-Dist: numpy>=1.3.0
+Requires-Dist: scipy>=0.7.0
+Requires-Dist: requests
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: joblib>=1.1.1
+Requires-Dist: psutil
+Requires-Dist: matplotlib
 
 .. image:: https://app.travis-ci.com/nla-group/fABBA.svg?branch=master
     :target: https://app.travis-ci.com/nla-group/fABBA.svg?branch=master
@@ -186,8 +193,6 @@ If you use fABBA in a scientific publication, we would appreciate your citing:
       type    = {arXiv EPrint},
       url     = {https://arxiv.org/abs/2201.05697}
     }
-
-
 
 
 
