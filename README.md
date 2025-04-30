@@ -167,7 +167,7 @@ Note:  function ``loadData()`` is a lightweight API for time series dataset load
 
 For the out-of-sample data, use the function ``transform`` to symbolize the test time series, and reconstruct the symbolization via function  ``inverse_transform``, the code illustration is as follows: 
 ``` Python
-test_symbols, start_set = jabba.transform(test) # if UEA time series is used, simply use instead jabba.transform(test[0])
+test_symbols, start_set = jabba.transform(test) # if UEA time series is used, simply use instead qabba.transform(test[0])
 test_reconst = jabba.inverse_transform(test_symbols, start_set)
 ```
 
