@@ -171,7 +171,29 @@ test_symbols, start_set = jabba.transform(test) # if UEA time series is used, si
 test_reconst = jabba.inverse_transform(test_symbols, start_set)
 ```
 
+#### :star: For symbolic approximation with quantized ABBA
 
+Load ``QABBA`` package and data:
+
+``` Python
+from fABBA import QABBA
+from fABBA import loadData
+train, test = loadData()
+```
+
+Built in ``QABBA`` provide parameter of ``init`` for the specification of ABBA methods, if set ``agg``, then it will automatically turn to fABBA method, and if set it to ``k-means``, it will turn to ABBA method automatically. Use ``QABBA`` object to fit and symbolize the train set via API ``fit_transform``, and reconstruct the time series from the symbolic representation simply by
+``` Python
+jabba = QABBA(tol=0.0005, init='agg', verbose=1, bits_for_len=8, bits_for_inc=12) 
+symbols = qabba.fit_transform(train) 
+reconst = qabba.inverse_transform(symbols)
+```
+
+
+For the out-of-sample data, use the function ``transform`` to symbolize the test time series, and reconstruct the symbolization via function  ``inverse_transform``, the code illustration is as follows: 
+``` Python
+test_symbols, start_set = qabba.transform(test) # if UEA time series is used, simply use instead jabba.transform(test[0])
+test_reconst = qabba.inverse_transform(test_symbols, start_set)
+```
 
 #### :star: *Image compression*
 
