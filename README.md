@@ -242,7 +242,7 @@ g++ -o test runtime.cpp
 
 ## :paperclip: Citation
 
-If you use fABBA software for your benchmarking,  we would appreciate your citing: 
+If you use ``fABBA`` software for your benchmarking,  we would appreciate your citing: 
 ```bibtex
 @article{Chen2024, 
 doi = {10.21105/joss.06294}, 
@@ -258,7 +258,7 @@ journal = {Journal of Open Source Software}
 }
 ```
 
-If you use fABBA in a scientific publication, we would appreciate your citing:
+If you use fABBA meethod in a scientific publication, we would appreciate your citing:
 
 ```bibtex
 @article{10.1145/3532622,
@@ -274,6 +274,21 @@ numpages = {22},
 }
 ```
 
+
+If you use QABBA method in a scientific publication, we would appreociate your citing:
+
+
+```bibtex
+@misc{2411.15209},
+      title={Quantized symbolic time series approximation}, 
+      author={Erin Carson and Xinye Chen and Cheng Kang},
+      year={2025},
+      eprint={2411.15209},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2411.15209}, 
+}
+```
 
 #####  If you have any questions, please be free to reach us!
 
