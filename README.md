@@ -80,12 +80,14 @@ plt.show()
 ```
 
 
+
+![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
+
+
 #### :star: *Load paramters*
 
 One can load the parameters via: ``fabba.parameters``, ``fabba.paramters.centers``.
 
-
-![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
 To play fABBA further with real datasets, we recommend users start with [UCI Repository](https://archive.ics.uci.edu/datasets?skip=0&take=10&sort=desc&orderBy=NumHits&search=&Types=Time-Series)
 and [UCR Archive](https://www.cs.ucr.edu/%7Eeamonn/time_series_data_2018/).
