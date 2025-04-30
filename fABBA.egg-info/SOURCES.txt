@@ -9,7 +9,6 @@ fABBA/fabba_agg.py
 fABBA/fkmns.py
 fABBA/inverse_t.py
 fABBA/load_datasets.py
-fABBA/qabba.py
 fABBA.egg-info/PKG-INFO
 fABBA.egg-info/SOURCES.txt
 fABBA.egg-info/dependency_links.txt
@@ -43,6 +42,7 @@ fABBA/jabba/inversetc.c
 fABBA/jabba/inversetc.pyx
 fABBA/jabba/jabba.py
 fABBA/jabba/preprocessing.py
+fABBA/jabba/qabba.py
 fABBA/jabba/data/AtrialFibrillation_TEST.arff
 fABBA/jabba/data/AtrialFibrillation_TRAIN.arff
 fABBA/jabba/data/BasicMotions_TEST.arff
