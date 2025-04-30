@@ -32,6 +32,128 @@ except ModuleNotFoundError:
 
 
 
+import multiprocessing
+import subprocess
+
+
+def get_macos_thread_affinity():
+    """Attempt to get thread affinity on macOS using Mach thread_policy_get."""
+    import ctypes
+    from ctypes import c_uint32, c_int, c_size_t
+    try:
+        libc = ctypes.CDLL('libc.dylib')
+        THREAD_AFFINITY_POLICY = 4
+        THREAD_AFFINITY_POLICY_COUNT = 1
+
+        class ThreadAffinityPolicyData(ctypes.Structure):
+            _fields_ = [("affinity_tag", c_uint32)]
+
+        mach_thread_self = libc.mach_thread_self
+        mach_thread_self.restype = c_uint32
+
+        policy_data = ThreadAffinityPolicyData()
+        policy_count = c_uint32(THREAD_AFFINITY_POLICY_COUNT)
+        get_default = c_int(0)
+
+        ret = libc.thread_policy_get(
+            mach_thread_self(),
+            c_uint32(THREAD_AFFINITY_POLICY),
+            ctypes.byref(policy_data),
+            ctypes.byref(policy_count),
+            ctypes.byref(get_default)
+        )
+
+        if ret == 0 and policy_data.affinity_tag != 0:
+            # print(f"macOS thread_policy_get succeeded: Affinity tag {policy_data.affinity_tag}")
+            return [policy_data.affinity_tag]
+        else:
+            print(f"macOS thread_policy_get failed: Error code {ret}, Affinity tag: {policy_data.affinity_tag}")
+            return None
+        
+    except Exception as e:
+        print(f"Exception in macOS thread_policy_get: {str(e)}")
+        return None
+
+def get_macos_cpu_count():
+    """Get the number of available CPUs on macOS using multiprocessing."""
+    try:
+        cpu_count = multiprocessing.cpu_count()
+        # print(f"Retrieved CPU count via multiprocessing: {cpu_count}")
+        return list(range(cpu_count))
+    except Exception as e:
+        print(f"Exception in multiprocessing.cpu_count: {str(e)}")
+        return None
+
+def get_macos_cpu_count_sysctl():
+    """Get the number of available CPUs on macOS using sysctl."""
+    try:
+        result = subprocess.run(['sysctl', '-n', 'hw.ncpu'], capture_output=True, text=True, check=True)
+        cpu_count = int(result.stdout.strip())
+        # print(f"Retrieved CPU count via sysctl: {cpu_count}")
+        return list(range(cpu_count))
+    except Exception as e:
+        print(f"Exception in sysctl hw.ncpu: {str(e)}")
+        return None
+
+def get_cpu_affinity():
+    """Get CPU affinity for the current process, with enhanced macOS support."""
+    import platform
+    system = platform.system()
+    try:
+        import psutil
+    except ImportError:
+        psutil = None
+        
+    try:
+        # Linux: Try os.sched_getaffinity
+        if hasattr(os, 'sched_getaffinity') and system == 'Linux':
+            affinity = os.sched_getaffinity(0)
+            # print(f"Retrieved Linux affinity: {affinity}")
+            return affinity
+
+        # Cross-platform: Try psutil.cpu_affinity
+        if psutil is not None:
+            process = psutil.Process()
+            if hasattr(process, 'cpu_affinity'):
+                try:
+                    affinity = process.cpu_affinity()
+                    # print(f"Retrieved psutil affinity: {affinity}")
+                    return affinity
+                except Exception as e:
+                    print(f"psutil.cpu_affinity failed: {str(e)}")
+            else:
+                print("psutil.cpu_affinity not available in this version")
+               
+
+        # macOS: Try thread affinity and fallbacks
+        if system == 'Darwin':
+            # print("Attempting macOS thread affinity retrieval...")
+            affinity = get_macos_thread_affinity()
+            if affinity:
+                return affinity
+            # print("Falling back to CPU count as macOS affinity proxy...")
+            affinity = get_macos_cpu_count()
+            if affinity:
+                # print("Note: This is the list of available CPUs, not true affinity")
+                return affinity
+            # print("Falling back to sysctl CPU count...")
+            affinity = get_macos_cpu_count_sysctl()
+            if affinity:
+                # print("Note: This is the list of available CPUs, not true affinity")
+                return affinity
+            # print("macOS does not provide direct CPU affinity information")
+
+        # Other platforms
+        else:
+            print(f"CPU affinity not supported on {system}")
+
+
+    except Exception as e:
+        print(f"Unexpected error in get_cpu_affinity: {str(e)}")
+        
+    return None
+
+
 def symbolsAssign(clusters, alphabet_set=0):
     """
     Automatically assign symbols to different groups, start with '!'
@@ -726,10 +848,10 @@ class JABBA(object):
         Initialize parameter n_jobs.
         """
         
-        
         if n_jobs > _max:
             n_jobs = _max
             warnings.warn("n_jobs init warning, 'n_jobs' is set to maximum {}.".format(n_jobs))
+        
         if not isinstance(n_jobs,int):
             raise TypeError('Expected a int type.')
         
@@ -738,14 +860,16 @@ class JABBA(object):
                 "Please feed an correct value for n_jobs.")
             
         if n_jobs == None or n_jobs == -1:
-            if platform.system() == 'Linux':
-                n_jobs = len(os.sched_getaffinity(0)) 
+            cpu_affinity = get_cpu_affinity()
+            if cpu_affinity is not None:
+                n_jobs = len(cpu_affinity) 
             else:
-                n_jobs = os.cpu_count()
+                n_jobs = 1
             # int(mp.cpu_count()) , return the available usable CPUs
         else:
             n_jobs = n_jobs
         return n_jobs
+
 
 
 
