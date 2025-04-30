@@ -79,6 +79,12 @@ plt.grid(True, axis='y')
 plt.show()
 ```
 
+
+#### :star: *Load paramters*
+
+One can load the parameters via: ``fabba.parameters``, ``fabba.paramters.centers``.
+
+
 ![reconstruction](https://raw.githubusercontent.com/nla-group/fABBA/master/figs/demo.png)
 
 To play fABBA further with real datasets, we recommend users start with [UCI Repository](https://archive.ics.uci.edu/datasets?skip=0&take=10&sort=desc&orderBy=NumHits&search=&Types=Time-Series)
@@ -280,13 +286,13 @@ If you use QABBA method in a scientific publication, we would appreociate your c
 
 ```bibtex
 @misc{2411.15209},
-      title={Quantized symbolic time series approximation}, 
-      author={Erin Carson and Xinye Chen and Cheng Kang},
-      year={2025},
-      eprint={2411.15209},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2411.15209}, 
+title={Quantized symbolic time series approximation}, 
+author={Erin Carson and Xinye Chen and Cheng Kang},
+year={2025},
+eprint={2411.15209},
+archivePrefix={arXiv},
+primaryClass={cs.LG},
+url={https://arxiv.org/abs/2411.15209}, 
 }
 ```
 
