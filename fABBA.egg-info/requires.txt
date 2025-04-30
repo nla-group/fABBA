@@ -4,5 +4,4 @@ requests
 pandas
 scikit-learn
 joblib>=1.1.1
-psutil
 matplotlib
