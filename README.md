@@ -309,7 +309,7 @@ If you use QABBA method in a scientific publication, we would appreociate your c
 
 
 ```bibtex
-@misc{2411.15209},
+@misc{2411.15209,
 title={Quantized symbolic time series approximation}, 
 author={Erin Carson and Xinye Chen and Cheng Kang},
 year={2025},
