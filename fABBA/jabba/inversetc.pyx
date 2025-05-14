@@ -180,7 +180,7 @@ cpdef inv_compress(double[:, :] pieces, double start):
 
 
 cpdef inv_compress_fp(double[:, :] pieces, double start):
-    """(fixed point)
+    """
     Reconstruct time series from its first value `ts0` and its `pieces`.
     `pieces` must have (at least) two columns, incremenent and window width, resp.
     A window width w means that the piece ranges from s to s+w.
