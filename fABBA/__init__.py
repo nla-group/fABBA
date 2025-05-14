@@ -29,3 +29,6 @@ from .jabba.fkmns import sampledKMeansInter as fkmeans
 
 from .jabba import qabba
 from .jabba.qabba import *
+
+from .jabba import xabba
+from .jabba.xabba import XABBA
