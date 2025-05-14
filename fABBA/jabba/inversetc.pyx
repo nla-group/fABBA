@@ -44,7 +44,7 @@ def inv_transform(list strings, np.ndarray[np.float64_t, ndim=2] centers, list a
 
 
 def inv_transform_fp(list strings, np.ndarray[np.float64_t, ndim=2] centers, list alphabets, double start=0):
-    "" "
+    """
     Convert ABBA symbolic representation (fixed point) back to numeric time series representation.
 
     Parameters
