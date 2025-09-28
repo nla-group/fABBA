@@ -1728,7 +1728,7 @@ def fillna(series, method='ffill'):
 
 
 
-class ShapeWarning(EncodingWarning):
+class ShapeWarning(UserWarning):
     pass
 
 
