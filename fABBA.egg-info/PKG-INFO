@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fABBA
-Version: 1.3.1
+Version: 1.3.2
 Summary: An efficient aggregation method for the symbolic representation of temporal data
 Home-page: https://github.com/nla-group/fABBA
 Author: Xinye Chen, Stefan Güttel
@@ -47,7 +47,7 @@ Requires-Dist: matplotlib
 fABBA is a fast and accurate symbolic representation method for temporal data. 
 It is based on a polygonal chain approximation of the time series followed by an aggregation of the polygonal pieces into groups. 
 The aggregation process is sped up by sorting the polygonal pieces and exploiting early termination conditions. 
-In contrast to the ABBA method [S. Elsworth and S. GÃ¼ttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
+In contrast to the ABBA method [S. Elsworth and S. Güttel, Data Mining and Knowledge Discovery, 34:1175-1200, 2020], fABBA avoids repeated within-cluster-sum-of-squares computations which reduces its computational complexity significantly.
 Furthermore, fABBA is fully tolerance-driven and does not require the number of time series symbols to be specified by the user. 
 
 --------
@@ -105,7 +105,7 @@ The choice of parameters depends on the application, but in practice, one often 
 
 - *Adaptive polygonal chain approximation*
 
-Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Hereâ€™s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
+Instead of using `transform` which combines the polygonal chain approximation of the time series and the symbolic conversion into one, both steps of fABBA can be performed independently. Here’s how to obtain the compression pieces and reconstruct time series by inversely transforming the pieces:
 
 .. code:: python
 
