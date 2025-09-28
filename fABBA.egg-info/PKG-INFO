@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: fABBA
 Version: 1.3.2
 Summary: An efficient aggregation method for the symbolic representation of temporal data
@@ -23,6 +23,16 @@ Requires-Dist: pandas
 Requires-Dist: scikit-learn
 Requires-Dist: joblib>=1.1.1
 Requires-Dist: matplotlib
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
 
 .. image:: https://app.travis-ci.com/nla-group/fABBA.svg?branch=master
     :target: https://app.travis-ci.com/nla-group/fABBA.svg?branch=master
