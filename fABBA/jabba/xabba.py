@@ -289,75 +289,64 @@ def compute_storage(centers, strings, bits_for_len, bits_for_inc, bits_for_ts=32
     return size_centers + size_strings + bits_for_ts
 
 
+
+
 def symbolsAssign(clusters, alphabet_set=0):
     """
     Automatically assign symbols to different groups, start with '!'
-
+    
     Parameters
     ----------
     clusters - list or pd.Series or array
         The list of labels.
-
+            
     alphabet_set - int or list
         The list of alphabet letter.
-
+        
     ----------
     Return:
-
+    
     string (list of string), alphabets(numpy.ndarray): for the
-    corresponding symbolic sequence and for mapping from symbols to labels or
+    corresponding symbolic sequence and for mapping from symbols to labels or 
     labels to symbols, repectively.
 
     """
-
+    
     if alphabet_set == 0:
-        alphabets = ['A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e',
-                     'F', 'f', 'G', 'g', 'H', 'h', 'I', 'i', 'J', 'j',
-                     'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o',
-                     'P', 'p', 'Q', 'q', 'R', 'r', 'S', 's', 'T', 't',
-                     'U', 'u', 'V', 'v', 'W', 'w', 'X', 'x', 'Y', 'y', 'Z', 'z']
-
+        alphabets = ['A','a','B','b','C','c','D','d','E','e',
+                    'F','f','G','g','H','h','I','i','J','j',
+                    'K','k','L','l','M','m','N','n','O','o',
+                    'P','p','Q','q','R','r','S','s','T','t',
+                    'U','u','V','v','W','w','X','x','Y','y','Z','z']
+    
     elif alphabet_set == 1:
         alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                     'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-                     'w', 'x', 'y', 'z']
-
-    elif isinstance(alphabet_set, list) and len(alphabet_set):
+                    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
+                    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
+                    'w', 'x', 'y', 'z']
+    
+    elif isinstance(alphabet_set, list) and len(alphabets):
         alphabets = alphabet_set
-
+       
     else:
         alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-                     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-                     'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-                     'W', 'X', 'Y', 'Z']
-
+                    'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
+                    'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+                    'W', 'X', 'Y', 'Z']
+        
     clusters = pd.Series(clusters)
     N = len(clusters.unique())
 
-    cluster_sort = [0] * N
+    cluster_sort = [0] * N 
     counter = collections.Counter(clusters)
     for ind, el in enumerate(counter.most_common()):
         cluster_sort[ind] = el[0]
 
-    # if N >= len(alphabets):
-    #     alphabets = [chr(i+33) for i in range(0, N)]
-    # else:
-    #     alphabets = alphabets[:N]
-
-    if N > len(alphabets) and len(alphabets) == 32000:
-        print("############################  Change the Alphabet  ############################")
-        print("How many new alphabet needed : " + str(N - 32000))
-        needed_alphabet_len = N - 32000
-        for i in range(0, needed_alphabet_len):
-            alphabets.append(str(i) + 'ABBA')
-    elif N > len(alphabets) and len(alphabets) != 32000:
-        print("The length of used symbols is: " + str(N))
-        alphabets = [chr(i + 33) for i in range(0, N)]
+    if N >= len(alphabets):
+        alphabets = [chr(i+33) for i in range(0, N)]
     else:
-        print("The length of used symbols is: " + str(N))
         alphabets = alphabets[:N]
 
     alphabets = np.asarray(alphabets)
@@ -419,7 +408,6 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
             reconstruction = reconstruction.reshape(pabba.d_shape)
             
     return reconstruction
-
 
 
 class XABBA(object):
@@ -512,7 +500,7 @@ class XABBA(object):
         self.recap_shape = None
         
         
-    def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False, llm_split='Pre'):
+    def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False):
         """
         Fitted the numerical series and transform them into symbolic representation.
         
@@ -565,6 +553,7 @@ class XABBA(object):
         
     
     
+
     def parallel_compress(self, series, n_jobs=-1):
         """
         Compress the numerical series in a parallel manner.
@@ -681,9 +670,10 @@ class XABBA(object):
             The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.
         """
         
+        series = np.array(series)
         len_ts = len(series)
         
-        if len(series[0]) > 1:
+        if len(series.shape) > 1:
             sum_of_length = sum([len(series[i]) for i in range(len_ts)])
             self.eta = 0.000002
         else:
@@ -763,7 +753,7 @@ class XABBA(object):
         
         
         
-    def transform(self, series, n_jobs=-1, llm_split='Pre'):
+    def transform(self, series, n_jobs=-1):
         """
         Transform multiple series (numerical sequences) to symbolic sequences.
         
@@ -817,14 +807,7 @@ class XABBA(object):
                         raise ValueError('Please enter the input with consistent dimensions.')
 
                 series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
-
-
-            if llm_split == 'Pre':
-                series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
-            elif llm_split == 'Post':
-                series = series.reshape(-1, int(np.prod(np.shape(series)[1:])))
-
-
+            
         string_sequences = list()
         start_set = list()
         if n_jobs != 1:
@@ -858,7 +841,7 @@ class XABBA(object):
         """
         
         pieces = compress_fp(series, self.tol, self.max_len)
-        pieces = pieces[:,:2] 
+        pieces = np.asarray(pieces)[:,:2] 
 
         symbols_series = list()
         
@@ -996,6 +979,8 @@ class XABBA(object):
         for index in range(len(num_pieces)):
             string_sequences.append(symbols[num_pieces_csum[index]:num_pieces_csum[index+1]])
         return string_sequences
+
+
 
 
 
