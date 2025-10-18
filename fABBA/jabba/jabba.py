@@ -541,7 +541,7 @@ class JABBA(object):
         
         len_ts = len(series)
         
-        if len(series[0]) > 1:
+        if len(series.shape) > 1:
             sum_of_length = sum([len(series[i]) for i in range(len_ts)])
             self.eta = 0.000002
         else:
@@ -1315,3 +1315,4 @@ def zip_longest(*iterables, fillvalue=None):
                 value = fillvalue[i]
             values.append(value)
         yield tuple(values)
+
