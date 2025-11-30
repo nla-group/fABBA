@@ -1,5 +1,7 @@
 LICENSE
 README.rst
+pyproject.toml
+setup.cfg
 setup.py
 fABBA/__init__.py
 fABBA/chainApproximation.py
@@ -60,6 +62,7 @@ fABBA/jabba/data/NATOPS_TEST.arff
 fABBA/jabba/data/NATOPS_TRAIN.arff
 fABBA/jabba/data/UWaveGestureLibrary_TEST.arff
 fABBA/jabba/data/UWaveGestureLibrary_TRAIN.arff
+fABBA/jabba/data/__init__.py
 fABBA/jabba/data/beef_test.npy
 fABBA/jabba/data/beef_train.npy
 fABBA/separate/__init__.py
