@@ -41,6 +41,38 @@ import multiprocessing
 import subprocess
 
 
+def check_pytorch_installation():
+    """
+    Checks if the PyTorch library is installed and prints the version information.
+    """
+    try:
+        # Attempt to import PyTorch
+        import torch
+
+        # If successful, print confirmation and version details
+        print("PyTorch is successfully installed.")
+        print(f"   PyTorch Version: {torch.__version__}")
+        
+        # Check for CUDA availability
+        if torch.cuda.is_available():
+            print("   CUDA is available! GPU Acceleration is possible.")
+            print(f"   CUDA Version: {torch.version.cuda}")
+            print(f"   Device Name: {torch.cuda.get_device_name(0)}")
+        else:
+            print("   CUDA is NOT available. Running on CPU.")
+            
+        return True
+
+    except ImportError:
+        # If the import fails, the library is not installed
+        print("PyTorch is NOT installed.")
+        print("   To install, use: pip install torch torchvision torchaudio")
+        return False
+    except Exception as e:
+        # Catch any other unexpected error during import/check
+        print(f"An error occurred while checking PyTorch: {e}")
+        return False
+        
 
 def get_macos_thread_affinity():
     """Attempt to get thread affinity on macOS using Mach thread_policy_get."""
@@ -508,10 +540,10 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray,
 
     if keep_last:
         new_shape = (-1, x.shape[-1])    # -1 means "infer this"
-        description = f"Flattened all except last dim: {original_shape} → {new_shape}"
+        description = f"Flattened all except last dim: {original_shape} > {new_shape}"
     else:
         new_shape = (x.shape[0], -1)
-        description = f"Flattened all except first dim: {original_shape} → {new_shape}"
+        description = f"Flattened all except first dim: {original_shape} -> {new_shape}"
 
     x_2d = x.reshape(new_shape)
 
@@ -547,8 +579,8 @@ class XABBA(object):
         Tolerance for digitization.
     
     init - str, default='agg'
-        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans'.
-    
+        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans', 'gpu-kmeans'.
+
     sorting - str, default="norm".
         Apply sorting data before aggregation (inside digitization). Alternative option: "pca".
     
@@ -576,6 +608,17 @@ class XABBA(object):
     scl - int or float, default=1
         Scale the length of compression pieces. The larger the value is, the more important of the length information is.
         Therefore, it can solve some problem resulted from peak shift.
+
+    eta - float, default=None,
+        Parameter to control the auto-digitization
+
+    last_dim - boolean, default=True,
+        The method to process the varying shape (>=2) of time series. True as default otherwise flatten the shape dimension > 1.
+        
+    auto_digitize - boolean, default=False
+        Enable auto digitization without prior knowledge of alpha.
+
+
         
         
     Attributes
@@ -854,6 +897,20 @@ class XABBA(object):
                 
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
+
+        elif self.init == 'gpu-kmeans':
+            if check_pytorch_installation():
+                centroids, labels = kmeans_fp32(pieces, self.k, max_iter=self.max_iter, tol=self.tol)
+                centers = centroids.cpu().numpy() * self._std / np.array([self.scl, 1])
+                splist = None
+            else:
+                warnings.warn("PyTorch is not installed or not properly configured for GPU K-means, falling back to CPU K-means.")
+                with parallel_backend('threading', n_jobs=n_jobs):
+                    kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
+                    
+                labels = kmeans.labels_
+                centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
+                splist = None
 
         else: # default => 'kmeans'
             if self.k >= max_k:

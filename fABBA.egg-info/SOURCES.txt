@@ -39,6 +39,7 @@ fABBA/jabba/comp.py
 fABBA/jabba/compmem.c
 fABBA/jabba/compmem.pyx
 fABBA/jabba/fkmns.py
+fABBA/jabba/gpu_kmeans.py
 fABBA/jabba/inverset.py
 fABBA/jabba/inversetc.c
 fABBA/jabba/inversetc.pyx
