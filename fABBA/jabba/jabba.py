@@ -14,6 +14,7 @@ from typing import Tuple, Any
 from sklearn.cluster import KMeans
 from .fkmns import sampledKMeansInter
 from joblib import parallel_backend
+from .gpu_kmeans import kmeans_fp32
 
 try:
     # # %load_ext Cython
@@ -345,8 +346,8 @@ class JABBA(object):
         Tolerance for digitization.
     
     init - str, default='agg'
-        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans'.
-    
+        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans', 'gpu-kmeans'.
+
     sorting - str, default="norm".
         Apply sorting data before aggregation (inside digitization). Alternative option: "pca".
     
@@ -398,7 +399,7 @@ class JABBA(object):
     def __init__(self, tol=0.2, init='agg', k=2, r=0.5, alpha=None, 
                         sorting="norm", scl=1, max_iter=2, 
                         partition_rate=None, partition=None,
-                        max_len=np.inf, verbose=1, random_state=2022, eta=None,
+                        max_len=np.inf, verbose=1, random_state=2022, eta=None, 
                         fillna='ffill', last_dim=True, auto_digitize=False):
         
         self.tol = tol
@@ -660,6 +661,11 @@ class JABBA(object):
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
 
+        elif self.init == 'gpu-kmeans':
+            centroids, labels = kmeans_fp32(pieces, self.k, max_iter=self.max_iter, tol=self.tol)
+            centers = centroids.cpu().numpy() * self._std / np.array([self.scl, 1])
+            splist = None
+            
         else: # default => 'kmeans'
             if self.k >= max_k:
                 self.k = max_k
