@@ -14,6 +14,7 @@ import pandas, collections
 from sklearn.cluster import KMeans
 from .fkmns import sampledKMeansInter
 
+from typing import Tuple, Any
 from joblib import parallel_backend
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -38,6 +39,8 @@ except ModuleNotFoundError:
 
 import multiprocessing
 import subprocess
+
+
 
 def get_macos_thread_affinity():
     """Attempt to get thread affinity on macOS using Mach thread_policy_get."""
@@ -166,7 +169,73 @@ def clip_func(x, a_min, a_max):
     return np.clip(x, a_min=a_min, a_max=a_max)
 
 
+
+def to_2d_array(x: Any) -> Tuple[np.ndarray, Tuple[int, int, int]]:
+    """
+    Convert input to a 2D numpy array of shape (n_samples * n_features, n_timesteps)
     
+    Parameters
+    ----------
+    Supported input types:
+        - 3D np.ndarray of shape (n_samples, n_timesteps, n_features)
+        - list / nested list
+        - list of 2D arrays (all with same shape)
+        - pandas.DataFrame (will be converted via .values)
+    
+    Returns
+    -------
+    x_2d : np.ndarray, shape (n_samples * n_features, n_timesteps)
+    original_shape : tuple (n_samples, n_timesteps, n_features)
+    """
+    # 1. Convert to numpy array
+    if isinstance(x, (list, tuple)):
+        x = np.array(x)
+    elif hasattr(x, "values"):          
+        x = x.values
+    elif not isinstance(x, np.ndarray):
+        raise TypeError(f"Unsupported input type: {type(x)}")
+
+    # 2. Must be exactly 3D
+    if x.ndim != 3:
+        raise ValueError(
+            f"Input must be 3D [n_samples, n_timesteps, n_features], "
+            f"got {x.ndim}D with shape {x.shape}"
+        )
+
+    n_samples, n_timesteps, n_features = x.shape
+
+    # 3. Ensure float type (safe for most models)
+    x = x.astype(np.float32)
+
+    # 4. Reshape: (n_samples, n_timesteps, n_features)
+    #          -> (n_samples, n_features, n_timesteps)
+    #          -> (n_samples * n_features, n_timesteps)
+    x_2d = x.transpose(0, 2, 1).reshape(n_samples * n_features, n_timesteps)
+
+    return x_2d, (n_samples, n_timesteps, n_features)
+
+
+def back_to_3d_array(x_2d: np.ndarray, original_shape: Tuple[int, int, int]) -> np.ndarray:
+    """
+    Recover the original 3D shape from the 2D representation, corresponding to to_2d_array.
+    """
+    n_samples, n_timesteps, n_features = original_shape
+    
+    if x_2d.shape != (n_samples * n_features, n_timesteps):
+        raise ValueError(
+            f"Shape mismatch! Expected {n_samples * n_features} * {n_timesteps}, "
+            f"got {x_2d.shape}"
+        )
+
+    # (n_samples * n_features, n_timesteps) -> (n_samples, n_features, n_timesteps)
+    x_3d = x_2d.reshape(n_samples, n_features, n_timesteps)
+    # -> (n_samples, n_timesteps, n_features)
+    x_3d = x_3d.transpose(0, 2, 1)
+    
+    return x_3d
+
+
+
 class QUANT():
     """
     Parameters
@@ -354,8 +423,8 @@ def symbolsAssign(clusters, alphabet_set=0):
     return string.tolist(), alphabets
 
 
-        
-        
+
+
 @dataclass
 class Model:
     """
@@ -408,6 +477,75 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
             reconstruction = reconstruction.reshape(pabba.d_shape)
             
     return reconstruction
+
+
+
+
+def to_2d_array(x: Any) -> Tuple[np.ndarray, Tuple[int, int, int]]:
+    """
+    Convert input to a 2D numpy array of shape (n_samples * n_features, n_timesteps)
+    
+    Parameters
+    ----------
+    Supported input types:
+        - 3D np.ndarray of shape (n_samples, n_timesteps, n_features)
+        - list / nested list
+        - list of 2D arrays (all with same shape)
+        - pandas.DataFrame (will be converted via .values)
+    
+    Returns
+    -------
+    x_2d : np.ndarray, shape (n_samples * n_features, n_timesteps)
+    original_shape : tuple (n_samples, n_timesteps, n_features)
+    """
+    # 1. Convert to numpy array
+    if isinstance(x, (list, tuple)):
+        x = np.array(x)
+    elif hasattr(x, "values"):          
+        x = x.values
+    elif not isinstance(x, np.ndarray):
+        raise TypeError(f"Unsupported input type: {type(x)}")
+
+    # 2. Must be exactly 3D
+    if x.ndim != 3:
+        raise ValueError(
+            f"Input must be 3D [n_samples, n_timesteps, n_features], "
+            f"got {x.ndim}D with shape {x.shape}"
+        )
+
+    n_samples, n_timesteps, n_features = x.shape
+
+    # 3. Ensure float type (safe for most models)
+    x = x.astype(np.float32)
+
+    # 4. Reshape: (n_samples, n_timesteps, n_features)
+    #          -> (n_samples, n_features, n_timesteps)
+    #          -> (n_samples * n_features, n_timesteps)
+    x_2d = x.transpose(0, 2, 1).reshape(n_samples * n_features, n_timesteps)
+
+    return x_2d, (n_samples, n_timesteps, n_features)
+
+
+
+def back_to_3d_array(x_2d: np.ndarray, original_shape: Tuple[int, int, int]) -> np.ndarray:
+    """
+    Recover the original 3D shape from the 2D representation, corresponding to to_2d_array.
+    """
+    n_samples, n_timesteps, n_features = original_shape
+    
+    if x_2d.shape != (n_samples * n_features, n_timesteps):
+        raise ValueError(
+            f"Shape mismatch! Expected {n_samples * n_features} * {n_timesteps}, "
+            f"got {x_2d.shape}"
+        )
+
+    # (n_samples * n_features, n_timesteps) -> (n_samples, n_features, n_timesteps)
+    x_3d = x_2d.reshape(n_samples, n_features, n_timesteps)
+    # -> (n_samples, n_timesteps, n_features)
+    x_3d = x_3d.transpose(0, 2, 1)
+    
+    return x_3d
+
 
 
 class XABBA(object):
@@ -473,7 +611,8 @@ class XABBA(object):
                         sorting="norm", scl=1, max_iter=2,
                         bits_for_len=8, bits_for_inc=16,
                         partition_rate=None, partition=None,
-                        max_len=np.inf, verbose=1, random_state=42,
+                        max_len=np.inf, verbose=1, random_state=42, 
+                        flattten=False,
                         fillna='ffill'):
         
         self.tol = tol
@@ -498,6 +637,8 @@ class XABBA(object):
         self.bits_for_len = bits_for_len
         self.bits_for_inc = bits_for_inc
         self.recap_shape = None
+        self.flattten = flattten
+        self.stack_3d = False
         
         
     def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False):
@@ -519,8 +660,9 @@ class XABBA(object):
         alphabet_set - int or list, default=0
             The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.
         """
-        
+
         self.fit(series, n_jobs=n_jobs, alphabet_set=alphabet_set)
+        
         if return_start_set:
             return self.string_, self.start_set
         else:
@@ -628,8 +770,13 @@ class XABBA(object):
             self.return_series_univariate = False
             if isinstance(series, np.ndarray):
                 if len(series.shape) > 2:
-                    self.recap_shape = series.shape
-                    series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+                    if self.flattten or len(series.shape) > 3:
+                        self.recap_shape = series.shape
+                        series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+                        
+                    else:
+                        series, self.recap_shape = to_2d_array(series)
+                        self.stack_3d = True
 
             elif isinstance(series, list):
                 pass
@@ -942,6 +1089,9 @@ class XABBA(object):
         if self.return_series_univariate:
             inverse_sequences = np.hstack(inverse_sequences)
             
+        if self.stack_3d:
+            inverse_sequences = back_to_3d_array(np.asarray(inverse_sequences), self.recap_shape)
+
         return inverse_sequences
         
 

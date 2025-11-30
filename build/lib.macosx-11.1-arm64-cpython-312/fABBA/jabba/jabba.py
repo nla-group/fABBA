@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
 import multiprocessing as mp
 import pandas, collections
+from typing import Tuple, Any
 from sklearn.cluster import KMeans
 from .fkmns import sampledKMeansInter
 from joblib import parallel_backend
@@ -29,8 +30,6 @@ except ModuleNotFoundError:
     from .comp import compress
     from .agg import aggregate
     from .inverset import *
-
-
 
 import multiprocessing
 import subprocess
@@ -74,6 +73,7 @@ def get_macos_thread_affinity():
         print(f"Exception in macOS thread_policy_get: {str(e)}")
         return None
 
+
 def get_macos_cpu_count():
     """Get the number of available CPUs on macOS using multiprocessing."""
     try:
@@ -83,6 +83,7 @@ def get_macos_cpu_count():
     except Exception as e:
         print(f"Exception in multiprocessing.cpu_count: {str(e)}")
         return None
+
 
 def get_macos_cpu_count_sysctl():
     """Get the number of available CPUs on macOS using sysctl."""
@@ -94,6 +95,7 @@ def get_macos_cpu_count_sysctl():
     except Exception as e:
         print(f"Exception in sysctl hw.ncpu: {str(e)}")
         return None
+
 
 def get_cpu_affinity():
     """Get CPU affinity for the current process, with enhanced macOS support."""
@@ -152,6 +154,7 @@ def get_cpu_affinity():
         print(f"Unexpected error in get_cpu_affinity: {str(e)}")
         
     return None
+
 
 
 def symbolsAssign(clusters, alphabet_set=0):
@@ -276,6 +279,74 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
 
 
 
+
+def to_2d_array(x: Any) -> Tuple[np.ndarray, Tuple[int, int, int]]:
+    """
+    Convert input to a 2D numpy array of shape (n_samples * n_features, n_timesteps)
+    
+    Parameters
+    ----------
+    Supported input types:
+        - 3D np.ndarray of shape (n_samples, n_timesteps, n_features)
+        - list / nested list
+        - list of 2D arrays (all with same shape)
+        - pandas.DataFrame (will be converted via .values)
+    
+    Returns
+    -------
+    x_2d : np.ndarray, shape (n_samples * n_features, n_timesteps)
+    original_shape : tuple (n_samples, n_timesteps, n_features)
+    """
+    # 1. Convert to numpy array
+    if isinstance(x, (list, tuple)):
+        x = np.array(x)
+    elif hasattr(x, "values"):          
+        x = x.values
+    elif not isinstance(x, np.ndarray):
+        raise TypeError(f"Unsupported input type: {type(x)}")
+
+    # 2. Must be exactly 3D
+    if x.ndim != 3:
+        raise ValueError(
+            f"Input must be 3D [n_samples, n_timesteps, n_features], "
+            f"got {x.ndim}D with shape {x.shape}"
+        )
+
+    n_samples, n_timesteps, n_features = x.shape
+
+    # 3. Ensure float type (safe for most models)
+    x = x.astype(np.float32)
+
+    # 4. Reshape: (n_samples, n_timesteps, n_features)
+    #          -> (n_samples, n_features, n_timesteps)
+    #          -> (n_samples * n_features, n_timesteps)
+    x_2d = x.transpose(0, 2, 1).reshape(n_samples * n_features, n_timesteps)
+
+    return x_2d, (n_samples, n_timesteps, n_features)
+
+
+def back_to_3d_array(x_2d: np.ndarray, original_shape: Tuple[int, int, int]) -> np.ndarray:
+    """
+    Recover the original 3D shape from the 2D representation, corresponding to to_2d_array.
+    """
+
+    print("original_shape:", original_shape)
+    n_samples, n_timesteps, n_features = original_shape
+    
+    if x_2d.shape != (n_samples * n_features, n_timesteps):
+        raise ValueError(
+            f"Shape mismatch! Expected {n_samples * n_features} * {n_timesteps}, "
+            f"got {x_2d.shape}"
+        )
+
+    # (n_samples * n_features, n_timesteps) -> (n_samples, n_features, n_timesteps)
+    x_3d = x_2d.reshape(n_samples, n_features, n_timesteps)
+    # -> (n_samples, n_timesteps, n_features)
+    x_3d = x_3d.transpose(0, 2, 1)
+    
+    return x_3d
+
+
 class JABBA(object):
     """
     Parallel version of ABBA with fast implementation.
@@ -341,8 +412,8 @@ class JABBA(object):
     def __init__(self, tol=0.2, init='agg', k=2, r=0.5, alpha=None, 
                         sorting="norm", scl=1, max_iter=2, 
                         partition_rate=None, partition=None,
-                        max_len=np.inf, verbose=1, random_state=2022,
-                        fillna='ffill', auto_digitize=False):
+                        max_len=np.inf, verbose=1, random_state=2022, 
+                        fillna='ffill', flattten=False, auto_digitize=False):
         
         self.tol = tol
         self.alpha = alpha
@@ -367,7 +438,8 @@ class JABBA(object):
         self.fillna = fillna
         self.random_state = random_state
         self.recap_shape = None
-        
+        self.flattten = flattten
+        self.stack_3d = False
         
         
     def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False):
@@ -495,9 +567,15 @@ class JABBA(object):
         else:
             self.return_series_univariate = False
             if isinstance(series, np.ndarray):
-                if len(series.shape) > 2: # for multidimensional (dim > 2) tensor
-                    self.recap_shape = series.shape
-                    series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+                if len(series.shape) > 2:
+                    if self.flattten or len(series.shape) > 3:
+                        self.recap_shape = series.shape
+                        series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+                        
+                    else:
+                        series, self.recap_shape = to_2d_array(series)
+                        self.stack_3d = True
+                        print("fit:", self.recap_shape)
 
             elif isinstance(series, list):
                 pass
@@ -541,7 +619,7 @@ class JABBA(object):
         
         len_ts = len(series)
         
-        if len(series[0]) > 1:
+        if len(series.shape) > 1:
             sum_of_length = sum([len(series[i]) for i in range(len_ts)])
             self.eta = 0.000002
         else:
@@ -583,7 +661,6 @@ class JABBA(object):
             if self.k > max_k:
                 self.k = max_k
                 warnings.warn("k is larger than the unique pieces size, so k reduces to unique pieces size.")
-            
             
 
             with parallel_backend('threading', n_jobs=n_jobs):
@@ -781,6 +858,9 @@ class JABBA(object):
         if self.return_series_univariate:
             inverse_sequences = np.hstack(inverse_sequences)
             
+        if self.stack_3d:
+            inverse_sequences = back_to_3d_array(np.asarray(inverse_sequences), self.recap_shape)
+
         return inverse_sequences
         
 
@@ -1315,3 +1395,4 @@ def zip_longest(*iterables, fillvalue=None):
                 value = fillvalue[i]
             values.append(value)
         yield tuple(values)
+
