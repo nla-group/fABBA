@@ -1,142 +1,82 @@
-import torch
-import warnings
+import faiss
 import numpy as np
+import time
 
-def kmeans_fp32(X, k, max_iter=100, tol=1e-4):
+def faiss_kmeans_cluster(data_vectors: np.ndarray, 
+                         n_clusters: int, 
+                         n_iterations: int = 25, n_redo: int = 1) -> tuple[np.ndarray, np.ndarray]:
     """
-    Performs K-means clustering with D squared initialization in float32 precision.
+    Performs K-means clustering on a set of vectors using the FAISS library.
+
+    FAISS is optimized for high-dimensional and large-scale vector operations.
+    Note: FAISS expects vectors to be in float32 format.
 
 
     Parameters
     ----------
-    X (torch.Tensor): 
-        The input data tensor.
+    data_vectors (np.ndarray): 
+        The input data matrix (N x D), where N is 
+        the number of vectors and D is the dimension.
+        Must be convertible to float32.
+    
+    n_clusters (int): 
+        The desired number of clusters (K).
 
-    k (int): 
-        The number of clusters.
+    n_iterations (int): 
+        The maximum number of K-means iterations. (default 25)
+        
+    n_redo (int): 
+        The number of times to run K-means with different random
+        initializations, keeping the best result. (default 1)
 
-    max_iter (int): 
-        The maximum number of K-means iterations.
-
-    tol (float): 
-    The convergence tolerance.
-
-
+        
     Returns
-    ----------
-    tuple: (centroids, labels) where centroids are the final cluster centers
-        and labels are the cluster assignments for each data point.
+    -------
+    tuple[np.ndarray, np.ndarray]: A tuple containing:
+        - centroids (np.ndarray): The final cluster centers (K x D).
+        - labels (np.ndarray): The cluster label assigned to each input vector (N,).
+
+    Raises:
+        ValueError: If the input data is not 2-dimensional.
     """
-    # --- Configuration for FP32 ---
-    
-    if isinstance(X, np.ndarray):
-        X = torch.from_numpy(X)
-        X = X.to(torch.float32)
+    if data_vectors.ndim != 2:
+        raise ValueError("Input 'data_vectors' must be a 2D numpy array (N x D).")
 
-    
-        
-    DTYPE = torch.float32 
-    TOL_FP32 = float(tol) # Ensure tolerance is a standard float
+    # 1. FAISS Requirement: Convert data to float32
+    d = data_vectors.shape[1] # Dimension of the vectors
+    data_vectors_f32 = data_vectors.astype('float32')
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")
+    # 2. Initialize the Kmeans object
+    # Kmeans constructor requires dimension (d) and number of centroids (n_clusters)
+    kmeans = faiss.Kmeans(
+        d, 
+        n_clusters, 
+        niter=n_iterations, 
+        nredo=n_redo, 
+        verbose=True, 
+        gpu=False # Set to True if a GPU is available and you installed faiss-gpu
+    )
 
-    if device.type == 'cpu':
-        warnings.warn("CUDA not found, run in CPU.")
-    
-    # 1. Data Preparation (Ensure everything is FP32)
-    X = X.to(device).to(DTYPE) # Data moved to device and converted to FP32
-    N, D = X.shape
-    
-    # Normalize data
-    X_mean = X.mean(dim=0)
-    X_std = X.std(dim=0)
-    X_std[X_std == 0] = 1.0
-    X = (X - X_mean) / X_std
-    X_sq_norm = torch.sum(X ** 2, dim=1, keepdim=True)
+    # 3. Train the K-means model
+    print(f"--- Starting FAISS K-means training (K={n_clusters}, D={d}) ---")
+    start_time = time.time()
+    kmeans.train(data_vectors_f32)
+    end_time = time.time()
+    print(f"--- Training finished in {end_time - start_time:.2f} seconds ---")
 
-    # 2. K-means++ Initialization (Ensure all tensors are FP32)
-    centroids = torch.empty((k, D), device=device, dtype=DTYPE)
-    rand_idx = torch.randint(0, N, (1,)).item()
-    centroids[0] = X[rand_idx]
-    current_dist_sq = torch.full((N, 1), float('inf'), device=device, dtype=DTYPE) # Use DTYPE
-    
-    for i in range(1, k):
-        latest_center = centroids[i-1].view(1, D)
-        c_sq_norm = torch.sum(latest_center ** 2)
-        dot_prod = torch.mm(X, latest_center.T)
-        # Distance calculation: ||x - c||^2 = ||x||^2 - 2 * x^T * c + ||c||^2
-        new_dists = X_sq_norm - 2 * dot_prod + c_sq_norm
-        # Clamp to ensure non-negative distances due to potential floating-point errors
-        new_dists = torch.clamp(new_dists, min=0.0) 
-        current_dist_sq = torch.minimum(current_dist_sq, new_dists)
-        
-        # Select next center based on distances squared (weighted probability)
-        # Sum must be non-zero for multinomial to work.
-        sum_dist_sq = torch.sum(current_dist_sq)
-        if sum_dist_sq == 0:
-            next_center_idx = torch.randint(0, N, (1,)).item() # Fallback to random
-        else:
-            probs = current_dist_sq.squeeze() / sum_dist_sq
-            next_center_idx = torch.multinomial(probs, 1).item()
+    # 4. Extract Cluster Centers (Centroids)
+    # The centroids are stored in the 'centroids' attribute of the Kmeans object.
+    centroids = kmeans.centroids
 
-        centroids[i] = X[next_center_idx]
+    # 5. Get Cluster Labels for all input vectors
+    # We use the internal index object created during training to search for the
+    # nearest centroid for every input vector. k=1 means we only want the single
+    # nearest neighbor (the cluster center).
+    # D: Distances (squared L2) to the nearest centroids
+    # I: Indices of the nearest centroids (the cluster labels)
+    D, I = kmeans.index.search(data_vectors_f32, 1)
 
-    # 3. K-means Iteration (Ensure all tensors are FP32)
-    # Tensors for accumulating cluster sums and counts
-    acc = torch.zeros((k, D), dtype=DTYPE, device=device)
-    counts = torch.zeros(k, dtype=DTYPE, device=device)
-    labels = torch.empty(N, dtype=torch.long, device=device)
-    ones = None # will be initialized with DTYPE
-
-    for _ in range(max_iter):
-        prev = centroids.clone()
-        
-        # Calculate distances: ||x - c||^2 = ||x||^2 - 2 * x^T * c + ||c||^2
-        # Note: torch.sum(centroids**2, dim=1) results in a 1D tensor of shape (k,)
-        # It's broadcasted across the rows of X.
-        dists = X_sq_norm - 2 * torch.mm(X, centroids.T) + torch.sum(centroids**2, dim=1)
-        labels = torch.argmin(dists, dim=1)
-
-        # Recalculate centroids
-        acc.zero_()
-        counts.zero_()
-        
-        # Optimization: only re-create 'ones' if N changes or it hasn't been created
-        if ones is None or ones.shape[0] != N:
-            # Use DTYPE for 'ones' to match 'counts' and 'acc'
-            ones = torch.ones_like(labels, dtype=DTYPE) 
-
-        # Sum of points in each cluster
-        acc.index_add_(0, labels, X)
-        # Count of points in each cluster
-        counts.index_add_(0, labels, ones)
-
-        # Update centroids: centroids = acc / counts
-        valid = counts > 0
-        # Only update centroids for clusters that have points
-        centroids = torch.where(valid.view(k, 1), acc / counts.view(k, 1), centroids)
-
-        # Check for convergence
-        # Convergence criterion: ||centroids - prev|| <= tol * ||prev||
-        # Ensure comparison is done with FP32 values
-        if torch.norm(centroids - prev) <= TOL_FP32 * torch.norm(prev):
-            break
+    # I is typically a 2D array of shape (N, 1), so we flatten it to get 1D labels.
+    labels = I.flatten()
 
     return centroids, labels
-
-
-if __name__ == "__main__":
-    # --- Example Usage (Optional: run this to test) ---
-    N_SAMPLES = 100000
-    N_FEATURES = 10
-    N_CLUSTERS = 3
-
-    # # Create dummy data - it will be converted to FP32 inside the function
-    X_data = torch.randn(N_SAMPLES, N_FEATURES)
-
-    print("\nStarting K-means FP32...")
-    final_centroids, final_labels = kmeans_fp32(X_data, k=N_CLUSTERS)
-    print("K-means FP32 completed.")
-    print(f"Final Centroids dtype: {final_centroids.dtype}")
-    print(f"Final Labels dtype: {final_labels.dtype}")

@@ -41,39 +41,34 @@ import multiprocessing
 import subprocess
 
 
-def check_pytorch_installation():
+
+def check_faiss_installation() -> bool:
     """
-    Checks if the PyTorch library is installed and prints the version information.
+    Checks if FAISS is installed and, if so, whether the GPU version is 
+    detected by checking the number of available GPUs through the library.
+
+    Returns:
+        bool: True if FAISS is installed AND detects one or more GPUs.
     """
     try:
-        # Attempt to import PyTorch
-        import torch
-
-        # If successful, print confirmation and version details
-        print("PyTorch is successfully installed.")
-        print(f"   PyTorch Version: {torch.__version__}")
+        # Check for FAISS import
+        import faiss 
         
-        # Check for CUDA availability
-        if torch.cuda.is_available():
-            print("   CUDA is available! GPU Acceleration is possible.")
-            print(f"   CUDA Version: {torch.version.cuda}")
-            print(f"   Device Name: {torch.cuda.get_device_name(0)}")
+        # Check for GPU capability using FAISS's built-in function
+        num_gpus = faiss.get_num_gpus()
+        
+        if num_gpus > 0:
+            print(f"[INFO] FAISS installed. GPU version detected with {num_gpus} available GPU(s).")
+            return True
         else:
-            print("   CUDA is NOT available. Running on CPU.")
+            print("[INFO] FAISS installed (CPU version) or no GPUs detected.")
+            return False
             
-        return True
-
     except ImportError:
-        # If the import fails, the library is not installed
-        print("PyTorch is NOT installed.")
-        print("   To install, use: pip install torch torchvision torchaudio")
+        print("[ERROR] FAISS is NOT installed. Please run 'pip install faiss-cpu' or 'pip install faiss-gpu'.")
         return False
-    except Exception as e:
-        # Catch any other unexpected error during import/check
-        print(f"An error occurred while checking PyTorch: {e}")
-        return False
-        
-
+    
+    
 def get_macos_thread_affinity():
     """Attempt to get thread affinity on macOS using Mach thread_policy_get."""
     import ctypes
@@ -631,7 +626,7 @@ class XABBA(object):
     """
     
     def __init__(self, tol=0.2, init='agg', k=2, r=0.5, alpha=0.1, 
-                        sorting="norm", scl=1, max_iter=2,
+                        sorting="norm", scl=1, max_iter=10,
                         bits_for_len=8, bits_for_inc=16,
                         partition_rate=None, partition=None, 
                         max_len=np.inf, verbose=1, random_state=42, eta=None,
@@ -899,9 +894,10 @@ class XABBA(object):
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
 
         elif self.init == 'gpu-kmeans':
-            if check_pytorch_installation():
-                centroids, labels = kmeans_fp32(pieces, self.k, max_iter=self.max_iter, tol=self.tol)
-                centers = centroids.cpu().numpy() * self._std / np.array([self.scl, 1])
+            if check_faiss_installation():
+                from .gpu_kmeans import faiss_kmeans_cluster
+                centers , labels = faiss_kmeans_cluster(pieces, self.k, self.max_iter)
+                centers = centers  * self._std / np.array([self.scl, 1])
                 splist = None
             else:
                 warnings.warn("PyTorch is not installed or not properly configured for GPU K-means, falling back to CPU K-means.")

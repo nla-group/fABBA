@@ -11,7 +11,7 @@ import collections
 from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
-import multiprocessing as mp
+from typing import Tuple, Any
 import collections
 from sklearn.cluster import KMeans
 from .fkmns import sampledKMeansInter
@@ -32,11 +32,37 @@ except ModuleNotFoundError:
     from .inverset import *
 
 
-
 import multiprocessing
 import subprocess
 
 import warnings 
+
+
+def check_faiss_installation() -> bool:
+    """
+    Checks if FAISS is installed and, if so, whether the GPU version is 
+    detected by checking the number of available GPUs through the library.
+
+    Returns:
+        bool: True if FAISS is installed AND detects one or more GPUs.
+    """
+    try:
+        # Check for FAISS import
+        import faiss 
+        
+        # Check for GPU capability using FAISS's built-in function
+        num_gpus = faiss.get_num_gpus()
+        
+        if num_gpus > 0:
+            print(f"[INFO] FAISS installed. GPU version detected with {num_gpus} available GPU(s).")
+            return True
+        else:
+            print("[INFO] FAISS installed (CPU version) or no GPUs detected.")
+            return False
+            
+    except ImportError:
+        print("[ERROR] FAISS is NOT installed. Please run 'pip install faiss-cpu' or 'pip install faiss-gpu'.")
+        return False
 
 
 def get_macos_thread_affinity():
@@ -400,69 +426,52 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
     return reconstruction
 
 
-def to_2d_array(x: Any) -> Tuple[np.ndarray, Tuple[int, int, int]]:
+
+def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray, Tuple[int, ...]]:
     """
-    Convert input to a 2D numpy array of shape (n_samples * n_features, n_timesteps)
+    Flatten all dimensions except the last one (or first one) into a single dimension.
     
     Parameters
     ----------
-    Supported input types:
-        - 3D np.ndarray of shape (n_samples, n_timesteps, n_features)
-        - list / nested list
-        - list of 2D arrays (all with same shape)
-        - pandas.DataFrame (will be converted via .values)
-    
+    x : array-like
+        Input of any dimension >= 2
+    keep_last : bool
+        If True  → keep last dim  → output: (everything_else, last_dim)     ← most common
+        If False → keep first dim → output: (first_dim, everything_else)
+
     Returns
     -------
-    x_2d : np.ndarray, shape (n_samples * n_features, n_timesteps)
-    original_shape : tuple (n_samples, n_timesteps, n_features)
+    x_2d : np.ndarray
+        2D array
+    original_shape : tuple
+        Original shape (for restoring later)
     """
-    # 1. Convert to numpy array
-    if isinstance(x, (list, tuple)):
-        x = np.array(x)
-    elif hasattr(x, "values"):          
-        x = x.values
-    elif not isinstance(x, np.ndarray):
-        raise TypeError(f"Unsupported input type: {type(x)}")
-
-    # 2. Must be exactly 3D
-    if x.ndim != 3:
-        raise ValueError(
-            f"Input must be 3D [n_samples, n_timesteps, n_features], "
-            f"got {x.ndim}D with shape {x.shape}"
-        )
-
-    n_samples, n_timesteps, n_features = x.shape
-
-    # 3. Ensure float type (safe for most models)
-    x = x.astype(np.float32)
-
-    # 4. Reshape: (n_samples, n_timesteps, n_features)
-    #          -> (n_samples, n_features, n_timesteps)
-    #          -> (n_samples * n_features, n_timesteps)
-    x_2d = x.transpose(0, 2, 1).reshape(n_samples * n_features, n_timesteps)
-
-    return x_2d, (n_samples, n_timesteps, n_features)
-
-
-def back_to_3d_array(x_2d: np.ndarray, original_shape: Tuple[int, int, int]) -> np.ndarray:
-    """
-    Recover the original 3D shape from the 2D representation, corresponding to to_2d_array.
-    """
-    n_samples, n_timesteps, n_features = original_shape
+    x = np.asarray(x)                    # handle list, torch, etc.
     
-    if x_2d.shape != (n_samples * n_features, n_timesteps):
-        raise ValueError(
-            f"Shape mismatch! Expected {n_samples * n_features} * {n_timesteps}, "
-            f"got {x_2d.shape}"
-        )
+    if x.ndim < 2:
+        raise ValueError(f"Input must have at least 2 dimensions, got {x.ndim}")
 
-    # (n_samples * n_features, n_timesteps) -> (n_samples, n_features, n_timesteps)
-    x_3d = x_2d.reshape(n_samples, n_features, n_timesteps)
-    # -> (n_samples, n_timesteps, n_features)
-    x_3d = x_3d.transpose(0, 2, 1)
-    
-    return x_3d
+    original_shape = x.shape
+
+    if keep_last:
+        new_shape = (-1, x.shape[-1])    # -1 means "infer this"
+        description = f"Flattened all except last dim: {original_shape} -> {new_shape}"
+    else:
+        new_shape = (x.shape[0], -1)
+        description = f"Flattened all except first dim: {original_shape} -> {new_shape}"
+
+    x_2d = x.reshape(new_shape)
+
+    print(description)
+    return x_2d, original_shape
+
+
+def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...], keep_last: bool = True) -> np.ndarray:
+    """
+    Restore the original high-dimensional shape from the 2D flattened version.
+    """
+    x_restored = x_2d.reshape(original_shape)
+    return x_restored
 
 
 class QABBA(object):
@@ -484,7 +493,7 @@ class QABBA(object):
         Tolerance for digitization.
     
     init - str, default='agg'
-        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans'.
+        The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans', 'gpu-kmeans'.
     
     sorting - str, default="norm".
         Apply sorting data before aggregation (inside digitization). Alternative option: "pca".
@@ -514,10 +523,16 @@ class QABBA(object):
         Scale the length of compression pieces. The larger the value is, the more important of the length information is.
         Therefore, it can solve some problem resulted from peak shift.
         
+    eta - float, default=None,
+        Parameter to control the auto-digitization
+
+    last_dim - boolean, default=True,
+        The method to process the varying shape (>=2) of time series. True as default otherwise flatten the shape dimension > 1.
+        
     auto_digitize - boolean, default=False
         Enable auto digitization without prior knowledge of alpha.
-        
-        
+
+
     Attributes
     ----------
     params: dict
@@ -528,11 +543,11 @@ class QABBA(object):
     """
     
     def __init__(self, tol=0.2, init='agg', k=2, r=0.5, alpha=None, 
-                        sorting="norm", scl=1, max_iter=2,
+                        sorting="norm", scl=1, max_iter=10,
                         bits_for_len=8, bits_for_inc=16,
-                        partition_rate=None, partition=None,
-                        max_len=np.inf, verbose=1, random_state=42,
-                        fillna='ffill', flattten=False, auto_digitize=False):
+                        partition_rate=None, partition=None, 
+                        max_len=np.inf, verbose=1, random_state=42, eta=None,
+                        fillna='ffill', last_dim=True, auto_digitize=False):
         
         self.tol = tol
         self.alpha = alpha
@@ -546,6 +561,7 @@ class QABBA(object):
         self.sorting = sorting
         self.verbose = verbose
         self.r = r
+        self.eta = eta
         self.partition = partition
         self.partition_rate = partition_rate
         self.temp_symbols = None
@@ -559,8 +575,8 @@ class QABBA(object):
         self.bits_for_len = bits_for_len
         self.bits_for_inc = bits_for_inc
         self.recap_shape = None
-        self.flattten = flattten
-        self.stack_3d = False
+        self.last_dim = last_dim
+        self.stack_last_dim = False
         
     def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False):
         """
@@ -689,13 +705,13 @@ class QABBA(object):
             self.return_series_univariate = False
             if isinstance(series, np.ndarray):
                 if len(series.shape) > 2:
-                    if self.flattten or len(series.shape) > 3:
+                    if not self.last_dim:
                         self.recap_shape = series.shape
                         series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
                         
                     else:
-                        series, self.recap_shape = to_2d_array(series)
-                        self.stack_3d = True
+                        series, self.recap_shape = flatten_to_2d_keep_last(series)
+                        self.stack_last_dim= True
 
             elif isinstance(series, list):
                 pass
@@ -738,12 +754,13 @@ class QABBA(object):
         
         len_ts = len(series)
         
-        if len(series[0]) > 1:
-            sum_of_length = sum([len(series[i]) for i in range(len_ts)])
-            self.eta = 0.000002
+        if len(series.shape) > 1:
+            sum_of_length = np.prod(series.shape)
+            if self.eta is None:  self.eta = 0.1
         else:
             sum_of_length = len_ts
-            self.eta = 0.01
+            if self.eta is None: self.eta = 0.01
+            
             
         num_pieces = list()
 
@@ -765,9 +782,9 @@ class QABBA(object):
 
         if self.init == 'agg':
             if self.auto_digitize:
-                # eta = 0.01
-                self.alpha = pow(60*sum_of_length*(sum_of_length - max_k)*(self.tol**2)/(max_k*(self.eta**2)*(3*(sum_of_length**4)+2-5*(max_k**2))),1/4)
-
+                self.alpha = ( (20 * (sum_of_length - max_k) * self.tol**2) / (max_k * (self.eta**4) * sum_of_length**2) ) ** 0.25
+                print(f"auto-digitization: alpha={self.alpha}")
+            
             labels, splist = aggregate(pieces, self.sorting, self.alpha)
             splist = np.array(splist)
             centers = splist[:,3:5] * self._std / np.array([self.scl, 1])
@@ -790,6 +807,21 @@ class QABBA(object):
                 
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
+
+        elif self.init == 'gpu-kmeans':
+            if check_faiss_installation():
+                from .gpu_kmeans import faiss_kmeans_cluster
+                centers , labels = faiss_kmeans_cluster(pieces, self.k, self.max_iter)
+                centers = centers  * self._std / np.array([self.scl, 1])
+                splist = None
+            else:
+                warnings.warn("PyTorch is not installed or not properly configured for GPU K-means, falling back to CPU K-means.")
+                with parallel_backend('threading', n_jobs=n_jobs):
+                    kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
+                    
+                labels = kmeans.labels_
+                centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
+                splist = None
 
         else: # default => 'kmeans'
             if self.k >= max_k:
@@ -1012,8 +1044,8 @@ class QABBA(object):
         if self.return_series_univariate:
             inverse_sequences = np.hstack(inverse_sequences)
             
-        if self.stack_3d:
-            inverse_sequences = back_to_3d_array(inverse_sequences, self.recast_shape)
+        if self.stack_last_dim:
+            inverse_sequences = restore_from_2d(np.asarray(inverse_sequences), self.recap_shape)
 
         return inverse_sequences
         
