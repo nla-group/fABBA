@@ -2,7 +2,48 @@ Multivariate time series symbolization
 ======================================
 
 
-Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies to multiple univariate time series) with consistent symbols. After downloading the `UEA time series dataset <https://www.timeseriesclassification.com/>`_ in corresponding folder, you can run JABBA following the example below:
+Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies to multiple univariate time series) with consistent symbols. 
+
+
+To start, we provide a quick example to show how JABBA works on multivariate time series data:
+
+
+.. code:: python
+
+    from fABBA import JABBA # XABBA, QABBA also support
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    np.random.seed(42)
+
+    n = 30
+    train = np.random.randn(n, 1000)
+
+    jabba = JABBA(tol=0.01, init='agg', eta=3, verbose=1) # parameter eta is used for auto-digitization, if not set, eta is default to 3
+    symbols = jabba.fit_transform(train)
+    reconst = jabba.inverse_transform(symbols)
+
+    plt.style.use('default')
+    plt.rcParams['figure.facecolor'] = 'white'
+    plt.rcParams['axes.facecolor'] = 'white'
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(reconst[0], label="reconstruction", linewidth=2) # view the reconstruction of the first time series
+    plt.plot(train[0], label="time series", linewidth=2, alpha=0.8) # view the reconstruction of the first time series
+    plt.legend()
+    plt.title("JABBA Reconstruction")
+
+    plt.tight_layout()
+
+    plt.savefig("jabba_reconstruction.pdf", dpi=300, bbox_inches='tight')
+    plt.show()
+
+
+
+
+
+After downloading the `UEA time series dataset <https://www.timeseriesclassification.com/>`_ in corresponding folder, you can run JABBA following the example below:
+
 
 
 .. code:: python

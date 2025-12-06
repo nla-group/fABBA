@@ -605,7 +605,7 @@ class XABBA(object):
         Therefore, it can solve some problem resulted from peak shift.
 
     eta - float, default=None,
-        Parameter to control the auto-digitization
+        Parameter to control the auto-digitization. If None, eta = 3.
 
     last_dim - boolean, default=True,
         The method to process the varying shape (>=2) of time series. True as default otherwise flatten the shape dimension > 1.
@@ -614,8 +614,6 @@ class XABBA(object):
         Enable auto digitization without prior knowledge of alpha.
 
 
-        
-        
     Attributes
     ----------
     params: dict
@@ -842,10 +840,10 @@ class XABBA(object):
         
         if len(series.shape) > 1:
             sum_of_length = np.prod(series.shape)
-            if self.eta is None:  self.eta = 0.1
+            if self.eta is None: self.eta = 3
         else:
             sum_of_length = len_ts
-            if self.eta is None: self.eta = 0.01
+            if self.eta is None: self.eta = 3
             
             
         num_pieces = list()
@@ -864,11 +862,14 @@ class XABBA(object):
             len_pieces = pieces[:,0]
 
         pieces = pieces * np.array([self.scl, 1]) / self._std
+
+        N = pieces[:,:2].shape[0]
         max_k = np.unique(pieces[:,:2],axis=0).shape[0]
 
         if self.init == 'agg':
             if self.auto_digitize:
-                self.alpha = ( (20 * (sum_of_length - max_k) * self.tol**2) / (max_k * (self.eta**4) * sum_of_length**2) ) ** 0.25
+                # self.alpha = ( (20 * (sum_of_length - N) * self.tol**2) / (N * (self.eta**4) * sum_of_length**2) ) ** 0.25
+                self.alpha = (30 * (sum_of_length - N) * self.tol**2 / (self.eta**4 * sum_of_length))**0.25
                 print(f"auto-digitization: alpha={self.alpha}")
             
             labels, splist = aggregate(pieces, self.sorting, self.alpha)
