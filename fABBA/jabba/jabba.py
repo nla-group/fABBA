@@ -700,7 +700,7 @@ class JABBA(object):
             else:
                 warnings.warn("PyTorch is not installed or not properly configured for GPU K-means, falling back to CPU K-means.")
                 with parallel_backend('threading', n_jobs=n_jobs):
-                    kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
+                    kmeans = KMeans(n_clusters=self.k, n_init="auto", max_iter=self.max_iter, random_state=0).fit(pieces)
                     
                 labels = kmeans.labels_
                 centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
@@ -712,7 +712,7 @@ class JABBA(object):
                 warnings.warn("k is larger than the unique pieces size, so k reduces to unique pieces size.")
             
             with parallel_backend('threading', n_jobs=n_jobs):
-                kmeans = KMeans(n_clusters=self.k, n_init="auto", random_state=0).fit(pieces)
+                kmeans = KMeans(n_clusters=self.k, n_init="auto", max_iter=self.max_iter, random_state=0).fit(pieces)
                 
             labels = kmeans.labels_
             centers = kmeans.cluster_centers_ * self._std / np.array([self.scl, 1])
