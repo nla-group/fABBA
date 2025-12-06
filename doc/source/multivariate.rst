@@ -7,6 +7,7 @@ Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies
 
 To start, we provide a quick example to show how JABBA works on multivariate time series data:
 
+For aggregation as digitization:
 
 .. code:: python
 
@@ -39,6 +40,37 @@ To start, we provide a quick example to show how JABBA works on multivariate tim
     plt.show()
 
 
+For k-means as digitization:
+
+.. code:: python
+        
+    from fABBA import JABBA
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    np.random.seed(42)
+
+    n = 30
+    train = np.random.randn(n, 1000)
+
+    jabba = JABBA(tol=0.01, init='gpu-kmeans', k=100, verbose=1)
+    symbols = jabba.fit_transform(train, n_jobs=10)
+    reconst = jabba.inverse_transform(symbols)
+
+    plt.style.use('default')
+    plt.rcParams['figure.facecolor'] = 'white'
+    plt.rcParams['axes.facecolor'] = 'white'
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(reconst[0], label="reconstruction", linewidth=2) # view the reconstruction of the first time series
+    plt.plot(train[0], label="time series", linewidth=2, alpha=0.8) # view the reconstruction of the first time series
+    plt.legend()
+    plt.title("JABBA Reconstruction")
+
+    plt.tight_layout()
+
+    plt.savefig("jabba_reconstruction.pdf", dpi=300, bbox_inches='tight')
+    plt.show()
 
 
 

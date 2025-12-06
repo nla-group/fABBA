@@ -570,8 +570,8 @@ class XABBA(object):
     r - float, default=0.5
         The rate of data sampling to perform k-means.  
     
-    alpha - double, default=0.5 
-        Tolerance for digitization.
+    alpha - double, default=None
+        Tolerance for digitization. If None is set, auto-digitization will be enabled.
     
     init - str, default='agg'
         The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans', 'gpu-kmeans'.
