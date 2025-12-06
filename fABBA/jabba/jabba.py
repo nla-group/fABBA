@@ -684,7 +684,6 @@ class JABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init="auto", 
                                             random_state=self.random_state)
                 kmeans.sampled_fit(pieces)
                 
@@ -1227,7 +1226,6 @@ class fastABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init=1, 
                                             random_state=self.random_state)
 
             labels = self.kmeans.sampled_fit_predict(pieces[:,:2])

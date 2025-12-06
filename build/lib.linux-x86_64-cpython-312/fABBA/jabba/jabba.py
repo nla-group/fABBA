@@ -370,8 +370,8 @@ class JABBA(object):
     r - float, default=0.5
         The rate of data sampling to perform k-means.  
     
-    alpha - double, default=0.5 
-        Tolerance for digitization.
+    alpha - double, default=None
+        Tolerance for digitization. If None is set, auto-digitization will be enabled.
     
     init - str, default='agg'
         The clustering algorithm in digitization. optional: 'f-kmeans', 'kmeans', 'gpu-kmeans'.
@@ -405,7 +405,7 @@ class JABBA(object):
         Therefore, it can solve some problem resulted from peak shift.
         
     eta - float, default=None,
-        Parameter to control the auto-digitization
+        Parameter to control the auto-digitization. If None, eta = 3.
 
     last_dim - boolean, default=True,
         The method to process the varying shape (>=2) of time series. True as default otherwise flatten the shape dimension > 1.
@@ -684,7 +684,6 @@ class JABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init="auto", 
                                             random_state=self.random_state)
                 kmeans.sampled_fit(pieces)
                 
@@ -1227,7 +1226,6 @@ class fastABBA(object):
                                             r=self.r, 
                                             init='k-means++', 
                                             max_iter=self.max_iter, 
-                                            n_init=1, 
                                             random_state=self.random_state)
 
             labels = self.kmeans.sampled_fit_predict(pieces[:,:2])
