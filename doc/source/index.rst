@@ -22,7 +22,7 @@ fABBA — Fast and Accurate Symbolic Representation for Time Series
 The method consists of two core steps:
 
 1. **Lossy piecewise linear compression** (tolerance-driven polygonal chain approximation)
-2. **Mean-based clustering of segments → symbolic representation** (fully automated, no need to pre-specify alphabet size)
+2. **Mean-based clustering of segments -> symbolic representation** (fully automated, no need to pre-specify alphabet size)
 
 Because the resulting representation is symbolic, it naturally leads to:
 
@@ -47,22 +47,21 @@ Key Advantages of fABBA
 Feature        Description
 =============  ===================================================================
 Fully automatic      No need to specify number of symbols (α) — purely tolerance-driven
-Extremely fast       Sorting + early abandoning + incremental aggregation → O(n log n) typical
+Extremely fast       Sorting + early abandoning + incremental aggregation -> O(n log n) typical
 Reversible           Perfect reconstruction via ``inverse_transform``
 Multivariate support Unified alphabet across all dimensions (JABBA subclass)
 GPU & parallel       Built-in OpenMP and optional CUDA k-means backends
 Image compression    Direct 2D block-wise compression with ``image_compress()``
 =============  ===================================================================
 
-Core Methods & Variants
------------------------
+**Core Methods & Variants**
 
-- ``fABBA.fABBA``           → Original fast single-series implementation (pure Python + Cython)
-- ``fABBA.JABBA``           → Next-generation engine supporting:
+- ``fABBA.fABBA``           -> Original fast single-series implementation (pure Python + Cython)
+- ``fABBA.JABBA``           -> Next-generation engine supporting:
     - Univariate & multivariate series
     - Custom clustering backends (k-means, hierarchical, GPU, etc.)
     - Memory-optimized streaming aggregation
-- ``fABBA.image_compress`` / ``image_decompress`` → Turn any 2D array/image into a short string and back
+- ``fABBA.image_compress`` / ``image_decompress`` -> Turn any 2D array/image into a short string and back
 
 Applications
 ------------
@@ -90,7 +89,7 @@ Quick Example
    string, centers = fabba.fit_transform(ts)
 
    print(f"Original length : {len(ts)}")
-   print(f"Compressed to   : {len(string)} symbols  →  compression ratio {(len(ts)/len(string)):.1f}×")
+   print(f"Compressed to   : {len(string)} symbols  ->  compression ratio {(len(ts)/len(string)):.1f}×")
    print(f"Symbolic string : {string}")
 
    reconstructed = fabba.inverse_transform(string, centers)
