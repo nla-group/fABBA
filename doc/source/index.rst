@@ -101,7 +101,6 @@ Quick Example
 References
 ----------
 
-
 .. [1] Chen, X. and Güttel, S., 2024. fABBA: A Python library for the fast symbolic approximation of time series.  
    *Journal of Open Source Software* 9(95), 6294.  
    DOI: `10.21105/joss.06294 <https://doi.org/10.21105/joss.06294>`__  
