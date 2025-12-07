@@ -1,75 +1,102 @@
-API Reference
-======================================
+.. _api-reference:
 
-``fABBA`` is the API of the symbolic representation transformation for univariate time series.
+API Reference
+=============
 
 fABBA
--------
+-----
+
+The ``fABBA`` class provides the original FABBA algorithm for symbolic representation of univariate time series.
+
 .. autoclass:: fABBA.fABBA
    :members:
- 
-.. autoclass:: fABBA.loadData
-   :members:
-
-.. autoclass:: fABBA.load_images
-   :members:
-
-
+   :undoc-members:
+   :show-inheritance:
 
 ABBAbase
--------
+--------
+
+Base class shared by fABBA and JABBA.
+
 .. autoclass:: fABBA.ABBAbase
    :members:
-   
+   :private-members:
 
 JABBA
--------
+-----
 
-``JABBA`` is the API of the symbolic representation transformation for univariate time series, multivariate (rep., multiple univariate) time series, which allows for the combination of ABBA method with various clustering techniques. 
-
+``JABBA`` is an extended and highly optimized version that supports:
+- Univariate and multivariate time series
+- Multiple clustering backends (including GPU-accelerated)
+- Memory-efficient and parallel aggregation
 
 .. autoclass:: fABBA.JABBA
    :members:
-   
+   :undoc-members:
+   :show-inheritance:
 
-We illustrate some main components of ``fABBA`` below.
- 
+Core Transformation Methods
+===========================
+
+These functions/methods are the building blocks used internally and can also be used directly.
 
 compress
--------
-.. autoclass:: fABBA.chainApproximation.compress
-   :members:
-   
+--------
+
+Perform piecewise linear aggregation (tolerance-based chain approximation).
+
+.. automethod:: fABBA.chainApproximation.compress
 
 inverse_compress
--------
-.. autoclass:: fABBA.compress
-   :members:
+----------------
 
-   
+Reconstruct time series from compressed piecewise aggregates.
+
+.. autofunction:: fABBA.inverse_compress
+
 digitize
--------
-.. autoclass:: fABBA.digitize
-   :members:
-   
+--------
+
+Convert piecewise linear segments into symbolic representation (SAX-like).
+
+.. automethod:: fABBA.digitization.digitize
 
 inverse_digitize
--------
-.. autoclass:: fABBA.inverse_digitize
-   :members:
+----------------
 
+Reconstruct approximate time series from symbolic string and centers.
 
-We can employ image compressing with ``fABBA`` using the convenient API ``image_compress`` and ``image_decompress``.
+.. autofunction:: fABBA.inverse_digitize
 
+Image Compression Utilities
+===========================
+
+Convenient APIs for compressing 2D arrays/images using fABBA.
 
 image_compress
--------
-.. autoclass:: fABBA.image_compress
-   :members:
+--------------
 
+Compress a 2D image/array into a symbolic string using block-wise fABBA.
 
+.. autofunction:: fABBA.image_compress
 
 image_decompress
--------
-.. autoclass:: fABBA.image_decompress
-   :members:
+----------------
+
+Decompress a symbolic string back into an image/array.
+
+.. autofunction:: fABBA.image_decompress
+
+Dataset Loading Utilities
+==========================
+
+.. autofunction:: fABBA.load_datasets.load_ucr_dataset
+
+.. autofunction:: fABBA.load_datasets.load_uea_dataset
+
+Other Utilities
+===============
+
+.. autofunction:: fABBA.fabba_agg.fabba_agg
+
+.. autofunction:: fABBA.fabba_agg.inverse_fabba_agg
