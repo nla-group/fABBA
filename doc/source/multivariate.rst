@@ -1,199 +1,218 @@
-Multivariate time series symbolization
+Mult-channel symbolization
 ======================================
 
 
-Here we domonstrate how to use ``fABBA`` to symbolize multivariate (same applies to multiple univariate time series) with consistent symbols. 
+**JABBA** is a fast, parallel, and fully multivariate-aware implementation of the **fABBA** (fast Adaptive Brownian Bridge-based Approximation) symbolic aggregation method for time series.
+
+It extends the original ABBA with:
+
+- Native support for multivariate and high-dimensional arrays (images, video frames, sensor arrays)
+- Automatic shape preservation and restoration
+- Parallel compression & digitization via multiprocessing
+- Three digitization backends: adaptive aggregation (original ABBA), K-means, and GPU-accelerated K-means
+- Out-of-sample transformation
+- Auto-digitization (no need to tune ``alpha``)
+
+Perfect for: motif discovery, compression, clustering, classification, anomaly detection on **real-world multivariate** data.
+
+Installation
+------------
+
+.. code-block:: bash
+
+    pip install fABBA
 
 
-To start, we provide a quick example to show how JABBA works on multivariate time series data:
+Core Idea
+---------
 
-For aggregation as digitization:
+1. **Compress each time series into piecewise linear segments (length, increment)
+2. Digitize all pieces across all series/channels into shared symbols
+3. Reconstruct using starting points + symbolic sequence
 
-.. code:: python
+Symbols are consistent across all variables -> enables cross-channel pattern mining.
 
-    from fABBA import JABBA # XABBA, QABBA also support
+
+Quick Start – One-Liner
+-----------------------
+
+.. code-block:: python
+
+    from fABBA import JABBA
+    import numpy as np
+
+    # 50 multivariate time series, 6 channels, 500 timesteps each
+    X = np.random.randn(50, 6, 500)
+
+    jabba = JABBA(tol=0.05, verbose=1)
+    symbols = jabba.fit_transform(X)           # List[List[str]] — one sequence per series
+    X_reconstructed = jabba.inverse_transform(symbols)
+
+    print(f"Reconstruction error: {np.linalg.norm(X - X_reconstructed):.4f}")
+
+
+Full Usage Examples
+===================
+
+
+1. Multiple Univariate or Multivariate Time Series (Most Common)
+----------------------------------------------------------------
+
+.. code-block:: python
+
+    from fABBA import JABBA
     import numpy as np
     import matplotlib.pyplot as plt
 
-    np.random.seed(42)
+    # Simulate 20 independent univariate series
+    np.random.seed(0)
+    data = np.cumsum(np.random.randn(20, 800), axis=1)  # random walks
 
-    n = 30
-    train = np.random.randn(n, 1000)
+    jabba = JABBA(tol=0.1, init='agg', verbose=1)  # auto-digitization
+    symbols = jabba.fit_transform(data)
+    recon = jabba.inverse_transform(symbols)
 
-    jabba = JABBA(tol=0.01, init='agg', eta=3, verbose=1) # parameter eta is used for auto-digitization, if not set, eta is default to 3
-    symbols = jabba.fit_transform(train)
-    reconst = jabba.inverse_transform(symbols)
-
-    plt.style.use('default')
-    plt.rcParams['figure.facecolor'] = 'white'
-    plt.rcParams['axes.facecolor'] = 'white'
-
-    plt.figure(figsize=(10, 4))
-    plt.plot(reconst[0], label="reconstruction", linewidth=2) # view the reconstruction of the first time series
-    plt.plot(train[0], label="time series", linewidth=2, alpha=0.8) # view the reconstruction of the first time series
-    plt.legend()
-    plt.title("JABBA Reconstruction")
-
+    # Plot first 3 series
+    plt.figure(figsize=(12, 6))
+    for i in range(3):
+        plt.subplot(3, 1, i+1)
+        plt.plot(data[i], label='Original', alpha=0.8)
+        plt.plot(recon[i], '--', label='JABBA reconstruction')
+        plt.title(f'Series {i} -> compressed to {len(symbols[i])} symbols')
+        plt.legend()
     plt.tight_layout()
-
-    plt.savefig("jabba_reconstruction.pdf", dpi=300, bbox_inches='tight')
     plt.show()
 
 
-For k-means as digitization:
+2. True Multivariate Time Series (Shared Symbols Across Channels)
+------------------------------------------------------------------
 
-.. code:: python
-        
-    from fABBA import JABBA
-    import numpy as np
-    import matplotlib.pyplot as plt
+.. code-block:: python
 
-    np.random.seed(42)
+    # 10 samples × 12 channels × 1000 timesteps (e.g., EEG, accelerometers)
+    mts = np.random.randn(10, 12, 1000)
 
-    n = 30
-    train = np.random.randn(n, 1000)
+    jabba = JABBA(tol=0.02, scl=2.0, verbose=1)
+    symbols = jabba.fit_transform(mts)        # 10 symbolic sequences (one per sample)
+    recon = jabba.inverse_transform(symbols)  # shape: (10, 12, 1000)
 
-    jabba = JABBA(tol=0.01, init='gpu-kmeans', k=100, verbose=1)
-    symbols = jabba.fit_transform(train, n_jobs=10)
-    reconst = jabba.inverse_transform(symbols)
-
-    plt.style.use('default')
-    plt.rcParams['figure.facecolor'] = 'white'
-    plt.rcParams['axes.facecolor'] = 'white'
-
-    plt.figure(figsize=(10, 4))
-    plt.plot(reconst[0], label="reconstruction", linewidth=2) # view the reconstruction of the first time series
-    plt.plot(train[0], label="time series", linewidth=2, alpha=0.8) # view the reconstruction of the first time series
-    plt.legend()
-    plt.title("JABBA Reconstruction")
-
-    plt.tight_layout()
-
-    plt.savefig("jabba_reconstruction.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    error = np.mean([np.linalg.norm(mts[i] - recon[i]) for i in range(10)])
+    print(f"Avg reconstruction error per sample: {error:.4f}")
+    print(f"Number of unique symbols: {len(jabba.parameters.alphabets)}")
 
 
+3. High-Dimensional Arrays (Video, Spectrograms, Images over Time)
+------------------------------------------------------------------
 
-After downloading the `UEA time series dataset <https://www.timeseriesclassification.com/>`_ in corresponding folder, you can run JABBA following the example below:
+.. code-block:: python
 
+    # 8 video clips: 30 frames × 112 × 112 × 3
+    video = np.random.rand(8, 30, 112, 112, 3)
 
+    jabba = JABBA(tol=0.1, verbose=1)
+    symbols = jabba.fit_transform(video)                    # treats as 8 × (30, 112*112*3) series
+    flat_recon = jabba.inverse_transform(symbols)           # (8, 30*112*112*3)
+    video_recon = jabba.recast_shape(flat_recon)          # -> (8, 30, 112, 112, 3)
 
-.. code:: python
-
-    import os
-    from scipy.io import arff
-    from fABBA import JABBA
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-    _dir = 'data/UEA2018' # your data file location
-
-    def preprocess(data):
-        time_series = list()
-        for ii in data[0]:
-            database = list()
-            for i in ii[0]:
-                database.append(list(i))
-            time_series.append(database)
-        return np.nan_to_num(np.array(time_series))
-
-    filename = 'BasicMotions'
-    num= 10
-    data = arff.loadarff(os.path.join(_dir, os.path.join(filename, filename+'_TRAIN.arff')))
-    multivariate_ts = preprocess(data)
-
-    mts =((multivariate_ts[num].T - multivariate_ts[num].T.mean(axis=0)) /multivariate_ts[num].T.std(axis=0)).T
-
-    jabba1 = JABBA(tol=0.0002, verbose=1)
-    symbols_series = jabba1.fit_transform(mts)
-    reconstruction = jabba1.inverse_transform(symbols_series)
-    
-    jabba2 = JABBA(tol=0.0002, init='k-means', k=jabba1.parameters.centers.shape[0], verbose=0)
-    symbols_series = jabba2.fit_transform(mts)
-    reconstruction_ABBA = jabba2.inverse_transform(symbols_series)
-    
-    fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(18, 5))
-    
-    for i in range(2):
-        for j in range(3):
-            ax[i,j].plot(mts[i*3 + j], c='yellowgreen', linewidth=5,label='time series')
-            ax[i,j].plot(reconstruction_ABBA[i*3 + j], c='blue', linewidth=5, alpha=0.3,label='reconstruction - J-ABBA')
-            ax[i,j].plot(reconstruction[i*3 + j], c='purple', linewidth=5, alpha=0.3,label='reconstruction - J-fABBA')
-    
-            ax[i,j].set_title('dimension '+str(i*3 + j))
-            ax[i,j].set_xticks([]);ax[i,j].set_yticks([])
-    
-    plt.legend(loc='lower right', bbox_to_anchor=[-0.5, -0.5], framealpha=0.45)
-    plt.show()
+    print("Original shape:", video.shape)
+    print("Restored shape :", video_recon.shape)
+    print("Max abs error   :", np.max(np.abs(video - video_recon)))
 
 
-.. image:: images/jabba/all_BasicMotions56.png
-    :width: 720
+Important: ``recast_shape`` only works if input was a NumPy array (not list/tensor).
 
 
-fABBA enable symbolic approximation of multidimentioanl array. Users simply can recontruct the symbols into original shape via ``recast_shape`` . 
+4. Out-of-Sample (Test Set) Symbolization
+-----------------------------------------
 
-.. code:: python
-    
-    from fABBA import JABBA
-    import numpy as np
-    mts = np.random.randn(10, 20, 30) # 6000 time series values
-    
-    jabba = JABBA(tol=0.01, alpha=0.01, verbose=1)
-    symbols = jabba.fit_transform(mts)
-    reconst = jabba.inverse_transform(symbols) # convert into array
-    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
-    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+.. code-block:: python
 
-If one would like to ensure the ``recast_shape`` for shape reconstruction, the input to ``fit_transform`` must be numpy.ndarray.
+    X_train = np.random.randn(100, 5, 200)
+    X_test  = np.random.randn(30, 5, 200)
+
+    jabba = JABBA(tol=0.05).fit(X_train)                    # learn vocabulary
+    symbols_test, starts = jabba.transform(X_test)          # use same symbols!
+    X_test_recon = jabba.inverse_transform(symbols_test, starts)
+
+    print(f"Test set reconstructed with {len(jabba.parameters.alphabets)} shared symbols")
 
 
-Regarding the transformation of out-of-sample data, use
+5. Fixed vs Adaptive Vocabulary
+-------------------------------
 
-.. code:: python
+.. code-block:: python
 
-    mts = np.random.randn(20, 20, 30) # new 6000 time series values
-    symbols_trans, start_set = jabba.transform(mts) # Perform transform with fitted model
-    reconst = jabba.inverse_transform(symbols_trans, start_set)
-    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+    data = np.random.randn(50, 4, 1000)
 
+    # Adaptive (recommended): let JABBA decide how many symbols
+    adaptive = JABBA(tol=0.03, init='agg', verbose=0)
+    adaptive.fit_transform(data)
+    print("Adaptive -> symbols:", len(adaptive.parameters.alphabets))
 
-.. 
-
-Note that ``jabba`` use init='agg' as default, one can set it to ``kmeans`` for improved performance while resulting in slower speed. If one switch to ``kmeans`` method, the hyperparameter of ``alpha`` and ``auto_digitize`` is disabled, instead of using them, one should tune the hyperparameter of ``k``, which refers to the number of clusters (distinct symbols) will be used. 
-
-.. code:: python
- 
-    mts = np.random.randn(20, 20, 30) # new 6000 time series values
-    
-    # For aggregation, init='agg' is default
-    jabba = JABBA(tol=0.01, alpha=0.01, verbose=1)
-    symbols = jabba.fit_transform(mts)
-    reconst = jabba.inverse_transform(symbols) # convert into array
-    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
-    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
-
-    # For kmeans, init='k-means++'
-    jabba = JABBA(tol=0.01, k=100, init='kmeans', verbose=1) # use 100 distinct symbols
-    symbols = jabba.fit_transform(mts)
-    reconst = jabba.inverse_transform(symbols) # convert into array
-    reconst_same_shape = jabba.recast_shape(reconst) # recast into original shape
-    np.linalg.norm((mts - reconst_same_shape).reshape(-1, np.prod(mts.shape[1:])), 'fro')
+    # Fixed vocabulary (faster, reproducible)
+    fixed = JABBA(tol=0.03, init='kmeans', k=80, verbose=0)
+    fixed.fit_transform(data)
+    print("Fixed k=80 -> symbols:", len(fixed.parameters.alphabets))
 
 
-You can also load dataset via ``loadData``:
+6. GPU-Accelerated Digitization (Large Datasets)
+------------------------------------------------
 
-.. code:: python
-    
-    from fABBA import loadData
-    train, test = loadData(name='Beef') 
-    # Then perform JABBA
-    jabba = JABBA(tol=0.0002, verbose=1)
-    symbols_series = jabba.fit_transform(train[0])
-    reconstruction = jabba.inverse_transform(symbols_series)
+.. code-block:: python
 
-.. admonition:: Note
-    
-        function loadData() is a lightweight API for time series dataset loading, which only supports part of data in UEA or UCR Archive, please refer to the document for full use detail. JABBA is used to process multiple time series as well as multivariate time series, so the input should be ensured to be 2-dimensional, for example, when loading the UCI dataset, e.g., Beef, use symbols = jabba.fit_transform(train) , when loading UEA dataset, e.g., BasicMotions, use symbols = jabba.fit_transform(train[0]) . For details, we refer to `UCR/UEA time series dataset <https://www.timeseriesclassification.com/>`_.
-        Functionality of ``loadData()`` currently supports datasets: (1) UEA Archive: 'AtrialFibrillation', 'BasicMotions', 'BasicMotions', 'CharacterTrajectories', 'LSST', 'Epilepsy', 'NATOPS', 'UWaveGestureLibrary', 'JapaneseVowels'; (2) UCR Archive: 'Beef'.
-    
+    huge_data = np.random.randn(1000, 20, 2000)  # 40 million points
+
+    jabba = JABBA(tol=0.05, init='gpu-kmeans', k=200, verbose=1)
+    symbols = jabba.fit_transform(huge_data, n_jobs=16)  # blazing fast
+
+
+Parameter Guide
+===============
+
+================================  ===============================================  =====================
+Parameter                         Meaning                                          Default
+================================  ===============================================  =====================
+``tol``                           Compression tolerance (smaller = more pieces)    0.2
+``init``                          Digitization method                                      ``'agg'``
+                                  • ``'agg'`` -> original adaptive merging (best quality)
+                                  • ``'kmeans'`` -> fast CPU K-means
+                                  • ``'gpu-kmeans'`` -> FAISS GPU (very fast)
+``k``                             Fixed number of symbols (used only if not 'agg') —
+``alpha``                         Merging threshold in aggregation (if given)      ``None`` (auto)
+``eta``                           Controls auto-alpha strength (1–5 typical)       3
+``scl``                           Weight on length vs increment (higher = respect length more) 1.0
+``verbose``                       Print progress                                           1
+``n_jobs``                        Parallel workers (-1 = all cores)                        -1
+``last_dim``                      Keep last dim as time? (True for (samples,time,feat)) True
+================================  ===============================================  =====================
+
+
+When to Use Which Mode?
+-----------------------
+
++----------------------------------+--------------------------------------------+
+| Goal                             | Recommended Settings                       |
++==================================+============================================+
+| Best reconstruction quality      | ``init='agg'``, small ``tol``              |
++----------------------------------+--------------------------------------------+
+| Fast & reproducible              | ``init='kmeans'``, fixed ``k``             |
++----------------------------------+--------------------------------------------+
+| >1M time points                  | ``init='gpu-kmeans'`` + high ``n_jobs``    |
++----------------------------------+--------------------------------------------+
+| Motif discovery across channels  | ``init='agg'`` or ``kmeans`` (shared vocab)|
++----------------------------------+--------------------------------------------+
+
+
+Tips from the Source Code
+-------------------------
+
+- JABBA automatically standardizes data unless you set ``adjust=False`` in ``general_compress``
+- For peak-shift robustness -> increase ``scl`` (e.g. ``scl=3–5``)
+- For very noisy data -> slightly increase ``tol``
+- Use ``jabba.parameters.centers`` and ``.alphabets`` to inspect learned prototypes
+- ``symbols`` is a list of lists of strings — perfect input for ``pysax``, ``matrix profile``, or ``LSTM+embedding``
+
+
+You're now ready to symbolize anything from ECG to satellite imagery.
+
+Happy compressing!

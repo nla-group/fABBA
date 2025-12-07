@@ -17,7 +17,7 @@ from .fabba import (image_compress, image_decompress, ABBAbase, ABBA,
                                       symbolsAssign, fillna)
 
 
-
+from .fabba import Model
 from .fabba import _compress as compress
 from .fabba import _inverse_compress as inverse_compress
 from .digitization import digitize, inverse_digitize, quantize, wcss, calculate_group_centers
