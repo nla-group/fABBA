@@ -26,7 +26,7 @@ Installation
 Core Idea
 ---------
 
-1. **Compress each time series into piecewise linear segments (length, increment)
+1. Compress each time series into piecewise linear segments (length, increment)
 2. Digitize all pieces across all series/channels into shared symbols
 3. Reconstruct using starting points + symbolic sequence
 

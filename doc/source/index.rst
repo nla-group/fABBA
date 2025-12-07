@@ -101,10 +101,33 @@ Quick Example
 References
 ----------
 
-.. [1] Elsworth, S. and Güttel, S., 2020. ABBA: Aggregate Binary Aggregation for time-series compression and symbolization. *Data Mining and Knowledge Discovery* 34, 1175–1200. https://doi.org/10.1007/s10618-020-00687-9
 
-.. [2] Original ABBA implementation: https://github.com/nla-group/ABBA
-.. [3] fABBA & JABBA (this repository): https://github.com/nla-group/fABBA (Comprise all functionalities, highly recommended!)
+.. [1] Chen, X. and Güttel, S., 2024. fABBA: A Python library for the fast symbolic approximation of time series.  
+   *Journal of Open Source Software* 9(95), 6294.  
+   DOI: `10.21105/joss.06294 <https://doi.org/10.21105/joss.06294>`__  
+   *(Official software paper describing the fABBA Python package — the foundation of this repository.)*
+
+.. [2] Chen, X., 2024. Joint symbolic aggregate approximation of time series.  
+   Preprint arXiv:2401.00109 [cs.DS].  
+   https://arxiv.org/abs/2401.00109  
+   *(Latest theoretical advance: joint symbolization of multivariate time series with shared alphabet. Fully implemented in the ``JABBA`` class of this package.)*
+
+.. [3] Chen, X. and Güttel, S., 2023. An Efficient Aggregation Method for the Symbolic Representation of Temporal Data.  
+   *ACM Transactions on Knowledge Discovery from Data* 17(1), Article 5 (22 pages).  
+   DOI: `10.1145/3532622 <https://doi.org/10.1145/3532622>`__  
+   *(Core fABBA algorithm paper: introduces sorting-based aggregation, tolerance-driven symbolization, and image compression capabilities.)*
+
+.. [4] Elsworth, S. and Güttel, S., 2020. ABBA: Aggregate Brownian bridge-based aggregation for time series compression and symbolization.  
+   *Data Mining and Knowledge Discovery* 34, 1175–1200.  
+   DOI: `10.1007/s10618-020-00687-9 <https://doi.org/10.1007/s10618-020-00687-9>`__  
+   *(Original ABBA method using k-means clustering on piecewise linear segments.)*
+
+.. [5] Original ABBA implementation (2020):  
+   https://github.com/nla-group/ABBA
+
+.. [6] This repository — fABBA + JABBA + latest extensions (2023–2025, actively maintained):  
+   https://github.com/nla-group/fABBA  
+   *(Includes Multithreading/Cython speedups, GPU-accelerated backends, streaming aggregation, full joint/multivariate support, image utilities, and more. Recommended for all use cases.)*
 
 Getting Started
 ---------------
