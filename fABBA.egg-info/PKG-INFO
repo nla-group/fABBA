@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: fABBA
-Version: 1.3.9
+Version: 1.4.1
 Summary: An efficient aggregation method for the symbolic representation of temporal data
 Home-page: https://github.com/nla-group/fABBA
 Author: Xinye Chen, Stefan Güttel
