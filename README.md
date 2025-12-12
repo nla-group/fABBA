@@ -325,7 +325,7 @@ numpages = {22},
 ```
 
 
-If you use QABBA method in a scientific publication, we would appreociate your citing:
+If you use QABBA method in a scientific publication, we would appreciate your citing:
 
 
 ```bibtex
@@ -341,8 +341,23 @@ url={https://arxiv.org/abs/2411.15209},
 ```
 
 
+If you use XABBA method in a scientific publication, we would appreciate your citing:
+
+```bibtex
+@misc{carson2024,
+author={Erin Carson and Xinye Chen and Cheng Kang},
+title={{LLM-ABBA}: Understanding time series via symbolic approximation},
+year={2024},
+eprint={2411.18506},
+archivePrefix={arXiv},
+primaryClass={cs.LG},
+url={https://arxiv.org/abs/2411.18506},
+}
+```
+
 #####  If you have any questions, please be free to reach us!
 
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
