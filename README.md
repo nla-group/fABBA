@@ -1,5 +1,5 @@
 
-# fABBA:  An efficient symbolic time series approximation tool
+## fABBA:  An efficient symbolic time series approximation method
 
 
 ![Static Badge](https://img.shields.io/badge/Compiler-8A2BE2?label=Cython-Accelerated)
@@ -317,6 +317,7 @@ Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
