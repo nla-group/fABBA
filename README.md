@@ -311,10 +311,13 @@ If you use the ``XABBA`` method, please cite:
 
 Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
 
-#####  If you have any questions, please be free to reach us!
+
+
+###  If you have any questions, please be free to reach us! You can also check our [bibtex](https://github.com/nla-group/fABBA/blob/master/CITATION.bib) for reference.
 
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
