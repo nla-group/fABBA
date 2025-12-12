@@ -292,72 +292,29 @@ g++ -o test runtime.cpp
 
 ## :paperclip: Citation
 
-If you use ``fABBA`` software for your benchmarking,  we would appreciate your citing: 
-```bibtex
-@article{Chen2024, 
-doi = {10.21105/joss.06294}, 
-url = {https://doi.org/10.21105/joss.06294}, 
-year = {2024}, 
-publisher = {The Open Journal}, 
-volume = {9}, 
-number = {95}, 
-pages = {6294}, 
-author = {Xinye Chen and Stefan Güttel}, 
-title = {fABBA: A Python library for the fast symbolic approximation of time series},
-journal = {Journal of Open Source Software}
-}
-```
+If you use    fABBA software in your benchmarking, please cite:
 
-If you use fABBA meethod in a scientific publication, we would appreciate your citing:
-
-```bibtex
-@article{10.1145/3532622,
-author = {Chen, Xinye and G\"{u}ttel, Stefan},
-title = {An Efficient Aggregation Method for the Symbolic Representation of Temporal Data},
-year = {2023},
-publisher = {ACM},
-volume = {17},
-number = {1},
-doi = {10.1145/3532622},
-journal = {ACM Transactions on Knowledge Discovery from Data},
-numpages = {22},
-}
-```
+Chen, X. & Güttel, S. (2024). fABBA: A Python library for the fast symbolic approximation of time series. *Journal of Open Source Software*, 9(95), 6294. https://doi.org/10.21105/joss.06294
 
 
-If you use QABBA method in a scientific publication, we would appreciate your citing:
+If you use the ``fABBA`` method in a scientific publication, please cite:
+
+Chen, X. & Güttel, S. (2023). An efficient aggregation method for the symbolic representation of temporal data. *ACM TKDD*, 17(1), 22. https://doi.org/10.1145/3532622
 
 
-```bibtex
-@misc{2411.15209,
-title={Quantized symbolic time series approximation}, 
-author={Erin Carson and Xinye Chen and Cheng Kang},
-year={2025},
-eprint={2411.15209},
-archivePrefix={arXiv},
-primaryClass={cs.LG},
-url={https://arxiv.org/abs/2411.15209}, 
-}
-```
+If you use the ``QABBA`` method, please cite:
+
+Carson, E., Chen, X., & Kang, C. (2025). Quantized symbolic time series approximation. arXiv:2411.15209.
 
 
-If you use XABBA method in a scientific publication, we would appreciate your citing:
+If you use the ``XABBA`` method, please cite:
 
-```bibtex
-@misc{carson2024,
-author={Erin Carson and Xinye Chen and Cheng Kang},
-title={{LLM-ABBA}: Understanding time series via symbolic approximation},
-year={2024},
-eprint={2411.18506},
-archivePrefix={arXiv},
-primaryClass={cs.LG},
-url={https://arxiv.org/abs/2411.18506},
-}
-```
+Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
 
 #####  If you have any questions, please be free to reach us!
 
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
