@@ -6,12 +6,12 @@
 ![Static Badge](https://img.shields.io/badge/Compiler-8A2BE2?label=Cython-Accelerated)
 [![!pypi](https://img.shields.io/pypi/v/fABBA?color=cyan)](https://pypi.org/project/fABBA/)
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10885652.svg)](https://doi.org/10.5281/zenodo.10885652)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/license.svg)](https://anaconda.org/conda-forge/fabba)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
 
 The ABBA methods provide a fast and accurate symbolic approximation of temporal data, making them well-suited for tasks such as compression, clustering, and classification. The ``fABBA`` library is a Python-based implementation designed to efficiently apply ABBA methods. It achieves this by first approximating a time series using a polygonal chain representation and then aggregating these polygonal segments into symbolic groups.
 
@@ -318,6 +318,7 @@ Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
