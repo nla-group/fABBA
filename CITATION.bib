@@ -1,19 +1,32 @@
+
 @article{10.1145/3532622,
 author = {Chen, Xinye and G\"{u}ttel, Stefan},
 title = {An Efficient Aggregation Method for the Symbolic Representation of Temporal Data},
 year = {2023},
-issue_date = {January 2023},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
+publisher = {ACM},
 volume = {17},
 number = {1},
-issn = {1556-4681},
-url = {https://doi.org/10.1145/3532622},
 doi = {10.1145/3532622},
-abstract = {Symbolic representations are a useful tool for the dimension reduction of temporal data, allowing for the efficient storage of and information retrieval from time series. They can also enhance the training of machine learning algorithms on time series data through noise reduction and reduced sensitivity to hyperparameters. The adaptive Brownian bridge-based aggregation (ABBA) method is one such effective and robust symbolic representation, demonstrated to accurately capture important trends and shapes in time series. However, in its current form, the method struggles to process very large time series. Here, we present a new variant of the ABBA method, called fABBA. This variant utilizes a new aggregation approach tailored to the piecewise representation of time series. By replacing the k-means clustering used in ABBA with a sorting-based aggregation technique, and thereby avoiding repeated sum-of-squares error computations, the computational complexity is significantly reduced. In contrast to the original method, the new approach does not require the number of time series symbols to be specified in advance. Through extensive tests, we demonstrate that the new method significantly outperforms ABBA with a considerable reduction in runtime while also outperforming the popular SAX and 1d-SAX representations in terms of reconstruction accuracy. We further demonstrate that fABBA can compress other data types such as images.},
-journal = {ACM Trans. Knowl. Discov. Data},
-month = {feb},
-articleno = {5},
+journal = {ACM Transactions on Knowledge Discovery from Data},
 numpages = {22},
-keywords = {time series mining, symbolic aggregation, data compression, Knowledge representation}
+}
+
+@misc{2411.15209,
+title={Quantized symbolic time series approximation}, 
+author={Erin Carson and Xinye Chen and Cheng Kang},
+year={2025},
+eprint={2411.15209},
+archivePrefix={arXiv},
+primaryClass={cs.LG},
+url={https://arxiv.org/abs/2411.15209}, 
+}
+
+@misc{carson2024,
+author={Erin Carson and Xinye Chen and Cheng Kang},
+title={{LLM-ABBA}: Understanding time series via symbolic approximation},
+year={2024},
+eprint={2411.18506},
+archivePrefix={arXiv},
+primaryClass={cs.LG},
+url={https://arxiv.org/abs/2411.18506},
 }
