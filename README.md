@@ -8,6 +8,7 @@
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
+[![Download Status](https://img.shields.io/pypi/dm/fABBA.svg?label=PyPI%20downloads)](https://pypi.org/project/fABBA/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10885652.svg)](https://doi.org/10.5281/zenodo.10885652)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/license.svg)](https://anaconda.org/conda-forge/fabba)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
@@ -317,6 +318,7 @@ Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
