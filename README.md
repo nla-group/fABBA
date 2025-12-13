@@ -294,22 +294,22 @@ g++ -o test runtime.cpp
 
 If you use    fABBA software in your benchmarking, please cite:
 
-Chen, X. & Güttel, S. (2024). fABBA: A Python library for the fast symbolic approximation of time series. *Journal of Open Source Software*, 9(95), 6294. https://doi.org/10.21105/joss.06294
+[1] Chen, X. & Güttel, S. (2024). fABBA: A Python library for the fast symbolic approximation of time series. *Journal of Open Source Software*, 9(95), 6294. https://doi.org/10.21105/joss.06294
 
 
 If you use the ``fABBA`` method in a scientific publication, please cite:
 
-Chen, X. & Güttel, S. (2023). An efficient aggregation method for the symbolic representation of temporal data. *ACM TKDD*, 17(1), 22. https://doi.org/10.1145/3532622
+[2] Chen, X. & Güttel, S. (2023). An efficient aggregation method for the symbolic representation of temporal data. *ACM TKDD*, 17(1), 22. https://doi.org/10.1145/3532622
 
 
 If you use the ``QABBA`` method, please cite:
 
-Carson, E., Chen, X., & Kang, C. (2025). Quantized symbolic time series approximation. arXiv:2411.15209.
+[3] Carson, E., Chen, X., & Kang, C. (2025). Quantized symbolic time series approximation. arXiv:2411.15209.
 
 
 If you use the ``XABBA`` method, please cite:
 
-Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
+[4] Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
 
 
 
@@ -318,6 +318,7 @@ Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
