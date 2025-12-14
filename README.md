@@ -7,6 +7,7 @@
 [![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
 [![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
+
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 [![Download Status](https://img.shields.io/pypi/dm/fABBA.svg?label=PyPI%20downloads)](https://pypi.org/project/fABBA/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10885652.svg)](https://doi.org/10.5281/zenodo.10885652)
@@ -318,6 +319,7 @@ If you use the ``XABBA`` method, please cite:
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
