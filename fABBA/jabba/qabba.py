@@ -711,7 +711,8 @@ class QABBA(object):
                         
                     else:
                         series, self.recap_shape = flatten_to_2d_keep_last(series)
-                        self.stack_last_dim= True
+                    
+                    self.stack_last_dim= True
 
             elif isinstance(series, list):
                 pass
