@@ -427,7 +427,7 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
 
 
 
-def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray, Tuple[int, ...]]:
+def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = False) -> Tuple[np.ndarray, Tuple[int, ...]]:
     """
     Flatten all dimensions except the last one (or first one) into a single dimension.
     
@@ -462,7 +462,9 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray,
 
     x_2d = x.reshape(new_shape)
 
-    print(description)
+    if verbose:
+        print(description)
+
     return x_2d, original_shape, x_2d.shape
 
 
@@ -788,7 +790,7 @@ class QABBA(object):
             self.return_series_univariate = False
             if isinstance(series, np.ndarray):
                 if len(series.shape) > 2:
-                    series, self.recap_shape, self.new_shape = flatten_to_2d_keep_last(series, self.last_dim)
+                    series, self.recap_shape, self.new_shape = flatten_to_2d_keep_last(series, self.last_dim, verbose=self.verbose)
                     
                     self.stack_last_dim= True
 

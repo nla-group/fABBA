@@ -15,14 +15,6 @@ It extends the original ABBA with:
 
 Perfect for: motif discovery, compression, clustering, classification, anomaly detection on **real-world multivariate** data.
 
-Installation
-------------
-
-.. code-block:: bash
-
-    pip install fABBA
-
-
 Core Idea
 ---------
 
