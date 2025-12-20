@@ -152,7 +152,7 @@ for ax, (name, (err_joint, err_sep)) in zip(
         err_joint,
         marker="o",
         color=COLOR_PROPOSED,
-        label="Structured (last-dim preserved)",
+        label="Structured", #  (last-dim preserved)
         markerfacecolor="white",
         markeredgewidth=1.5,
     )
@@ -161,7 +161,7 @@ for ax, (name, (err_joint, err_sep)) in zip(
         err_sep,
         marker="s",
         color=COLOR_BASELINE,
-        label="Flattened (last-dim merged)",
+        label="Flattened", #  (last-dim merged)
         markerfacecolor="white",
         markeredgewidth=1.5,
     )
