@@ -585,7 +585,6 @@ class JABBA(object):
         alphabet_set - int or list, default=0
             The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.
         """
-        
         self.pieces = self.parallel_compress(series, n_jobs=n_jobs)
         self.string_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
         return self
@@ -799,6 +798,7 @@ class JABBA(object):
         
         self.num_grp = self.parameters.centers.shape[0]
         if self.verbose:
+            print("Total number of pieces: {}".format(N))
             print("Generate {} symbols".format(self.num_grp))
         
         string_sequences = self.string_separation(string, num_pieces)

@@ -1014,6 +1014,7 @@ class XABBA(object):
         
         self.num_grp = self.parameters.centers.shape[0]
         if self.verbose:
+            print("Total number of pieces: {}".format(N))
             print("Generate {} symbols".format(self.num_grp))
         
         string_sequences = self.string_separation(string, num_pieces)
