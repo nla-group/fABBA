@@ -1,3 +1,9 @@
+name: Draft paper PDF
+
+on:
+  push:
+  pull_request:
+
 jobs:
   paper:
     runs-on: ubuntu-latest
@@ -10,12 +16,10 @@ jobs:
         uses: openjournals/openjournals-draft-action@master
         with:
           journal: joss
-          # Path to the paper within your repo
           paper-path: paper/paper.md
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: paper
-          # Output path where Pandoc writes the compiled PDF
           path: paper/paper.pdf
