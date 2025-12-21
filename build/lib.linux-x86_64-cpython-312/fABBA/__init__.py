@@ -10,14 +10,14 @@ except (ModuleNotFoundError, ValueError):
     from .separate.aggregation import aggregate
     
     
-__version__ = '1.3.7'
+__version__ = '1.4.7'
 from .load_datasets import load_images, loadData
 from .fabba import (image_compress, image_decompress, ABBAbase, ABBA,
                                       get_patches, patched_reconstruction, fABBA,
                                       symbolsAssign, fillna)
 
 
-
+from .fabba import Model
 from .fabba import _compress as compress
 from .fabba import _inverse_compress as inverse_compress
 from .digitization import digitize, inverse_digitize, quantize, wcss, calculate_group_centers
@@ -32,3 +32,5 @@ from .jabba.qabba import *
 
 from .jabba import xabba
 from .jabba.xabba import XABBA
+
+from .storage import compute_storage

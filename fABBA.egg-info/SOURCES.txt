@@ -11,6 +11,7 @@ fABBA/fabba_agg.py
 fABBA/fkmns.py
 fABBA/inverse_t.py
 fABBA/load_datasets.py
+fABBA/storage.py
 fABBA.egg-info/PKG-INFO
 fABBA.egg-info/SOURCES.txt
 fABBA.egg-info/dependency_links.txt

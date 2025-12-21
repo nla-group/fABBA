@@ -9,7 +9,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.pool import ThreadPool as Pool
 import collections
-from typing import Tuple, Any
+from typing import List, Tuple, Any
 from sklearn.cluster import KMeans
 from .fkmns import sampledKMeansInter
 from joblib import parallel_backend
@@ -308,7 +308,7 @@ def general_decompress(pabba, strings, int_type=True, n_jobs=-1):
 
 
 
-def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray, Tuple[int, ...]]:
+def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = False) -> Tuple[np.ndarray, Tuple[int, ...]]:
     """
     Flatten all dimensions except the last one (or first one) into a single dimension.
     
@@ -343,16 +343,92 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True) -> Tuple[np.ndarray,
 
     x_2d = x.reshape(new_shape)
 
-    print(description)
-    return x_2d, original_shape
+    if verbose:
+        print(description)
+
+    return x_2d, original_shape, x_2d.shape
 
 
-def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...], keep_last: bool = True) -> np.ndarray:
+
+def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...]) -> np.ndarray:
     """
     Restore the original high-dimensional shape from the 2D flattened version.
     """
     x_restored = x_2d.reshape(original_shape)
     return x_restored
+
+
+
+def pad_or_truncate_2d_list(
+    data: List[List[Any]],
+    target_len: int
+) -> np.ndarray:
+    """
+    Pad or truncate each inner list to target_len.
+    - If longer: truncate
+    - If shorter: pad with last element
+    """
+    padded = []
+
+    for row in data:
+        if len(row) == 0:
+            raise ValueError("Empty inner list is not allowed")
+
+        if len(row) >= target_len:
+            padded.append(row[:target_len])
+        else:
+            pad_value = row[-1]
+            padded.append(row + [pad_value] * (target_len - len(row)))
+
+    return np.asarray(padded)
+
+
+
+def pad_or_trim_keep_ends(
+    data: List[List[Any]],
+    target_len: int
+) -> np.ndarray:
+    """
+    For each row:
+    - If len > target_len:
+        keep first & last, remove from the back of the middle part
+    - If len < target_len:
+        pad with last element
+    """
+    if target_len < 1:
+        raise ValueError("target_len must be >= 1")
+
+    out = []
+
+    for row in data:
+        if len(row) == 0:
+            raise ValueError("Empty inner list is not allowed")
+
+        n = len(row)
+
+        # --- case 1: too long ---
+        if n > target_len:
+            if target_len == 1:
+                # edge case: only one slot → keep last (or first, your choice)
+                new_row = [row[-1]]
+            elif target_len == 2:
+                new_row = [row[0], row[-1]]
+            else:
+                middle_len = target_len - 2
+                new_row = [row[0]] + row[1:1 + middle_len] + [row[-1]]
+
+        # --- case 2: too short ---
+        elif n < target_len:
+            pad_value = row[-1]
+            new_row = row + [pad_value] * (target_len - n)
+
+        # --- case 3: exact ---
+        else:
+            new_row = row
+
+        out.append(new_row)
+
+    return np.asarray(out)
 
 
 class JABBA(object):
@@ -413,6 +489,10 @@ class JABBA(object):
     auto_digitize - boolean, default=False
         Enable auto digitization without prior knowledge of alpha.
 
+    trim_method - str, default='pad'
+        The method to process the varying length of time series.
+        'pad' : pad the time series to the max length with the last value.
+        'keep_ends' : keep the first and last elements, trim or pad the middle part to the max length.
 
     
     Attributes
@@ -428,7 +508,7 @@ class JABBA(object):
                         sorting="norm", scl=1, max_iter=10, 
                         partition_rate=None, partition=None,
                         max_len=np.inf, verbose=1, random_state=2022, eta=None, 
-                        fillna='ffill', last_dim=True, auto_digitize=False):
+                        fillna='ffill', last_dim=True, auto_digitize=False, trim_method='keep_ends'):
         
         self.tol = tol
         self.alpha = alpha
@@ -456,10 +536,9 @@ class JABBA(object):
         self.recap_shape = None
         self.last_dim = last_dim
         self.stack_last_dim = False
-        
+        self.new_shape = None
+        self.trim_method = trim_method
 
-    
-        
     def fit_transform(self, series, n_jobs=-1, alphabet_set=0, return_start_set=False):
         """
         Fitted the numerical series and transform them into symbolic representation.
@@ -586,18 +665,12 @@ class JABBA(object):
             self.return_series_univariate = False
             if isinstance(series, np.ndarray):
                 if len(series.shape) > 2:
-                    if not self.last_dim:
-                        self.recap_shape = series.shape
-                        series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
-                        
-                    else:
-                        series, self.recap_shape = flatten_to_2d_keep_last(series)
-                        self.stack_last_dim= True
-
+                    series, self.recap_shape, self.new_shape = flatten_to_2d_keep_last(series, self.last_dim, verbose=self.verbose)
+                    self.stack_last_dim= True
+                    
             elif isinstance(series, list):
                 pass
 
-                
         pieces = list()
         self.start_set = list()
         
@@ -890,7 +963,12 @@ class JABBA(object):
             inverse_sequences = np.hstack(inverse_sequences)
             
         if self.stack_last_dim:
-            inverse_sequences = restore_from_2d(np.asarray(inverse_sequences), self.recap_shape)
+            if self.trim_method == 'keep_ends':
+                inverse_sequences = pad_or_trim_keep_ends(inverse_sequences, self.new_shape[1])
+            else:
+                inverse_sequences = pad_or_truncate_2d_list(inverse_sequences, self.new_shape[1])
+
+            inverse_sequences = restore_from_2d(inverse_sequences, self.recap_shape)
 
         return inverse_sequences
         

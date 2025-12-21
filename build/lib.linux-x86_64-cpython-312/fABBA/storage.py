@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def compute_storage_abba(
+def compute_storage1(
     centers,
     len_strings,
     num_init=1,
@@ -17,7 +17,7 @@ def compute_storage_abba(
     return size_centers + size_strings + size_ts
 
 
-def compute_storage_qabba(
+def compute_storage2(
     centers,
     len_strings,
     num_init=1,
@@ -75,7 +75,7 @@ def compute_storage(
     num_init = getattr(abba, "new_shape", [1])[0]
 
     if isinstance(abba, JABBA):
-        storage = compute_storage_abba(
+        storage = compute_storage1(
             centers,
             len_strings,
             num_init=num_init,
@@ -85,7 +85,7 @@ def compute_storage(
         )
 
     elif isinstance(abba, QABBA):
-        storage = compute_storage_qabba(
+        storage = compute_storage2(
             centers,
             len_strings,
             num_init=num_init,
@@ -97,7 +97,7 @@ def compute_storage(
 
     else:
         # fallback
-        storage = compute_storage_abba(
+        storage = compute_storage1(
             centers,
             len_strings,
             num_init=1,
