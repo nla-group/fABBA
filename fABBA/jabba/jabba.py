@@ -376,7 +376,9 @@ def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...]) -> np.nda
     -> output: (300, 2, 5)  # dynamic batch size recovery
     """
     # new batch size = x_2d.shape[0]
-    new_shape = (x_2d.shape[0],) + original_shape[1:]
+    
+    first_dim = np.prod(x_2d.shape) / np.prod(original_shape[1:])
+    new_shape = (int(first_dim), ) + original_shape[1:]
     return x_2d.reshape(new_shape)
 
 
@@ -881,7 +883,7 @@ class JABBA(object):
                     if series.shape != self.recap_shape:
                         raise ValueError('Please enter the input with consistent dimensions.')
 
-                series = series.reshape(-1, int(np.prod(self.recap_shape[1:])))
+                series, _, _ = flatten_to_2d_keep_last(series, self.last_dim, verbose=self.verbose)
             
         string_sequences = list()
         start_set = list()

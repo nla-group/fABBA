@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: fABBA
-Version: 1.4.8
+Version: 1.5.0
 Summary: An efficient symbolic time series approximation with ABBA.
 Home-page: https://github.com/nla-group/fABBA
 Author: Xinye Chen, Stefan Güttel
