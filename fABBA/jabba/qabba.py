@@ -469,13 +469,20 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = Fals
 
 
 
+
+
 def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...]) -> np.ndarray:
     """
-    Restore the original high-dimensional shape from the 2D flattened version.
-    """
-    x_restored = x_2d.reshape(original_shape)
-    return x_restored
+    Restore tensor from 2D flattened form, but allow batch dim to change.
 
+    Example:
+    x_2d: (300, 10)
+    original_shape: (600, 2, 5)
+    -> output: (300, 2, 5)  # dynamic batch size recovery
+    """
+    # new batch size = x_2d.shape[0]
+    new_shape = (x_2d.shape[0],) + original_shape[1:]
+    return x_2d.reshape(new_shape)
 
 
 

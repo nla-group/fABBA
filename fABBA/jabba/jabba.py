@@ -35,6 +35,22 @@ import multiprocessing
 import subprocess
 
 
+# def remove_1d(x: Any, verbose: bool = False) -> np.ndarray:
+#     """
+#     Ensure input becomes a 2D numpy array shaped as (1, N) if originally 1D.
+# 
+#     Cases:
+#     - list/tuple -> convert to array
+#     - 1D array   -> reshape to (1, -1)
+#     - 2D array   -> returned as-is
+#     - ndim > 2   -> optional raise or flatten (here we raise to avoid ambiguity)
+#     """
+#     x = np.asarray(x)
+# 
+#     if x.ndim == 1:         # e.g. shape (3,)
+#         x = x.reshape(1, -1)  # -> shape (1, 3)
+# 
+#     return x
 
 def check_faiss_installation() -> bool:
     """
@@ -317,8 +333,8 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = Fals
     x : array-like
         Input of any dimension >= 2
     keep_last : bool
-        If True  → keep last dim  → output: (everything_else, last_dim)     ← most common
-        If False → keep first dim → output: (first_dim, everything_else)
+        If True  -> keep last dim  -> output: (everything_else, last_dim)     ← most common
+        If False -> keep first dim -> output: (first_dim, everything_else)
 
     Returns
     -------
@@ -352,10 +368,16 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = Fals
 
 def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...]) -> np.ndarray:
     """
-    Restore the original high-dimensional shape from the 2D flattened version.
+    Restore tensor from 2D flattened form, but allow batch dim to change.
+
+    Example:
+    x_2d: (300, 10)
+    original_shape: (600, 2, 5)
+    -> output: (300, 2, 5)  # dynamic batch size recovery
     """
-    x_restored = x_2d.reshape(original_shape)
-    return x_restored
+    # new batch size = x_2d.shape[0]
+    new_shape = (x_2d.shape[0],) + original_shape[1:]
+    return x_2d.reshape(new_shape)
 
 
 
@@ -409,7 +431,7 @@ def pad_or_trim_keep_ends(
         # --- case 1: too long ---
         if n > target_len:
             if target_len == 1:
-                # edge case: only one slot → keep last (or first, your choice)
+                # edge case: only one slot -> keep last (or first, your choice)
                 new_row = [row[-1]]
             elif target_len == 2:
                 new_row = [row[0], row[-1]]
@@ -1483,7 +1505,7 @@ def fillna(series, method='ffill'):
 
 
 def zip_longest(*iterables, fillvalue=None):
-    # zip_longest('ABCD', 'xy', fillvalue='-') → Ax By C- D-
+    # zip_longest('ABCD', 'xy', fillvalue='-') -> Ax By C- D-
 
     iterators = list(map(iter, iterables))
     num_active = len(iterators)
