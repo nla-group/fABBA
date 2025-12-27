@@ -307,7 +307,7 @@ Thank you for supporting open research!
 
 ---
 
-### 🔹 fABBA / ABBA method (original scientific work)
+### 🔹 fABBA  method (original scientific work)
 **Please cite:**
 
 > **[2]** Chen, X. & Güttel, S. (2023). *An efficient aggregation method for the symbolic representation of temporal data*.  
@@ -345,6 +345,7 @@ Thank you for supporting open research!
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
