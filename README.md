@@ -17,6 +17,8 @@ The ABBA methods provide a fast and accurate symbolic approximation of temporal 
 
 The ``fABBA`` library supports multiple ABBA variants, including the original ABBA method and the optimized fABBA approach. Unlike ABBA, fABBA accelerates the aggregation process by sorting polygonal pieces and leveraging early termination conditions, significantly improving computational efficiency. However, this speed-up comes at the cost of slightly reduced approximation accuracy compared to ABBA. A key distinction between fABBA and the ABBA method proposed by Elsworth and Güttel [Data Mining and Knowledge Discovery, 34:1175-1200, 2020] is that fABBA eliminates the need for repeated within-cluster-sum-of-squares computations, thereby reducing its overall computational complexity. Additionally, fABBA is fully tolerance-driven, meaning that users do not need to specify the number of symbols in advance, allowing for adaptive and flexible time series symbolization.
 
+**The method fABBA and ABBA are designed for univariate time series, the software ``fABBA`` provides API for implementing them. If you want to perform multivariate time series and multiple time series symbolization (often used in time series classfication or downstream tasks) with shared codebook (symbols), please use JABBA, and cite properly [3]. ** 
+
 ## :rocket: Install
  fABBA supports Linux, Windows, and MacOS operating system. 
  
@@ -302,14 +304,19 @@ If you use the ``fABBA`` method in a scientific publication, please cite:
 [2] Chen, X. & Güttel, S. (2023). An efficient aggregation method for the symbolic representation of temporal data. *ACM TKDD*, 17(1), 22. https://doi.org/10.1145/3532622
 
 
+If you use the ``JABBA`` method, please cite:
+
+[3] Chen, X. (2024). Joint symbolic aggregate approximation of time series. arXiv:2401.00109. 
+
+
 If you use the ``QABBA`` method, please cite:
 
-[3] Carson, E., Chen, X., & Kang, C. (2025). Quantized symbolic time series approximation. arXiv:2411.15209.
+[4] Carson, E., Chen, X., & Kang, C. (2025). Quantized symbolic time series approximation. arXiv:2411.15209.
 
 
 If you use the ``XABBA`` method, please cite:
 
-[4] Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
+[5] Carson, E., Chen, X., & Kang, C. (2024). LLM-ABBA: Understanding time series via symbolic approximation. arXiv:2411.18506.
 
 
 
@@ -318,6 +325,7 @@ If you use the ``XABBA`` method, please cite:
 
 ## 📝 License
 This project is licensed under the terms of the [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause).
+
 
 
 
