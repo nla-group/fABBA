@@ -332,14 +332,16 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = Fals
     ----------
     x : array-like
         Input of any dimension >= 2
+        
     keep_last : bool
-        If True  -> keep last dim  -> output: (everything_else, last_dim)     ← most common
+        If True  -> keep last dim  -> output: (everything_else, last_dim)    
         If False -> keep first dim -> output: (first_dim, everything_else)
 
     Returns
     -------
     x_2d : np.ndarray
         2D array
+        
     original_shape : tuple
         Original shape (for restoring later)
     """
@@ -1527,4 +1529,5 @@ def zip_longest(*iterables, fillvalue=None):
                 value = fillvalue[i]
             values.append(value)
         yield tuple(values)
+
 
