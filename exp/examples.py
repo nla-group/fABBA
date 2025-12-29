@@ -46,13 +46,22 @@ print(jabba.parameters)
 X_train = np.random.randn(100, 5, 200)
 X_test  = np.random.randn(30, 5, 200)
 
+
+print("On train set")
 jabba = JABBA(tol=0.05).fit(X_train)                    # learn vocabulary
 print("new shape:", jabba.new_shape)
+JABBA(tol=0.05).fit_transform(X_train) 
+symbols_train, starts = jabba.transform(X_train)          # use same symbols!
+X_train_recon = jabba.inverse_transform(symbols_train, starts)
+print("error on train set:", np.mean((X_train - X_train_recon)**2))
 
+
+print("\n\nOn test set")
 symbols_test, starts = jabba.transform(X_test)          # use same symbols!
 print("new shape:", jabba.new_shape)
 X_test_recon = jabba.inverse_transform(symbols_test, starts)
 
+print("error on test set:", np.mean((X_test - X_test_recon)**2))
 print(f"Test set reconstructed with {len(jabba.parameters.alphabets)} shared symbols")
 
 # for unseen time series, you can do 

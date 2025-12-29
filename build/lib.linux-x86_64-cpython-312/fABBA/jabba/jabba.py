@@ -52,6 +52,10 @@ import subprocess
 # 
 #     return x
 
+def flatte_list(list_of_lists):
+    return [item for group in list_of_lists for item in group]
+
+
 def check_faiss_installation() -> bool:
     """
     Checks if FAISS is installed and, if so, whether the GPU version is 
@@ -332,14 +336,16 @@ def flatten_to_2d_keep_last(x: Any, keep_last: bool = True, verbose: bool = Fals
     ----------
     x : array-like
         Input of any dimension >= 2
+        
     keep_last : bool
-        If True  -> keep last dim  -> output: (everything_else, last_dim)     ← most common
+        If True  -> keep last dim  -> output: (everything_else, last_dim)    
         If False -> keep first dim -> output: (first_dim, everything_else)
 
     Returns
     -------
     x_2d : np.ndarray
         2D array
+        
     original_shape : tuple
         Original shape (for restoring later)
     """
@@ -378,7 +384,6 @@ def restore_from_2d(x_2d: np.ndarray, original_shape: Tuple[int, ...]) -> np.nda
     # new batch size = x_2d.shape[0]
     
     first_dim = np.prod(x_2d.shape) / np.prod(original_shape[1:])
-    print(x_2d.shape, original_shape, first_dim)
     new_shape = (int(first_dim), ) + original_shape[1:]
     return x_2d.reshape(new_shape)
 
@@ -585,9 +590,20 @@ class JABBA(object):
         """
         
         self.fit(series, n_jobs=n_jobs, alphabet_set=alphabet_set)
+        len_ts = len(series)
+        
         if return_start_set:
+            if self.stack_last_dim:
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)], self.start_set
+            
             return self.string_, self.start_set
         else:
+            if self.stack_last_dim:
+
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)]
+        
             return self.string_
         
                 
@@ -612,6 +628,8 @@ class JABBA(object):
         """
         self.pieces = self.parallel_compress(series, n_jobs=n_jobs)
         self.string_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
+
+
         return self
         
     
@@ -865,14 +883,15 @@ class JABBA(object):
             
         n_jobs = self.n_jobs_init(n_jobs)
         
+        len_ts = len(series)
         if uni_dim: 
             # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
             self.return_series_univariate = True # means the series is univariate,
                                        # so the reconstruction can automatically 
                                        # determine if should return the univariate series.
             for i in range(n_jobs,0,-1):
-                if series.shape[0] % i == 0:
-                    interval = int(series.shape[0] / n_jobs)
+                if len_ts % i == 0:
+                    interval = int(len_ts / n_jobs)
                     series = np.vstack([series[i*interval : (i+1)*interval] for i in range(n_jobs)])
         else:
             self.return_series_univariate = False
@@ -903,7 +922,11 @@ class JABBA(object):
             for ts in series:
                 start_set.append(ts[0])
                 string_sequences.append(self.transform_single_series(ts,))
-        
+    
+        if self.stack_last_dim:
+            n = len(string_sequences) // len_ts  
+            return [string_sequences[i*n:(i+1)*n] for i in range(len_ts)], start_set
+
         return string_sequences, start_set
         
         
@@ -951,6 +974,9 @@ class JABBA(object):
             the machine allows.
         """
         
+        if self.stack_last_dim:
+            string_sequences = flatte_list(string_sequences)
+            
         n_jobs = self.n_jobs_init(n_jobs)
         count = len(string_sequences)
         
@@ -1084,6 +1110,7 @@ class JABBA(object):
             # int(mp.cpu_count()) , return the available usable CPUs
         else:
             n_jobs = n_jobs
+
         return n_jobs
 
 
@@ -1528,4 +1555,5 @@ def zip_longest(*iterables, fillvalue=None):
                 value = fillvalue[i]
             values.append(value)
         yield tuple(values)
+
 

@@ -15,7 +15,7 @@ from functools import wraps
 from dataclasses import dataclass
 from sklearn.cluster import KMeans
 from inspect import signature, Parameter
-
+from multiprocessing.pool import ThreadPool as Pool
 try:
     try:# cython with memory view
         from .separate.aggregation_cm import aggregate as aggregate_fc 
@@ -681,6 +681,7 @@ def get_patches(ts, pieces, string, centers, dictionary):
         else:
             patches[symbol] = np.array([ tspi ])
         inds = inde
+
     return patches
 
 
@@ -756,6 +757,14 @@ class fABBA(Aggregation2D, ABBAbase):
     return_list - boolean, default=True
         Whether to return with list or not, "False" means return string.
     
+    partition_rate - float or int, default=None
+        This parameter is to get the number of partitions of time series. 
+        when this parameter is not None, the partitions will be 
+        n_jobs*int(np.round(np.exp(1/self.partition_rate), 0))
+    
+    partition - int:
+        The number of subsequences for time series to be partitioned.
+
     n_jobs - int, default=-1 
         The number of threads to use for the computation.
         -1 means no parallel computing.
@@ -783,7 +792,8 @@ class fABBA(Aggregation2D, ABBAbase):
     """    
     
     def __init__ (self, tol=0.1, alpha=0.5, 
-                  sorting='2-norm', scl=1, verbose=1,
+                  sorting='2-norm', scl=1, verbose=1, 
+                  partition_rate=None, partition=None,
                   max_len=-1, return_list=False, n_jobs=1):
         
         super().__init__()
@@ -797,6 +807,9 @@ class fABBA(Aggregation2D, ABBAbase):
         self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         # self.compress = compress
 
+        self.partition = partition
+        self.partition_rate = partition_rate
+        self.return_series_univariate = None
         
         
     def __repr__(self):
@@ -1035,10 +1048,61 @@ class fABBA(Aggregation2D, ABBAbase):
         
         """
         
+        if self.partition is not None or self.partition_rate is not None:
+            pieces = self.parallel_compress(series=series, n_jobs=self.n_jobs)
+            pieces = np.vstack(pieces)
+            return pieces
+        
         return _compress(series=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len, fillm=fillm)
     
     
-    
+    def parallel_compress(self, series, n_jobs=-1):
+        len_ts = len(series)
+        # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
+        self.return_series_univariate = True # means the series is univariate,
+                                    # so the reconstruction can automatically 
+                                    # determine if should return the univariate series.
+        if self.partition == None:
+            if self.partition_rate == None:
+                partition = n_jobs
+            else:
+                partition = int(np.round(np.exp(1/self.partition_rate), 0))*n_jobs
+                if partition > len_ts:
+                    warnings.warn("Partition has exceed the maximum length of series.")
+                    partition = len_ts
+        else:
+            if self.partition < len_ts:
+                partition = self.partition
+                if n_jobs > partition: # to prevent useless processors
+                    n_jobs = partition
+            else:
+                warnings.warn("Partition has exceed the maximum length of series.")
+                partition = n_jobs
+                
+        # for i in range(partition,0,-1):
+        #    if len_ts % i == 0:
+        interval = int(len_ts / partition)
+        series = np.vstack([series[i*interval : (i+1)*interval] for i in range(partition)])
+                
+        if self.verbose:
+            if partition != 1:
+                print("Partition series into {} parts".format(partition))
+            print("Init {} processors.".format(n_jobs))
+
+        pieces = list()
+        self.start_set = list()
+        
+        p = Pool(n_jobs)
+
+        self.start_set = [ts[0] for ts in series]
+        pieces = [p.apply_async(_compress, args=(fillna(np.asarray(ts).astype(np.double), self.fillna), self.tol, self.max_len)) for ts in series]
+
+        p.close()
+        p.join()
+        pieces = [p.get() for p in pieces]
+        return pieces
+
+
     @_deprecate_positional_args
     def digitize(self, pieces, alphabet_set=0):
         """
