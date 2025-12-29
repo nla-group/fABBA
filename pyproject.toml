@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fABBA"
-version = "1.5.0"  # overwritten dynamically via setup.cfg's version-file
+version = "1.5.1"  # overwritten dynamically via setup.cfg's version-file
 description = "An efficient symbolic time series approximation with ABBA."
 readme = "README.rst"
 requires-python = ">=3.8"

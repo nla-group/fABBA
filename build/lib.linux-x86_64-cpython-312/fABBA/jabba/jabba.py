@@ -629,7 +629,6 @@ class JABBA(object):
         self.pieces = self.parallel_compress(series, n_jobs=n_jobs)
         self.string_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
 
-
         return self
         
     

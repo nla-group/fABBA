@@ -793,7 +793,7 @@ class fABBA(Aggregation2D, ABBAbase):
     
     def __init__ (self, tol=0.1, alpha=0.5, 
                   sorting='2-norm', scl=1, verbose=1, 
-                  partition_rate=None, partition=None,
+                  partition_rate=None, partition=None, fillna='ffill', 
                   max_len=-1, return_list=False, n_jobs=1):
         
         super().__init__()
@@ -806,6 +806,7 @@ class fABBA(Aggregation2D, ABBAbase):
         self.return_list = return_list
         self.n_jobs = n_jobs # For the moment, we don't use this parameter.
         # self.compress = compress
+        self.fillna = fillna
 
         self.partition = partition
         self.partition_rate = partition_rate
@@ -1506,6 +1507,9 @@ def fillna(series, method='zero'):
         series[np.isnan(series)] = 0
 
     return series
+
+
+
 
 
 

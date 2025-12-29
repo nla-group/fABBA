@@ -37,6 +37,9 @@ import subprocess
 
 import warnings 
 
+def flatte_list(list_of_lists):
+    return [item for group in list_of_lists for item in group]
+
 
 def check_faiss_installation() -> bool:
     """
@@ -693,9 +696,20 @@ class QABBA(object):
         """
         
         self.fit(series, n_jobs=n_jobs, alphabet_set=alphabet_set)
+        len_ts = len(series)
+        
         if return_start_set:
+            if self.stack_last_dim:
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)], self.start_set
+            
             return self.string_, self.start_set
         else:
+            if self.stack_last_dim:
+
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)]
+        
             return self.string_
         
                 
@@ -1022,6 +1036,11 @@ class QABBA(object):
                 start_set.append(ts[0])
                 string_sequences.append(self.transform_single_series(ts,))
         
+    
+        if self.stack_last_dim:
+            n = len(string_sequences) // len_ts  
+            return [string_sequences[i*n:(i+1)*n] for i in range(len_ts)], start_set
+
         return string_sequences, start_set
         
         
@@ -1098,6 +1117,9 @@ class QABBA(object):
             the machine allows.
         """
         
+        if self.stack_last_dim:
+            string_sequences = flatte_list(string_sequences)
+            
         n_jobs = self.n_jobs_init(n_jobs)
         count = len(string_sequences)
         

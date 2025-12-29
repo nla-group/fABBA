@@ -56,6 +56,8 @@ X_train_recon = jabba.inverse_transform(symbols_train, starts)
 print("error on train set:", np.mean((X_train - X_train_recon)**2))
 
 
+# For unseen time series, you can do 
+
 print("\n\nOn test set")
 symbols_test, starts = jabba.transform(X_test)          # use same symbols!
 print("new shape:", jabba.new_shape)
@@ -64,4 +66,34 @@ X_test_recon = jabba.inverse_transform(symbols_test, starts)
 print("error on test set:", np.mean((X_test - X_test_recon)**2))
 print(f"Test set reconstructed with {len(jabba.parameters.alphabets)} shared symbols")
 
-# for unseen time series, you can do 
+
+
+
+
+
+
+
+
+# Speedup fABBA
+import time
+from fABBA import fABBA
+
+data = np.random.randn(20000)
+
+i = 1
+start = time.time()
+pabba = fABBA(tol=0.05, alpha=0.1, verbose=0, partition=1)
+symbols_pabba = pabba.fit_transform(data)
+reconstruction_pabba1 = pabba.inverse_transform(symbols_pabba)
+end = time.time()
+error = np.mean((data - reconstruction_pabba1)**2)
+print(f"fABBA with {i} parallel jobs took {end - start:.2f} seconds with error {error:.6f}")
+
+i=5 # 10 jobs
+start = time.time()
+pabba = fABBA(tol=0.05, alpha=0.1, verbose=0, partition=1)
+symbols_pabba = pabba.fit_transform(data)
+reconstruction_pabba2 = pabba.inverse_transform(symbols_pabba)
+end = time.time()
+error = np.mean((data - reconstruction_pabba2)**2)
+print(f"fABBA with {i} parallel jobs took {end - start:.2f} seconds with error {error:.6f}")
