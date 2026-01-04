@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Simulate 20 independent univariate series
 np.random.seed(0)
-data = np.cumsum(np.random.randn(20, 800), axis=1)  # random walks
+data = np.cumsum(np.random.randn(20, 800), axis=1)  # random walks, 20 time series, each with 800 features
 
 jabba = JABBA(tol=0.2, init='agg', verbose=1)  # auto-digitization
 symbols = jabba.fit_transform(data)
@@ -13,6 +13,7 @@ recon = jabba.inverse_transform(symbols)
 
 # Get embedding for the each symbol, and concatenate embeddings for the first time series
 alphabets = jabba.parameters.alphabets.tolist()
+centers = jabba.parameters.centers # shape: N by 2, N is dependent on compression phase and each instance is with lenth and increment
 first_embedding = np.vstack([jabba.parameters.centers[alphabets.index(p)][:2] for p in symbols[0]])
 
 # Get embeddings for the second time series
