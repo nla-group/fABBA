@@ -41,7 +41,31 @@ import multiprocessing
 import subprocess
 
 
-def flatte_list(list_of_lists):
+def flatten_list(list_of_lists):
+    """
+    Flatten a list of lists into a single one-dimensional list.
+
+    Parameters
+    ----------
+    list_of_lists : list of list
+        A list where each element is itself a list. The function will
+        iterate through each inner list and extract all its elements.
+
+    Returns
+    -------
+    list
+        A flattened list containing all elements from the inner lists
+        in their original order.
+
+    Examples
+    --------
+    >>> lists = [[1, 2], [3, 4], [5]]
+    >>> flatten_list(lists)
+    [1, 2, 3, 4, 5]
+
+    >>> flatten_list([[\'a\', \'b\'], [\'c\']])
+    ['a', 'b', 'c']
+    """
     return [item for group in list_of_lists for item in group]
 
 
@@ -755,7 +779,7 @@ class XABBA(object):
         self.bits_for_inc = bits_for_inc
         self.recap_shape = None
         self.last_dim = last_dim
-        self.stack_last_dim = False
+        self.stack_multiple_channels = False
         self.new_shape = None
         self.auto_digitize = auto_digitize
         self.trim_method = trim_method
@@ -782,10 +806,20 @@ class XABBA(object):
         """
 
         self.fit(series, n_jobs=n_jobs, alphabet_set=alphabet_set)
+        series_shape = series.shape
+        len_ts = series_shape[0]
         
         if return_start_set:
+            if self.stack_multiple_channels and self.last_dim:
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)], self.start_set
+            
             return self.string_, self.start_set
         else:
+            if self.stack_multiple_channels and self.last_dim:
+                n = len(self.string_) // len_ts  
+                return [self.string_[i*n:(i+1)*n] for i in range(len_ts)]
+        
             return self.string_
         
                 
@@ -892,7 +926,7 @@ class XABBA(object):
                 if len(series.shape) > 2:
                     series, self.recap_shape, self.new_shape = flatten_to_2d_keep_last(series, self.last_dim, verbose=self.verbose)
                     
-                    self.stack_last_dim= True
+                    self.stack_multiple_channels= True
 
             elif isinstance(series, list):
                 pass
@@ -1073,7 +1107,9 @@ class XABBA(object):
             raise ValueError('Please enter time series with correct shape.')
             
         n_jobs = self.n_jobs_init(n_jobs)
-        
+        shape_series = series.shape
+        len_ts = shape_series[0]
+
         if uni_dim: 
             # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
             self.return_series_univariate = True # means the series is univariate,
@@ -1114,7 +1150,7 @@ class XABBA(object):
                 string_sequences.append(self.transform_single_series(ts,))
         
 
-        if self.stack_last_dim:
+        if self.stack_multiple_channels and self.last_dim:
             n = len(string_sequences) // len_ts  
             return [string_sequences[i*n:(i+1)*n] for i in range(len_ts)], start_set
 
@@ -1194,8 +1230,8 @@ class XABBA(object):
             the machine allows.
         """
         
-        if self.stack_last_dim:
-            string_sequences = flatte_list(string_sequences)
+        if self.stack_multiple_channels and self.last_dim:
+            string_sequences = flatten_list(string_sequences)
             
         n_jobs = self.n_jobs_init(n_jobs)
         count = len(string_sequences)
@@ -1237,7 +1273,7 @@ class XABBA(object):
         if self.return_series_univariate:
             inverse_sequences = np.hstack(inverse_sequences)
             
-        if self.stack_last_dim:
+        if self.stack_multiple_channels:
             if self.trim_method == 'keep_ends':
                 inverse_sequences = pad_or_trim_keep_ends(inverse_sequences, self.new_shape[1])
             else:

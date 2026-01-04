@@ -4,12 +4,22 @@ import matplotlib.pyplot as plt
 
 # Simulate 20 independent univariate series
 np.random.seed(0)
-data = np.cumsum(np.random.randn(20, 800), axis=1)  # random walks, 20 time series, each with 800 features
+data = np.cumsum(np.random.randn(20, 30), axis=1)  # random walks, 20 time series, each with 800 features
 
-jabba = JABBA(tol=0.2, init='agg', verbose=1)  # auto-digitization
+jabba = JABBA(tol=0.3, init='kmeans', k=5, verbose=1)  # auto-digitization
 symbols = jabba.fit_transform(data)
 recon = jabba.inverse_transform(symbols)
 
+
+
+print(jabba.parameters)
+#Total number of pieces: 282
+#Generate 5 symbols
+#Model(centers=array([[ 1.        , -1.62393348],
+#       [ 5.        , -2.09407943],
+#       [ 1.31730769,  1.2972567 ],
+#       [ 4.        ,  1.98348455],
+#       [ 2.37681159, -1.59305148]]), alphabets=array(['A', 'a', 'B', 'b', 'C'], dtype='<U1'))
 
 # Get embedding for the each symbol, and concatenate embeddings for the first time series
 alphabets = jabba.parameters.alphabets.tolist()
@@ -41,21 +51,47 @@ plt.show()
 
 
 
-# you can load the parameters of ABBA:
+# For multivariate time series (N, n_channels, n_features), you can load the parameters of ABBA:
 
-print(jabba.parameters)
-X_train = np.random.randn(100, 5, 200)
-X_test  = np.random.randn(30, 5, 200)
+X_train = np.random.randn(100, 5, 10)
+X_test  = np.random.randn(30, 5, 10)
 
 
+## Setting last_dim = True
 print("On train set")
-jabba = JABBA(tol=0.05).fit(X_train)                    # learn vocabulary
+jabba = JABBA(tol=0.05, last_dim = True).fit(X_train)                    # learn vocabulary
 print("new shape:", jabba.new_shape)
 JABBA(tol=0.05).fit_transform(X_train) 
 symbols_train, starts = jabba.transform(X_train)          # use same symbols!
 X_train_recon = jabba.inverse_transform(symbols_train, starts)
 print("error on train set:", np.mean((X_train - X_train_recon)**2))
 
+
+print(symbols_train[0]) # for the symbolic representation for the first time series - a list contains 5 lists
+# [['7', '.', ',', '2', '^', '0', '5', '&'],
+#  ['%', '5', '%', '-', "'", 'Q', '*', '?'],
+#  ['-', 'v', '+', 'n', '2', '!'],
+#  ['\\', '+', '!', '*', '.', ',', '\\'],
+#  ['1', '$', '6', '"', 'f', '-', '&', '9']]
+
+## Setting last_dim = False
+print()
+print("last_dim = False")
+print("On train set")
+jabba = JABBA(tol=0.05, last_dim = False).fit(X_train)                    # learn vocabulary
+print("new shape:", jabba.new_shape)
+symbols_train = JABBA(tol=0.05).fit_transform(X_train) 
+symbols_train, starts = jabba.transform(X_train)          # use same symbols!
+X_train_recon = jabba.inverse_transform(symbols_train, starts)
+print("error on train set:", np.mean((X_train - X_train_recon)**2))
+
+
+print(symbols_train[0]) # for the symbolic representation for the first time series - a list contains 5 lists
+# [['7', '.', ',', '2', '^', '0', '5', '&'],
+#  ['%', '5', '%', '-', "'", 'Q', '*', '?'],
+#  ['-', 'v', '+', 'n', '2', '!'],
+#  ['\\', '+', '!', '*', '.', ',', '\\'],
+#  ['1', '$', '6', '"', 'f', '-', '&', '9']]
 
 # For unseen time series, you can do 
 
@@ -66,9 +102,6 @@ X_test_recon = jabba.inverse_transform(symbols_test, starts)
 
 print("error on test set:", np.mean((X_test - X_test_recon)**2))
 print(f"Test set reconstructed with {len(jabba.parameters.alphabets)} shared symbols")
-
-
-
 
 
 
@@ -98,3 +131,5 @@ reconstruction_pabba2 = pabba.inverse_transform(symbols_pabba)
 end = time.time()
 error = np.mean((data - reconstruction_pabba2)**2)
 print(f"fABBA with {i} parallel jobs took {end - start:.2f} seconds with error {error:.6f}")
+
+
