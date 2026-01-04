@@ -87,11 +87,7 @@ print("error on train set:", np.mean((X_train - X_train_recon)**2))
 
 
 print(symbols_train[0]) # for the symbolic representation for the first time series - a list contains 5 lists
-# [['7', '.', ',', '2', '^', '0', '5', '&'],
-#  ['%', '5', '%', '-', "'", 'Q', '*', '?'],
-#  ['-', 'v', '+', 'n', '2', '!'],
-#  ['\\', '+', '!', '*', '.', ',', '\\'],
-#  ['1', '$', '6', '"', 'f', '-', '&', '9']]
+# ['\x8b', ',', '!', '1', '2', '(', '2', 'Q', '/', '8', '4', '+', '2', '+', 'o', '.', '*', 'C', 'E', '1', '*', '-', '%', '+', '$', '8', ';', '/', '(', 'A', '&', '#', ',', '%', '"', "'", '@', ';', '/', "'", '!', '6', '?', '-', '5', "'"]
 
 # For unseen time series, you can do 
 
@@ -102,9 +98,6 @@ X_test_recon = jabba.inverse_transform(symbols_test, starts)
 
 print("error on test set:", np.mean((X_test - X_test_recon)**2))
 print(f"Test set reconstructed with {len(jabba.parameters.alphabets)} shared symbols")
-
-
-
 
 
 
@@ -131,5 +124,4 @@ reconstruction_pabba2 = pabba.inverse_transform(symbols_pabba)
 end = time.time()
 error = np.mean((data - reconstruction_pabba2)**2)
 print(f"fABBA with {i} parallel jobs took {end - start:.2f} seconds with error {error:.6f}")
-
 
