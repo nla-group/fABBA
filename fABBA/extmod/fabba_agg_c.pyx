@@ -1,7 +1,9 @@
 #!python
 #cython: language_level=3
-#cython: profile=True
-#cython: linetrace=True
+#cython: boundscheck=False
+#cython: wraparound=False
+#cython: initializedcheck=False
+#cython: cdivision=True
 
 # License: BSD 3 clause
 
