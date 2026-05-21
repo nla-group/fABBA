@@ -9,7 +9,6 @@
 [![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
 [![Download Status](https://img.shields.io/pypi/dm/fABBA.svg?label=PyPI%20downloads)](https://pypi.org/project/fABBA/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10885652.svg)](https://doi.org/10.5281/zenodo.10885652)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/license.svg)](https://anaconda.org/conda-forge/fabba)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
 
