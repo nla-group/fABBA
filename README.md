@@ -318,7 +318,7 @@ Thank you for supporting open research!
 ### 🔹 JABBA (multivariate / multi-series symbolic approximation with shared codebook)
 **Please cite:**
 
-> **[3]** Chen, X. (2024). *Joint symbolic aggregate approximation of time series*.  
+> **[3]** Chen, X. (2024). *Parallel Two-Stage Approach for Joint Symbolic Approximation of Time Series*.  
 > arXiv:2401.00109.
 
 ---
