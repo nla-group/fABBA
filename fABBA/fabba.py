@@ -9,6 +9,8 @@ import pickle
 import warnings
 import logging
 import collections
+import os
+from ._validation import nonnegative, max_length, series_array, piece_array
 import numpy as np
 import pandas as pd
 from functools import wraps
@@ -53,14 +55,38 @@ class NotFittedError(ValueError, AttributeError):
 
 @dataclass
 class Model:
+    """Learned codebook: centers are unscaled ``[length, increment]`` rows.
+
+    ``alphabets[i]`` names ``centers[i]``. ``splist`` contains backend-specific
+    aggregation diagnostics; it is not required for decoding.
     """
-    save ABBA model - parameters
-    """
-    centers: np.ndarray # store aggregation centers
-    splist: np.ndarray # store start point data
-    
-    """ dictionary """
-    alphabets: np.ndarray # labels -> symbols, symbols -> labels
+    centers: np.ndarray
+    splist: np.ndarray
+    alphabets: np.ndarray
+
+    def to_dict(self):
+        """Return an independent JSON-compatible, versioned codebook."""
+        return {"schema_version": 1, "centers": self.centers.tolist(),
+                "splist": self.splist.tolist(), "alphabets": self.alphabets.tolist()}
+
+    @classmethod
+    def from_dict(cls, data):
+        """Validate and restore a codebook exported by :meth:`to_dict`."""
+        if not isinstance(data, dict) or data.get("schema_version") != 1:
+            raise ValueError("unsupported codebook schema_version (expected 1)")
+        try:
+            centers = piece_array(data["centers"])
+            alphabets = np.asarray(data["alphabets"])
+            splist = np.asarray(data.get("splist", []), dtype=float)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("invalid codebook arrays") from exc
+        if (alphabets.ndim != 1 or len(alphabets) != len(centers)
+                or any(not isinstance(x, str) or len(x) != 1 for x in alphabets.tolist())
+                or len(set(alphabets.tolist())) != len(alphabets)):
+            raise ValueError("alphabets must contain one unique character per center")
+        if not np.isfinite(splist).all():
+            raise ValueError("splist must be finite")
+        return cls(centers, splist.copy(), alphabets.copy())
 
 
 
@@ -257,21 +283,19 @@ def _compress(series, tol=0.5, max_len=-1, fillm='bfill'):
 
     """
     
-    series = np.array(series).astype(np.float64)
-    if len(series.shape) > 1:
-        series = series.reshape(-1)
-        
-    if np.sum(np.isnan(series)) > 0:
-        series = fillna(series, fillm)
-    
+    series = series_array(series)
+    tol = nonnegative(tol, "tol")
+    max_len = max_length(max_len)
+    series = fillna(series, fillm)
     return compress(ts=series, tol=tol, max_len=max_len)
 
 
 
 
+
 def _inverse_compress(pieces, start):
-    pieces = np.array(pieces)[:, :2]
-    return inv_compress(pieces, start)
+    from .inverse_t import inv_compress as reconstruct
+    return reconstruct(piece_array(pieces), start)
 
 
 
@@ -315,6 +339,9 @@ def symbolsAssign(clusters, alphabet_set=0):
     
     elif isinstance(alphabet_set, list):
         if N <= len(alphabet_set):
+            if (any(not isinstance(x, str) or len(x) != 1 for x in alphabet_set)
+                    or len(set(alphabet_set)) != len(alphabet_set)):
+                raise ValueError("alphabet_set must contain unique single characters")
             alphabets = alphabet_set
         else:
             raise ValueError("Please ensure the length of ``alphabet_set`` is greatere than ``clusters``.")
@@ -331,7 +358,7 @@ def symbolsAssign(clusters, alphabet_set=0):
     for ind, el in enumerate(counter.most_common()):
         cluster_sort[ind] = el[0]
 
-    if N >= len(alphabets):
+    if N > len(alphabets):
         alphabets = [chr(i+33) for i in range(0, N)]
     else:
         alphabets = alphabets[:N]
@@ -399,10 +426,8 @@ class ABBAbase:
                 If the last element is nan, then will set it to zero.   
         """
 
-        if np.sum(np.isnan(series)) > 0:
-            series = fillna(series, method=fillm)
-        series = np.array(series).astype(np.float64)
-        pieces = np.array(self.compress(series))
+        series = fillna(series_array(series), fillm)
+        pieces = np.array(self.compress(series, fillm=fillm))
         self.string_, self.parameters = self.digitize(pieces[:,0:2], alphabet_set)
         self.compression_rate = pieces.shape[0] / series.shape[0]
         self.digitization_rate = self.parameters.centers.shape[0] / pieces.shape[0]
@@ -466,17 +491,12 @@ class ABBAbase:
         series - list
             Reconstruction of the time series.
         """
-        if type(string) != str:
-            string = "".join(string)
-            
         if parameters is None:
-            try:
-                series = inv_transform(string, self.parameters.centers, self.parameters.alphabets.tolist(), start) 
-            except:
-                raise NotFittedError("Please train the model using ``fit_transform`` first.")
-        else:
-            series = inv_transform(string, parameters.centers, parameters.alphabets.tolist(), start) 
-        return series
+            if not hasattr(self, "parameters"):
+                raise NotFittedError("Call fit or fit_transform before decoding.")
+            parameters = self.parameters
+        from .inverse_t import inv_transform as reconstruct
+        return reconstruct(string, parameters.centers, parameters.alphabets.tolist(), start)
 
     
     
@@ -502,7 +522,7 @@ class ABBAbase:
         
         """
         
-        return _compress(series=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len, fillm=fillm)
+        return _compress(series=series, tol=self.tol, max_len=self.max_len, fillm=fillm)
     
     
     
@@ -522,7 +542,7 @@ class ABBAbase:
         pieces = np.array(pieces)[:,:2]
         _std = np.std(pieces, axis=0) # prevent zero-division
         if _std[0] == 0:
-             _std[1] = 1
+             _std[0] = 1
         if _std[1] == 0:
              _std[1] = 1
                 
@@ -607,14 +627,13 @@ class ABBA(ABBAbase):
         pieces = np.array(pieces)[:,:2]
         _std = np.std(pieces, axis=0) # prevent zero-division
         if _std[0] == 0:
-             _std[1] = 1
+             _std[0] = 1
         if _std[1] == 0:
              _std[1] = 1
                 
         npieces = pieces * np.array([self.scl, 1]) / _std
         
         # replace aggregation with other clustering
-        self.clustering.fit(np.unique(npieces, axis=0))
         
         labels = self.reassign_labels(self.clustering.fit_predict(npieces)) # some labels might be negative
         centers = np.zeros((0,2))
@@ -731,65 +750,53 @@ def patched_reconstruction(series, pieces, string, centers, dictionary):
 
 
 class fABBA(Aggregation2D, ABBAbase):
-    """
-    fABBA: A fast sorting-based aggregation method for symbolic time series representation
-    
+    """Tolerance-driven symbolic approximation of a univariate time series.
+
     Parameters
     ----------
-    tol - float, default=0.1
-        Control tolerence for compression.
-    
-    alpha - float, default=0.5
-        Control tolerence for digitization.        
-    
-    sorting - str, default='2-norm', {'lexi', '1-norm', '2-norm'}
-        by which the sorting pieces prior to aggregation.
-        
-    scl - int, default=1
-        Scale for length, default as 1, refers to 2d-digitization, otherwise implement 1d-digitization.
-    
-    verbose - int, default=1
-        Verbosity mode, control logs print, default as 1; print logs.
-    
-    max_len - int, default=-1
-        The max length for each segment, optional choice for compression.
-    
-    return_list - boolean, default=True
-        Whether to return with list or not, "False" means return string.
-    
-    partition_rate - float or int, default=None
-        This parameter is to get the number of partitions of time series. 
-        when this parameter is not None, the partitions will be 
-        n_jobs*int(np.round(np.exp(1/self.partition_rate), 0))
-    
-    partition - int:
-        The number of subsequences for time series to be partitioned.
+    tol : float, default=0.1
+        Nonnegative polygonal squared-error tolerance per interior sample.
+    alpha : float, default=0.5
+        Nonnegative grouping radius in scaled length/increment coordinates.
+    sorting : str, default='2-norm'
+        One of 'lexi', '1-norm', '2-norm', 'norm' or 'pca'.
+    scl : float, default=1
+        Nonnegative relative weight of the segment-length feature.
+    verbose : int, default=1
+        Enable logging. Configure logging handlers in the calling application.
+    partition_rate : float or None, default=None
+        Optional positive rate used to derive a partition count.
+    partition : int or None, default=None
+        Optional explicit positive partition count; overrides partition_rate.
+    fillna : str, default='ffill'
+        Missing-value policy for the partition helper. Public fit/compress
+        methods accept their own explicit fillm argument.
+    max_len : int, default=-1
+        Maximum segment length in intervals; -1 means unlimited.
+    return_list : bool, default=False
+        Return a symbol array instead of a joined string.
+    n_jobs : int, default=1
+        Worker count for partitioned compression; -1 selects available CPUs.
 
-    n_jobs - int, default=-1 
-        The number of threads to use for the computation.
-        -1 means no parallel computing.
-        
-    
     Attributes
     ----------
-    parameters - Model
-        Contains the learnable parameters from the in-sample data. 
-        
-        Attributes:
-        * centers - numpy.ndarray
-            the centers calculated for each group formed by aggregation
-        * splist - numpy.ndarray
-            the starting point for each group formed by aggregation
-        * alphabetsap - dict
-            store the oen to one key-value pair for labels earmarked for the groups
-            and the corresponding character
-    
-    string_ - str or list
-        Contains the ABBA representation.
+    parameters : Model
+        Learned centers, alphabet and aggregation diagnostics.
+    string_ : str or numpy.ndarray
+        Symbol representation of the fitted signal.
+    pieces_ : numpy.ndarray
+        Polygonal rows [length, increment, squared_error].
+    start_ : float
+        First sample after missing-value filling.
+    n_samples_ : int
+        Number of fitted samples.
 
-    
-    * In addition to fit_transform, the compression and digitization functions are independent applicable to data. 
-    """    
+    Notes
+    -----
+    Reconstruction is lossy. The compression tolerance is not a bound on
+    full-pipeline reconstruction error. Use JABBA for held-out encoding with
+    a shared codebook; calling fit again learns a new codebook.
+    """
     
     def __init__ (self, tol=0.1, alpha=0.5, 
                   sorting='2-norm', scl=1, verbose=1, 
@@ -835,38 +842,24 @@ class fABBA(Aggregation2D, ABBAbase):
     
     
     def fit(self, series, fillm='bfill', alphabet_set=0):
-        """ 
-        Compress and digitize the time series together.
-        
+        """Learn a codebook and retain the training representation; return self.
+
         Parameters
         ----------
-        series - numpy.ndarray or list
-            Time series of the shape (1, n_samples).
-            
-        fillm - str, default = 'zero'
-            Fill NA/NaN values using the specified method.
-            'Zero': Fill the holes of series with value of 0.
-            'Mean': Fill the holes of series with mean value.
-            'Median': Fill the holes of series with mean value.
-            'ffill': Forward last valid observation to fill gap.
-                If the first element is nan, then will set it to zero.
-            'bfill': Use next valid observation to fill gap. 
-                If the last element is nan, then will set it to zero. 
-                
-        Returns
-        ----------
-        string (str): The string transformed by fABBA.
+        series : array-like
+            Real univariate signal with at least two samples.
+        fillm : str, default='bfill'
+            NaN policy: zero, mean, median, ffill or bfill. Input is copied.
+        alphabet_set : int or list of str, default=0
+            Built-in ordering (0 or 1), or unique single-character symbols.
         """
         
-        if np.sum(np.isnan(series)) > 0:
-            series = fillna(series, fillm)
+        series = fillna(series_array(series), fillm)
+        pieces = self.compress(series, fillm=fillm)
+        self.start_ = float(series[0])
+        self.n_samples_ = len(series)
+        self.pieces_ = np.asarray(pieces, dtype=float)
 
-        # if self.n_jobs > 1 and self.max_len == 1:
-        #     pieces = self.parallel_compress(ts=series, n_jobs=self.n_jobs)
-        # else:
-        #     # pieces = self.compress(ts=series)
-        pieces = self.compress(series)
-            
         self.string_, self.parameters = self.digitize(
             pieces=np.array(pieces)[:,0:2], alphabet_set=alphabet_set
         )
@@ -883,444 +876,120 @@ class fABBA(Aggregation2D, ABBAbase):
     
 
     def fit_transform(self, series, fillm='bfill', alphabet_set=0):
-        """ 
-        Compress and digitize the time series together.
-        
-        Parameters
-        ----------
-        series - numpy.ndarray or list
-            Time series of the shape (1, n_samples).
-            
-        fillm - str, default = 'zero'
-            Fill NA/NaN values using the specified method.
-            'Zero': Fill the holes of series with value of 0.
-            'Mean': Fill the holes of series with mean value.
-            'Median': Fill the holes of series with mean value.
-            'ffill': Forward last valid observation to fill gap.
-                If the first element is nan, then will set it to zero.
-            'bfill': Use next valid observation to fill gap. 
-                If the last element is nan, then will set it to zero. 
-                
-        Returns
-        ----------
-        string (str): The string transformed by fABBA.
+        """Fit a new codebook and return a string (or symbol array).
+
+        Arguments match fit. The learned codebook is available in parameters;
+        this method does not return a (symbols, centers) tuple.
         """
         return self.fit(series, fillm, alphabet_set).string_
 
 
 
     def inverse_transform(self, string, start=0, parameters=None):
-        """
-        Convert ABBA symbolic representation back to numeric time series representation.
-        
+        """Decode symbols using the fitted or explicitly supplied codebook.
+
         Parameters
         ----------
-        string - string
-            Time series in symbolic representation using unicode characters starting
-            with character 'a'.
-        
-        start - float
-            First element of original time series. Applies vertical shift in
-            reconstruction. If not specified, the default is 0.
-        
-        parameters - Model
-            The parameters of model.
-            
+        string : str or sequence of str
+            Symbols in the associated alphabet. Empty input returns [start].
+        start : float, default=0
+            First value in the reconstructed signal.
+        parameters : Model or None, default=None
+            Explicit codebook; if omitted, the estimator must be fitted.
+
         Returns
         -------
-        series - list
-            Reconstruction of the time series.
+        list of float
+            Lossy reconstructed signal. Edited symbol sequences can have a
+            different duration from the original fitted signal.
         """
         
-        if type(string) != str:
-            string = "".join(string)
-            
         if parameters is None:
-            try:
-                series = inv_transform(string, self.parameters.centers, self.parameters.alphabets.tolist(), start) 
-            except:
-                raise NotFittedError("Please train the model using ``fit_transform`` first.") 
-        else:
-            series = inv_transform(string, parameters.centers, parameters.alphabets.tolist(), start) 
-    
-        return series
+            if not hasattr(self, "parameters"):
+                raise NotFittedError("Call fit or fit_transform before decoding.")
+            parameters = self.parameters
+        from .inverse_t import inv_transform as reconstruct
+        return reconstruct(string, parameters.centers, parameters.alphabets.tolist(), start)
     
     
     
-    # deprecated
-    # def compress(self, ts):
-    #     """
-    #     Approximate a time series using a continuous piecewise linear function.
-    #     
-    #     Parameters
-    #     ----------
-    #     ts - numpy ndarray
-    #         Time series as input of numpy array
-    # 
-    #     Returns
-    #     -------
-    #     pieces - numpy array
-    #         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
-    #     """
-    #     
-    #     start = 0
-    #     end = 1
-    #     pieces = np.empty([0, 3])
-    #     x = np.arange(0, len(ts))
-    #     epsilon =  np.finfo(float).eps
-    # 
-    #     while end < len(ts):
-    #         inc = ts[end] - ts[start]
-    #         err = np.linalg.norm((ts[start] + (inc/(end-start))*x[0:end-start+1]) - ts[start:end+1])**2
-    #         
-    #         if (err <= self.tol*(end-start-1) + epsilon) and (end-start-1 < self.max_len):
-    #             (lastinc, lasterr) = (inc, err) 
-    #             end += 1
-    #         else:
-    #             pieces = np.vstack([pieces, np.array([end-start-1, lastinc, lasterr])])
-    #             start = end - 1
-    # 
-    #     pieces = np.vstack([pieces, np.array([end-start-1, lastinc, lasterr])])
-    #     
-    #     if self.verbose:
-    #         self.logger = logging.getLogger("fABBA")
-    #         self.logger.info(
-    #             "Compression: Reduced time series of length "  
-    #             + str(len(ts)) + " to " + str(len(pieces)) + " segments")
-    #         
-    #     return pieces
-
-    
-
-    # def parallel_compress(self, series, n_jobs=-1):
-    #     """
-    #     Approximate a time series using a continuous piecewise linear function in a parallel way.
-    #     Each piece is of length 1. 
-    #     
-    #     Parameters
-    #     ----------
-    #     series - numpy ndarray
-    #         Time series as input of numpy array
-    #     
-    #         
-    #     Returns
-    #     -------
-    #     pieces - numpy array
-    #         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
-    #     """
-    #     from joblib import Parallel, delayed
-    #     x = np.arange(0, len(series))
-    # 
-    #     def construct_piece(i):
-    #         inc = series[i+1] - series[i]
-    #         err = np.linalg.norm((series[i] + (inc)*x[0:2]) - series[i:i+2])**2
-    #         return [1, inc, err]
-    # 
-    #     pieces = Parallel(n_jobs=n_jobs)(
-    #         delayed(construct_piece)(i) for i in range(len(series) - 1))
-    # 
-    #     if self.verbose:
-    #         self.logger = logging.getLogger("fABBA")
-    #         self.logger.info(
-    #             "Compression: Reduced time series of length "  
-    #             + str(len(series)) + " to " + str(len(pieces)) + " segments")
-    # 
-    #     return np.array(pieces)
-
-
     def compress(self, series, fillm='bfill'):
-        """
-        Compress time series.
-        
-        Parameters
-        ----------
-        series - numpy.ndarray or list
-            Time series of the shape (1, n_samples).
+        """Return polygonal [length, increment, squared_error] pieces.
 
-        fillm - str, default = 'zero'
-            Fill NA/NaN values using the specified method.
-            'Zero': Fill the holes of series with value of 0.
-            'Mean': Fill the holes of series with mean value.
-            'Median': Fill the holes of series with mean value.
-            'ffill': Forward last valid observation to fill gap.
-                If the first element is nan, then will set it to zero.
-            'bfill': Use next valid observation to fill gap. 
-                If the last element is nan, then will set it to zero.   
-        
+        The input is copied and NaNs are filled according to fillm ('bfill'
+        by default). With partitions, shared endpoints preserve all intervals.
         """
         
         if self.partition is not None or self.partition_rate is not None:
+            series = fillna(series_array(series), fillm)
             pieces = self.parallel_compress(series=series, n_jobs=self.n_jobs)
             pieces = np.vstack(pieces)
             return pieces
         
-        return _compress(series=np.array(series).astype(np.float64), tol=self.tol, max_len=self.max_len, fillm=fillm)
+        return _compress(series=series, tol=self.tol, max_len=self.max_len, fillm=fillm)
     
     
     def parallel_compress(self, series, n_jobs=-1):
-        len_ts = len(series)
-        # Partition time series for parallelism (for n_jobs > 1 or = -1) if it is univarite
-        self.return_series_univariate = True # means the series is univariate,
-                                    # so the reconstruction can automatically 
-                                    # determine if should return the univariate series.
-        if self.partition == None:
-            if self.partition_rate == None:
-                partition = n_jobs
-            else:
-                partition = int(np.round(np.exp(1/self.partition_rate), 0))*n_jobs
-                if partition > len_ts:
-                    warnings.warn("Partition has exceed the maximum length of series.")
-                    partition = len_ts
-        else:
-            if self.partition < len_ts:
-                partition = self.partition
-                if n_jobs > partition: # to prevent useless processors
-                    n_jobs = partition
-            else:
-                warnings.warn("Partition has exceed the maximum length of series.")
-                partition = n_jobs
-                
-        # for i in range(partition,0,-1):
-        #    if len_ts % i == 0:
-        interval = int(len_ts / partition)
-        series = np.vstack([series[i*interval : (i+1)*interval] for i in range(partition)])
-                
-        if self.verbose:
-            if partition != 1:
-                print("Partition series into {} parts".format(partition))
-            print("Init {} processors.".format(n_jobs))
-
-        pieces = list()
-        self.start_set = list()
-        
-        p = Pool(n_jobs)
-
-        self.start_set = [ts[0] for ts in series]
-        pieces = [p.apply_async(_compress, args=(fillna(np.asarray(ts).astype(np.double), self.fillna), self.tol, self.max_len)) for ts in series]
-
-        p.close()
-        p.join()
-        pieces = [p.get() for p in pieces]
-        return pieces
-
+        series = fillna(series_array(series), self.fillna)
+        workers = (os.cpu_count() or 1) if n_jobs == -1 else n_jobs
+        if not isinstance(workers, int) or workers < 1:
+            raise ValueError("n_jobs must be -1 or a positive integer")
+        partition = self.partition
+        if partition is None:
+            partition = workers
+            if self.partition_rate is not None:
+                rate = nonnegative(self.partition_rate, "partition_rate")
+                if rate == 0:
+                    raise ValueError("partition_rate must be positive")
+                # Cap before exponentiation to avoid overflow for small rates.
+                partition = int(np.exp(min(1 / rate, np.log(len(series))))) * workers
+        if isinstance(partition, bool) or not isinstance(partition, (int, np.integer)) or partition < 1:
+            raise ValueError("partition must be a positive integer")
+        partition = min(partition, len(series) - 1)
+        boundaries = np.linspace(0, len(series) - 1, partition + 1, dtype=int)
+        chunks = [series[a:b + 1] for a, b in zip(boundaries[:-1], boundaries[1:])]
+        self.start_set = [float(chunk[0]) for chunk in chunks]
+        with Pool(min(workers, partition)) as pool:
+            return pool.starmap(_compress, [(chunk, self.tol, self.max_len) for chunk in chunks])
 
     @_deprecate_positional_args
     def digitize(self, pieces, alphabet_set=0):
-        """
-        Greedy 2D clustering of pieces (a Nx2 numpy array),
-        using tolernce alpha and len/inc scaling parameter scl.
-        A 'temporary' group center, which we call it starting point,
-        is used  when assigning pieces to clusters. This temporary
-        cluster is the first piece available after appropriate scaling 
-        and sorting of all pieces. After finishing the grouping procedure,
-        the centers are calculated the mean value of the objects within 
-        the clusters.
-        
-        Parameters
-        ----------
-        pieces - numpy.ndarray
-            The compressed pieces of numpy.ndarray with shape (n_samples, n_features) after compression.
-            
-        alphabet_set - int or list
-            The list of alphabet letter.
-        
-        Returns
-        ----------
-        string - str or list)
-            String sequence.
-            
-        parameters - Model
-            The parameters of model.
+        """Group [length, increment] pieces and return (symbols, Model).
+
+        The functional digitizer and this method share scaling and grouping.
+        Centers are in original units. This method alone does not fit the
+        estimator or install the returned codebook as self.parameters.
         """
 
-        if self.sorting not in ["lexi", "2-norm", "1-norm", "norm", "pca"]:
-            raise ValueError("Please refer to a specific and correct sorting way, namely 'lexi', '2-norm' and '1-norm'")
-        
-        pieces = np.array(pieces)[:,:2].astype(np.float64)
-        self._std = np.std(pieces, axis=0) 
-        
-        if self._std[0] != 0: # to prevent 0 std when assign max_len as 1 to compression, which make aggregation go wrong.
-            npieces = pieces * np.array([self.scl, 1]) / self._std
-        else:
-            npieces = pieces * np.array([self.scl, 1])
-            npieces[:,1] = npieces[:,1] / self._std[1]
-        
-        if self.sorting in ["lexi", "2-norm", "1-norm"]:
-            # warnings.warn(f"Pass {self.sorting} as keyword args. From the next version ", FutureWarning)
-            labels, splist = aggregate_fabba(npieces, self.sorting, self.alpha)
-        else:
-            labels, splist = aggregate_fc(npieces, self.sorting, self.alpha)
+        from .digitization import digitize
+        pieces = piece_array(pieces)
+        self._std = np.std(pieces, axis=0)
+        return digitize(pieces, alpha=self.alpha, sorting=self.sorting,
+                        scl=self.scl, alphabet_set=alphabet_set)
 
-        centers = np.zeros((0,2))
-        
-        for c in range(len(splist)):
-            indc = np.argwhere(labels==c)
-            center = np.mean(pieces[indc,:], axis=0)
-            centers = np.r_[ centers, center ]
-        
-        string, alphabets = symbolsAssign(labels, alphabet_set)
-        
-        parameters = Model(centers, np.array(splist), alphabets)
-        return string, parameters
-
-    
-    
-    # [DEPRECATED]
-    # def inverse_transform(self, string, parameters=None, start=0):
-    #     """
-    #     Convert ABBA symbolic representation back to numeric time series representation.
-    #     
-    #     Parameters
-    #     ----------
-    #     string - string
-    #         Time series in symbolic representation using unicode characters starting
-    #         with character 'a'.
-    #     
-    #     start - float
-    #         First element of original time series. Applies vertical shift in
-    #         reconstruction. If not specified, the default is 0.
-    #     
-    #     Returns
-    #     -------
-    #     times_series - list
-    #         Reconstruction of the time series.
-    #     """
-    #
-    #     if parameters == None:
-    #         pieces = self.inverse_digitize(string, self.parameters)
-    #     else:
-    #         pieces = self.inverse_digitize(string, parameters)
-    #         
-    #     pieces = self.quantize(pieces)
-    #     series = self.inverse_compress(pieces, start)
-    #     return series
-    # 
-    # 
-    # 
-    # def inverse_digitize(self, string, parameters):
-    #     """
-    #     Convert symbolic representation back to compressed representation for reconstruction.
-    #     
-    #     Parameters
-    #     ----------
-    #     string - string
-    #         Time series in symbolic representation using unicode characters starting
-    #         with character 'a'.
-    #         
-    #     centers - numpy array
-    #         centers of clusters from clustering algorithm. Each centre corresponds
-    #         to character in string.
-    #         
-    #     Returns
-    #     -------
-    #     pieces - np.array
-    #         Time series in compressed format. See compression.
-    #     """
-    #     
-    #     pieces = np.empty([0,2])
-    #     for p in string:
-    #         pc = parameters.centers[int(parameters.inverse_alphabets[p])]
-    #         pieces = np.vstack([pieces, pc])
-    #     return pieces[:,0:2]
-    # 
-    # 
-    # 
-    # def quantize(self, pieces):
-    #     """
-    #     Realign window lengths with integer grid.
-    #     
-    #     Parameters
-    #     ----------
-    #     pieces: Time series in compressed representation.
-    #     
-    #     
-    #     Returns
-    #     -------
-    #     pieces: Time series in compressed representation with window length adjusted to integer grid.
-    #     """
-    #         
-    #     if len(pieces) == 1:
-    #         pieces[0,0] = round(pieces[0,0])
-    #     
-    #     else:
-    #         for p in range(len(pieces)-1):
-    #             corr = round(pieces[p,0]) - pieces[p,0]
-    #             pieces[p,0] = round(pieces[p,0] + corr)
-    #             pieces[p+1,0] = pieces[p+1,0] - corr
-    #             if pieces[p,0] == 0:
-    #                 pieces[p,0] = 1
-    #                 pieces[p+1,0] -= 1
-    #         pieces[-1,0] = round(pieces[-1,0],0)
-    #     
-    #     return pieces
-    # 
-    # 
-    # 
-    # def inverse_compress(self, pieces, start):
-    #     """
-    #     Reconstruct time series from its first value `ts0` and its `pieces`.
-    #     `pieces` must have (at least) two columns, incremenent and window width, resp.
-    #     A window width w means that the piece ranges from s to s+w.
-    #     In particular, a window width of 1 is allowed.
-    #     
-    #     Parameters
-    #     ----------
-    #     start - float
-    #         First element of original time series. Applies vertical shift in
-    #         reconstruction.
-    #     
-    #     pieces - numpy array
-    #         Numpy array with three columns, each row contains increment, length,
-    #         error for the segment. Only the first two columns are required.
-    #     
-    #     Returns
-    #     -------
-    #     series : Reconstructed time series
-    #     """
-    #     
-    #     series = [start]
-    #     # stitch linear piece onto last
-    #     for j in range(0, len(pieces)):
-    #         x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
-    #         y = series[-1] + x
-    #         series = series + y[1:].tolist()
-    # 
-    #     return series
-    
-                
-    # save model
     def dump(self, file=None):
-        if file == None:
-            pickle.dump(self.parameters, open("parameters", "wb"))
-        else:
-            pickle.dump(self.parameters, open(file, "wb"))
-        
-        
-    # load model
+        """Save the learned codebook as pickle; prefer JSON via parameters.to_dict()."""
+        if not hasattr(self, "parameters"):
+            raise NotFittedError("Call fit before exporting parameters.")
+        with open("parameters" if file is None else file, "wb") as stream:
+            pickle.dump(self.parameters, stream, protocol=pickle.HIGHEST_PROTOCOL)
+
     def load(self, file=None, replace=False):
-        if file == None:
-            parameters = pickle.load(open("parameters", "rb"))
-        else:
-            parameters = pickle.load(open(file, "rb"))
-            
+        """Load a trusted pickle. Never load pickle files from untrusted sources."""
+        with open("parameters" if file is None else file, "rb") as stream:
+            parameters = pickle.load(stream)
         if replace:
             self.parameters = parameters
-            print("load completed.")
         else:
             return parameters
-        
-        
-        
-    @staticmethod
-    def print_parameters(cls):
-        print("Centers:")
-        print(cls.parameters.centers)
-        print("\nalphabetsap:")
-        for i, item in enumerate(cls.parameters.alphabets.items()):
-            print(item)
 
-            
-    
+    def print_parameters(self):
+        """Print the learned symbol-to-center mapping."""
+        if not hasattr(self, "parameters"):
+            raise NotFittedError("Call fit before inspecting parameters.")
+        for symbol, center in zip(self.parameters.alphabets, self.parameters.centers):
+            print(f"{symbol}: length={center[0]:g}, increment={center[1]:g}")
+
     @property
     def tol(self):
         return self._tol
@@ -1329,17 +998,8 @@ class fABBA(Aggregation2D, ABBAbase):
     
     @tol.setter
     def tol(self, value):
-        if not isinstance(value, float) and not isinstance(value,int):
-            raise TypeError("Expected a float or int type.")
-        if value <= 0:
-            raise ValueError(
-                "Please feed an correct value for tolerance.")
-        if value > 1:
-            warnings.warn("Might lead to bad aggregation.", DeprecationWarning)
-        self._tol = value
-    
-    
-        
+        self._tol = nonnegative(value, "tol")
+
     @property
     def sorting(self):
         return self._sorting
@@ -1365,19 +1025,7 @@ class fABBA(Aggregation2D, ABBAbase):
 
     @scl.setter
     def scl(self, value):
-        if not isinstance(value, float) and not isinstance(value,int):
-            raise TypeError('Expected a float or int type.')
-        
-        if value < 0:
-            raise ValueError(
-                "Please feed an correct value for scl.")
-        
-        if value > 1:
-            warnings.warn("Might lead to bad aggregation.", DeprecationWarning)
-        
-        self._scl = value
-
- 
+        self._scl = nonnegative(value, "scl")
 
     @property
     def verbose(self):
@@ -1390,10 +1038,8 @@ class fABBA(Aggregation2D, ABBAbase):
         if not isinstance(value, float) and not isinstance(value,int):
             raise TypeError("Expected a float or int type.")
         
-        self._verbose  = value
-        if self.verbose == 1:
-            self.logger = logging.getLogger("fABBA")
-            logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
+        self._verbose = value
+        self.logger = logging.getLogger("fABBA")
         
 
 
@@ -1405,16 +1051,7 @@ class fABBA(Aggregation2D, ABBAbase):
     
     @alpha.setter
     def alpha(self, value):
-        if not isinstance(value, float) and not isinstance(value,int):
-            raise TypeError("Expected a float or int type.")
-        
-        if value <= 0:
-            raise ValueError(
-                "Please feed an correct value for alpha.")
-        
-        self._alpha = value
-
-
+        self._alpha = nonnegative(value, "alpha")
 
     @property
     def max_len(self):
@@ -1424,18 +1061,7 @@ class fABBA(Aggregation2D, ABBAbase):
 
     @max_len.setter
     def max_len(self, value):
-        # if value == np.inf:
-        #     if not isinstance(value, float) and not isinstance(value,int):
-        #         raise TypeError("Expected a float or int type.")
-        # 
-        # if value <= 0:
-        #     raise ValueError(
-        #         "Please feed an correct value for max_len.")
-        if value == np.inf:
-            raise ValueError("Please feed an correct value for max_len.")
-        self._max_len = value
-
-
+        self._max_len = max_length(value)
 
     @property
     def return_list(self):
@@ -1466,51 +1092,32 @@ class fABBA(Aggregation2D, ABBAbase):
         
 
 def fillna(series, method='zero'):
-    """Fill the NA values
-    
-    Parameters
-    ----------   
-    series - numpy.ndarray or list
-        Time series of the shape (1, n_samples).
+    """Return a copy with NaNs filled; boundary gaps use zero for ffill/bfill.
 
-    fillna - str, default = 'zero'
-        Fill NA/NaN values using the specified method.
-        'Zero': Fill the holes of series with value of 0.
-        'Mean': Fill the holes of series with mean value.
-        'Median': Fill the holes of series with mean value.
-        'ffill': Forward last valid observation to fill gap.
-            If the first element is nan, then will set it to zero.
-        'bfill': Use next valid observation to fill gap. 
-            If the last element is nan, then will set it to zero.        
+    Methods are zero, mean, median, ffill and bfill (case insensitive).
+    Mean/median filling rejects an entirely missing series. Infinity is invalid.
     """
-
-    if method == 'Mean':
-        series[np.isnan(series)] = np.mean(series[~np.isnan(series)])
-
-    elif method == 'Median':
-        series[np.isnan(series)] = np.median(series[~np.isnan(series)])
-
-    elif method == 'ffill':
-        for i in np.where(np.isnan(series))[0]:
-            if i > 0:
-                series[i] = series[i-1]
-            else:
-                series[i] = 0
-
-    elif method == 'bfill':
-        for i in sorted(np.where(np.isnan(series))[0], reverse=True):
-            if i < len(series):
-                series[i] = series[i+1]
-            else:
-                series[i] = 0
+    result = np.array(series, dtype=float, copy=True)
+    if result.ndim != 1 or np.isinf(result).any():
+        raise ValueError("fillna expects a one-dimensional series without infinity")
+    if not isinstance(method, str) or method.lower() not in {'zero', 'mean', 'median', 'ffill', 'bfill'}:
+        raise ValueError("fill method must be zero, mean, median, ffill or bfill")
+    method = method.lower()
+    missing = np.isnan(result)
+    if not missing.any():
+        return result
+    if method in {'mean', 'median'}:
+        if missing.all():
+            raise ValueError("mean/median filling requires at least one observed sample")
+        result[missing] = (np.mean if method == 'mean' else np.median)(result[~missing])
+    elif method == 'zero':
+        result[missing] = 0
     else:
-        series[np.isnan(series)] = 0
-
-    return series
-
-
-
-
-
-
-
+        indices = range(len(result)) if method == 'ffill' else range(len(result)-1, -1, -1)
+        previous = 0.0
+        for i in indices:
+            if missing[i]:
+                result[i] = previous
+            else:
+                previous = result[i]
+    return result

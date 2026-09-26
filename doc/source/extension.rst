@@ -1,37 +1,35 @@
-Extensible ABBA
-======================================
+Variants and extension points
+=============================
 
-We also provide other clustering based ABBA methods for extesion, it is easy to use with the support of scikit-learn tools. For users who want to develop their own clustering based ABBA, this tutorial is quite useful, in particular to research comparsion. The user guidance is as follows
+``fABBA`` uses sorted greedy aggregation and a radius ``alpha``. ``ABBA`` uses
+k-means with a requested cluster count ``k``. ``ABBAbase`` accepts a clustering
+object exposing ``fit_predict``. A cluster count must be feasible for the
+available compressed pieces. These classes share the univariate representation
+of length/increment centers and a symbol alphabet.
 
-.. code:: python
+.. doctest::
 
-    import numpy as np
-    from sklearn.cluster import KMeans
-    from fABBA import ABBAbase
+   >>> import numpy as np
+   >>> from fABBA import ABBA
+   >>> x = np.array([0., 1., 0., 1., 0.])
+   >>> model = ABBA(tol=0.001, k=2, max_len=1, verbose=0)
+   >>> symbols = model.fit_transform(x)
+   >>> np.allclose(model.inverse_transform(symbols, start=x[0]), x)
+   True
 
-    ts = [np.sin(0.05*i) for i in range(1000)]         # original time series
-    #  specifies 5 symbols using kmeans clustering
-    kmeans = KMeans(n_clusters=5, random_state=0, init='k-means++', verbose=0)     
-    abba = ABBAbase(tol=0.1, scl=1, clustering=kmeans)
-    string = abba.fit_transform(ts)                    # string representation of the time series
-    print(string)                                      # prints BbAaAaAaAaAaAaAaC
-    inverse_ts = abba.inverse_transform(string)        # reconstruction
+The ``jabba`` package contains JABBA, QABBA and XABBA variants. QABBA adds
+quantization choices; XABBA uses a different approximation strategy. Their
+interfaces and accuracy properties should not be inferred from the fABBA
+convergence tests. Optional accelerated clustering dependencies are only relevant
+to the variants that use them. Start with the tested univariate or shared-codebook
+examples before adopting a research extension.
 
+Image helpers
+-------------
 
-
-Note `fABBA` software package is not limited to fABBA,  you can directly call ABBA with:
-
-.. code:: python
-
-    from fABBA import ABBA
-    abba = ABBA(tol=0.1, scl=1, k=5, verbose=0)
-    string = abba.fit_transform(ts)
-    print(string)
-
-it will output: 
-
-
-.. parsed-literal::
-    
-    Compression: Reduced series of length 1000 to 17 segments. Digitization: Reduced 17 pieces to 5 symbols.
-    BbAaAaAaAaAaAaAaC
+``image_compress(model, image, adjust=True)`` flattens an array into a signal and
+records image shape and optional normalization on the estimator.
+``image_decompress(model, symbols)`` reconstructs, rounds and casts to uint8.
+This conversion is intended for 8-bit image workflows, not arbitrary floating
+point arrays. It does not provide a general-purpose lossless image codec.
+For a floating point array, reshape explicitly and use the numerical APIs.

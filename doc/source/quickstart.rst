@@ -1,165 +1,82 @@
-
-Get started
-======================================
-
-
-Installation guide
-------------------------------
-fABBA has the following essential dependencies for its functionality:
-
-    * cython (>= 0.29.7)
-    * numpy (>= 1.19.5)
-    * scipy (>=1.2.1)
-    * requests
-    * scikit-learn (>=0.17.1)
-    * threadpoolctl (>= 2.0.0)
-    * matplotlib
-
-
-
-I. **pip**
-
-To install the current release via PIP use:
-
-.. parsed-literal::
-    
-    pip install fabba
-
-To check the installation, simply run:
-
-.. parsed-literal::
-    
-    python -m pip show fabba
-    
-If you want to uninstall it, you can use:
-
-.. parsed-literal::
-
-    pip uninstall fabba
-    
-II. **conda**
-
-For conda users, to install this package with conda run:
-
-.. parsed-literal::
-
-    conda install -c conda-forge fabba
-    
-To check the installation, run:
-
-.. parsed-literal::
-    
-    conda list fabba
-
-and uninstall it with 
-
-.. parsed-literal::
-
-    conda uninstall fabba
-
-.. admonition:: Note
-   
-   Some machine may raise the Cython issue, most of them happens since their machine have security issue - e.g., firewall - or without VC++ installed. Pleasee contact developers team for further support if you cannot address the Cython related issues. 
-
-Installing `fABBA` from the `conda-forge` channel can also be achieved by adding `conda-forge` to your channels with:
-
-.. parsed-literal::
-
-   conda config --add channels conda-forge
-   conda config --set channel_priority strict
-
-Once the `conda-forge` channel has been enabled, `fABBA` can be installed with `conda`:
-
-.. parsed-literal::
-
-   conda install fabba
-
-
-or with `mamba`:
-
-.. parsed-literal::
-
-   mamba install fabba
-
-
-It is possible to list all of the versions of `fABBA` available on your platform with `conda`:
-
-.. parsed-literal::
-
-   conda search fabba --channel conda-forge
-
-
-or with `mamba`:
-
-.. parsed-literal::
-
-   mamba search fabba --channel conda-forge
-
-
-Alternatively, `mamba repoquery` may provide more information:
-
-.. parsed-literal::
-
-   # Search all versions available on your platform:
-   mamba repoquery search fabba --channel conda-forge
-
-   # List packages depending on `fABBA`:
-   mamba repoquery whoneeds fabba --channel conda-forge
-
-   # List dependencies of `fABBA`:
-   mamba repoquery depends fabba --channel conda-forge
-
-
-
-III. **download**
-
-Download this repository via:
-
-.. parsed-literal::
-    
-    git clone https://github.com/nla-group/fABBA.git
-
-If you have any instaling issues, please be free to submit your questions in the `issues <https://github.com/nla-group/fABBA/issues>`_.
-
-
-Quick start
-------------------------------
-
-
-
-The following example approximately transforms a time series into a symbolic string representation (`fit_transform`) and then converts the string back into a numerical format (`inverse_transform`). fABBA essentially requires two parameters `tol` and `alpha`. The tolerance `tol` determines how closely the polygonal chain approximation follows the original time series. The parameter `alpha` controls how similar time series pieces need to be in order to be represented by the same symbol. A smaller `tol` means that more polygonal pieces are used and the polygonal chain approximation is more accurate; but on the other hand, it will increase the length of the string representation. A smaller `alpha` typically results in a larger number of symbols. 
-
-The choice of parameters depends on the application, but in practice, one often just wants the polygonal chain to mimic the key features in time series and not to approximate any noise. In this example the time series is a sine wave and the chosen parameters result in the symbolic representation `BbAaAaAaAaAaAaAaC`. Note how the periodicity in the time series is nicely reflected in repetitions in its string representation.
-
-
-.. code:: python
-
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from fABBA import fABBA
-
-    ts = [np.sin(0.05*i) for i in range(1000)]  # original time series
-    fabba = fABBA(tol=0.1, alpha=0.1, sorting='2-norm', scl=1, verbose=0)
-
-    string = fabba.fit_transform(ts)            # string representation of the time series
-    print(string)                               # prints BbAaAaAaAaAaAaAaC
-
-    inverse_ts = fabba.inverse_transform(string, ts[0]) # numerical time series reconstruction
-
-.. admonition:: Remember
-    
-
-Now you can plot your reconstruction to see how close it is to the raw data:
-
-.. code:: python
-
-    plt.plot(ts, label='time series', c='olive')
-    plt.plot(inverse_ts, label='reconstruction', c='darkblue')
-    plt.legend()
-    plt.grid(True, axis='y')
-    plt.show()
-
-
-
-.. image:: images/demo.png
-
+Installation and first reconstruction
+=====================================
+
+Install a release in a virtual environment::
+
+   python -m venv .venv
+   # macOS / Linux:
+   source .venv/bin/activate
+   # Windows PowerShell: .venv\Scripts\Activate.ps1
+   python -m pip install --upgrade pip
+   python -m pip install fABBA
+
+This checkout declares Python 3.9 or later and NumPy 1.24 or later. The CI matrix
+covers Python 3.9, 3.12, 3.13 and 3.14 on Linux, macOS and Windows. It tests compiled
+and Python-only installations. Other versions are not all covered by that matrix.
+When a matching wheel is unavailable, pip builds the Cython extensions and needs
+a C compiler. A local development installation is ``python -m pip install -e .``.
+For a compiler-free source build, set ``FABBA_NO_EXTENSIONS=1`` before installation
+(see :doc:`testing`). NumPy and SciPy still need suitable binary distributions.
+
+A complete example
+------------------
+
+This example generates its own data and requires no downloads or plot window.
+
+.. doctest::
+
+   >>> import numpy as np
+   >>> from fABBA import fABBA
+   >>> x = 5 + np.sin(np.linspace(0, 4 * np.pi, 200))
+   >>> model = fABBA(tol=0.01, alpha=0.1, verbose=0)
+   >>> symbols = model.fit_transform(x)
+   >>> reconstructed = np.asarray(model.inverse_transform(symbols, start=x[0]))
+   >>> reconstructed.shape == x.shape
+   True
+   >>> np.isfinite(reconstructed).all().item()
+   True
+   >>> print("samples:", len(x), "symbols:", len(symbols))  # doctest: +SKIP
+   >>> rmse = np.sqrt(np.mean((x - reconstructed) ** 2))
+
+``fit`` returns the estimator. ``fit_transform`` returns a string by default;
+with ``return_list=True`` it returns the symbol array. Neither returns a
+``(string, centers)`` tuple. Learned entries are available as
+``model.parameters.centers`` and ``model.parameters.alphabets``.
+
+``inverse_transform`` defaults to ``start=0``. Supply the original first value
+to preserve the vertical position. With NaN filling, use the **filled** first
+value (also recorded as ``model.start_`` after fitting).
+
+Inspect the representation
+--------------------------
+
+.. doctest::
+
+   >>> model.parameters.centers.shape[1]
+   2
+   >>> model.pieces_.shape[1]
+   3
+   >>> int(model.pieces_[:, 0].sum()) == len(x) - 1
+   True
+   >>> mapping = dict(zip(model.parameters.alphabets, model.parameters.centers))
+   >>> first_piece = mapping[symbols[0]]  # [mean length, mean increment]
+
+Use ``model.print_parameters()`` for a readable mapping or :doc:`serialization`
+for portable JSON export. Symbol names and exact clustering results can vary
+with sorting and numerical backend, so avoid treating a particular character
+sequence as a stable identifier across separately trained models.
+
+Optional plotting
+-----------------
+
+After the example above, display the signal with::
+
+   import matplotlib.pyplot as plt
+   plt.plot(x, label="original")
+   plt.plot(reconstructed, "--", label="reconstructed")
+   plt.xlabel("sample index")
+   plt.ylabel("value")
+   plt.legend()
+   plt.show()
+
+See :doc:`installation` and :doc:`releasing` for native wheel and NumPy ABI release gates.

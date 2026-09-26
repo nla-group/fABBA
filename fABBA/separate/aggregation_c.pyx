@@ -56,11 +56,11 @@ cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float
     cdef unsigned int sp # sp: starting point
     cdef unsigned int lab = 0 # lab: class
     cdef double dist # distance 
-    cdef np.ndarray[np.int64_t, ndim=1] labels = np.zeros(len_ind, dtype=int) - 1
+    cdef np.ndarray[np.intp_t, ndim=1] labels = np.zeros(len_ind, dtype=np.intp) - 1
     cdef list splist = list() # store the starting points
     cdef np.ndarray[np.float64_t, ndim=1] sort_vals = np.empty((len_ind, ), dtype=float)
     cdef np.ndarray[np.float64_t, ndim=1] clustc = np.empty((fdim, ), dtype=float)
-    cdef np.ndarray[np.int64_t, ndim=1] ind = np.empty((len_ind, ), dtype=int)
+    cdef np.ndarray[np.intp_t, ndim=1] ind = np.empty((len_ind, ), dtype=np.intp)
     cdef unsigned int i, j, coord, c
     
     if sorting == "norm": 
@@ -123,9 +123,9 @@ cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting="norm", float
 #     cdef Py_ssize_t i, j, maxid = 0
 #     cdef Py_ssize_t len_p = len(pairs)
 #     
-#     cdef np.ndarray[np.int64_t, ndim=1] ulabels = np.full(len_p, -1, dtype=int) # np.zeros(len(pairs), dtype=int) - 1
-#     cdef np.ndarray[np.int64_t, ndim=1] distinct_ulabels = np.unique(ulabels)
-#     cdef np.ndarray[np.int64_t, ndim=1] select_arr
+#     cdef np.ndarray[np.intp_t, ndim=1] ulabels = np.full(len_p, -1, dtype=np.intp) # np.zeros(len(pairs), dtype=np.intp) - 1
+#     cdef np.ndarray[np.intp_t, ndim=1] distinct_ulabels = np.unique(ulabels)
+#     cdef np.ndarray[np.intp_t, ndim=1] select_arr
 #     
 #     for i in range(len_p):
 #         if ulabels[i] == -1:

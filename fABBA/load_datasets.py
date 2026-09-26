@@ -10,7 +10,6 @@ import os
 import requests
 import numpy as np
 from scipy.io import arff
-import matplotlib.pyplot as plt
 import sys
 
 
@@ -129,10 +128,12 @@ def load_images():
             sys.stdout.flush()
         sys.stdout.write("]\n") 
         
+    from matplotlib.image import imread
+
     images = list()
     figs = os.listdir(store_dir)
     for filename in figs:
-        img = plt.imread(os.path.join(store_dir,filename)) 
+        img = imread(os.path.join(store_dir,filename))
         if img is not None:
             images.append(img)
     return images

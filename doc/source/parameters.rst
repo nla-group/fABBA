@@ -1,203 +1,111 @@
-.. _saving-loading-jabba:
+Parameters, units and error interpretation
+==========================================
 
-Saving and loading
-===================================================================
+The two approximation stages have independent controls. Tune them on
+representative data and measure the final reconstruction, rather than optimizing
+alphabet size alone.
 
-The following applications demonstrate how to save and load trained JABBA models and their learned symbolic dictionaries for later use, deployment, or sharing.
-It works for all ABBA variants (fABBA, JABBA, QABBA). Now we foucs on JABBA as an example.
+.. list-table:: Core fABBA settings
+   :header-rows: 1
+   :widths: 18 18 64
 
-After `fit()` or `fit_transform()`, JABBA stores everything needed for perfect reconstruction in the lightweight dataclass:
+   * - Parameter
+     - Default
+     - Meaning
+   * - ``tol``
+     - ``0.1``
+     - Finite nonnegative compression tolerance, in squared signal units.
+   * - ``alpha``
+     - ``0.5``
+     - Finite nonnegative radius for grouping scaled pieces; dimensionless.
+   * - ``scl``
+     - ``1``
+     - Weight on normalized lengths relative to increments. Zero ignores length
+       when grouping, but learned centers still retain lengths.
+   * - ``sorting``
+     - ``'2-norm'``
+     - ``'lexi'``, ``'1-norm'``, ``'2-norm'``, ``'norm'`` or ``'pca'``.
+       Sorting changes greedy group assignments and symbol identities.
+   * - ``max_len``
+     - ``-1``
+     - Maximum intervals per polygonal segment. ``-1`` is unlimited;
+       a positive integer is required otherwise. ``1`` yields first differences.
+   * - ``verbose``
+     - ``1``
+     - Enable estimator logging. Use zero for quiet examples; configure Python
+       logging in the calling application.
+   * - ``return_list``
+     - ``False``
+     - Return the symbol array instead of joining it into a string.
 
-.. code-block:: python
+Compression tolerance
+---------------------
 
-    jabba.parameters   # -> Model(centers=..., alphabets=...)
+For a segment spanning :math:`L` sample intervals, the compressor accepts
+its endpoint interpolant when
 
-================================  =========================================================  =========================
-Attribute                         Meaning                                                    Example
-================================  =========================================================  =========================
-``centers``                       ``(n_symbols, 2)`` float array (already de-normalized!)    
-                                  ``centers[i] = [avg_length, avg_increment]`` of the i-th prototype
-``alphabets``                     ``(n_symbols,)`` string array — symbol ↔ prototype mapping
-                                  Default order: 'A','a','B','b',...,'Z','z', then '!' onwards
-================================  =========================================================  =========================
+.. math::
 
-These two arrays are your learned **symbolic dictionary / codebook** — they completely define the compression and reconstruction behavior.
+   E = \sum_{j=0}^{L}(x_{s+j}-\widehat{x}_{s+j})^2
+       \leq \mathrm{tol}(L-1) + \epsilon.
 
-Inspecting the Learned Dictionary
----------------------------------
+Here :math:`\epsilon` is a floating-point allowance. Length counts intervals,
+so :math:`L+1` samples belong to a segment. Adjacent segments share endpoints.
+The total polygonal squared error is the sum of segment errors (up to roundoff).
+This bound applies **before digitization**. Replacing segments with codebook
+means and rounding lengths adds error; ``tol`` is not an end-to-end RMSE bound.
 
-.. code-block:: python
+Grouping and scaling
+--------------------
 
-    from fABBA import JABBA
-    import numpy as np
-    import pandas as pd
+The digitizer divides length and increment columns by their standard deviations
+and multiplies the length column by ``scl``. A constant column uses a scale of
+one, avoiding division by zero. Centers are means in **original units**, not
+these normalized coordinates. ``splist`` contains aggregation diagnostics and
+has a backend-dependent column layout; do not use it as a portable decoder.
 
-    data = np.random.randn(100, 6, 500)
-    jabba = JABBA(tol=0.05, verbose=0).fit(data)
+Smaller ``tol`` generally retains more polygonal detail. Smaller ``alpha``
+generally preserves more distinct segment types. Neither statement guarantees
+monotone full-pipeline RMSE or alphabet size for every input. The algorithms are
+greedy, and segment boundaries and memberships can change discontinuously.
+``tol=0, alpha=0`` provides a useful exact-limit regression check within
+floating-point accuracy, not a promise of bitwise-identical reconstruction.
 
-    df = pd.DataFrame({
-        'symbol': jabba.parameters.alphabets,
-        'avg_length': jabba.parameters.centers[:, 0].round(2),
-        'avg_increment': jabba.parameters.centers[:, 1].round(4)
-    }).sort_values('avg_increment')
+Choosing settings
+-----------------
 
-    print(df.head(10))
+1. Decide whether amplitude matters. Normalize signals explicitly when it does
+   not, and retain the mean and scale for reconstruction in original units.
+2. Sweep ``tol`` first with a small ``alpha`` to inspect polygonal error.
+3. Adjust ``alpha`` to balance alphabet size and measured reconstruction error.
+4. Validate downstream features on held-out data. Fit shared codebooks on the
+   training split only.
 
-# Example output
-#   symbol  avg_length  avg_increment
-# 7      g       15.21        -0.0872
-# 3      c        9.84        -0.0431
-# 0      A       22.10        -0.0012
-# 1      a       11.35         0.0198
-# 5      e       18.67         0.0564
+If a signal is multiplied by :math:`c`, comparable compression tolerance scales
+by :math:`c^2`. ``scl`` is not a substitute for signal normalization.
+Run ``python example/tolerance_sweep.py`` for a reproducible comparison.
 
+Missing data and shape
+----------------------
 
-Saving the Model (Recommended Methods)
---------------------------------------
+``fABBA`` accepts a real one-dimensional sequence of at least two samples.
+Row and column vectors are accepted for compatibility; other matrices are
+rejected rather than silently flattened. Use ``JABBA`` for multiple series.
+Infinity is invalid. Inputs are copied before filling NaNs.
 
-.. code-block:: python
+Pass ``fillm`` explicitly to ``fit``, ``fit_transform`` or ``compress``; its
+default is ``'bfill'``. Supported case-insensitive methods are ``zero``, ``mean``,
+``median``, ``ffill`` and ``bfill``. Forward filling uses zero for a leading gap;
+backward filling uses zero for a trailing gap. Mean/median filling requires at
+least one observed sample. The legacy constructor ``fillna`` setting controls
+the partition helper; prefer explicit preprocessing for consistent workflows.
 
-    import joblib
-    import pickle
-    import numpy as np
+Partitioned compression
+-----------------------
 
-    # 1. Recommended — tiny & fast (joblib handles numpy efficiently)
-    joblib.dump(jabba.parameters, 'jabba_dictionary.joblib')
-
-    # 2. Classic pickle
-    with open('jabba_dictionary.pkl', 'wb') as f:
-        pickle.dump(jabba.parameters, f)
-
-    # 3. Ultra-lightweight — pure NumPy (ideal for C++/Rust/Java interop)
-    np.savez 'jabba_dictionary.npz',
-         centers=jabba.parameters.centers,
-         alphabets=jabba.parameters.alphabets)
-
-
-Loading a Trained Dictionary for Inference / Deployment
-------------------------------------------------------
-
-.. code-block:: python
-
-    import joblib
-    import numpy as np
-    from fABBA import JABBA, Model
-
-    # Load dictionary
-    params = joblib.load('jabba_dictionary.joblib')           # -> Model instance
-    # or
-    # data = np.load('jabba_dictionary.npz')
-    # params = Model(centers=data['centers'], alphabets=data['alphabets'])
-
-    # Create a "frozen" JABBA instance that only transforms
-    jabba_deploy = JABBA(tol=0.05, verbose=0)   # tol must match training!
-    jabba_deploy.parameters = params                     # inject learned vocabulary
-
-    # Now symbolize new data without re-fitting
-    X_new = np.random.randn(20, 6, 500)
-    symbols_new, start_values = jabba_deploy.transform(X_new)
-    X_reconstructed = jabba_deploy.inverse_transform(symbols_new, start_values)
-
-
-Saving the Entire Model (including normalization & shape info)
--------------------------------------------------------------
-
-If you also want to preserve standardization parameters (``d_norm``) and original shape for zero-code reconstruction:
-
-.. code-block:: python
-
-    joblib.dump(jabba, 'jabba_full_model.joblib')
-
-    # Later
-    jabba_loaded = joblib.load('jabba_full_model.joblib')
-    # Can still call fit new data or transform
-    symbols = jabba_loaded.transform(new_data)
-
-
-Production Deployment Example (FastAPI)
--------------------------------------
-
-.. code-block:: python
-
-    # app.py
-    import joblib
-    import numpy as np
-    from fastapi import FastAPI
-    from fABBA import JABBA
-
-    app = FastAPI()
-    jabba = joblib.load('jabba_full_model.joblib')  # loaded once at startup
-
-    @app.post("/symbolize")
-    async def symbolize(payload: dict):
-        arr = np.array(payload["data"])  # (n_samples, n_channels, length)
-        symbols, starts = jabba.transform(arr)
-        return {"symbols": symbols}
-
-    @app.post("/reconstruct")
-    async def reconstruct(payload: dict):
-        symbols = payload["symbols"]
-        starts = payload.get("starts")
-        recon = jabba.inverse_transform(symbols, starts)
-        return {"data": recon.tolist()}
-
-
-Visualizing the Learned Prototypes
---------------------------------
-
-.. code-block:: python
-
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-
-    centers = jabba.parameters.centers
-    symbols = jabba.parameters.alphabets
-
-    plt.figure(figsize=(10, 6))
-    scatter = plt.scatter(centers[:, 0], centers[:, 1],
-                        c=range(len(symbols)), cmap='tab20', s=120, edgecolors='k')
-    for i, sym in enumerate(symbols):
-        plt.text(centers[i, 0] + 0.3, centers[i, 1], sym,
-                 fontsize=14, weight='bold')
-
-    plt.xlabel('Average segment length', fontsize=12)
-    plt.ylabel('Average increment (trend)', fontsize=12)
-    plt.title('JABBA Learned Symbolic Dictionary', fontsize=16)
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('jabba_dictionary.pdf', dpi=300)
-    plt.show()
-
-
-Complete Persistent Package (Most Robust)
----------------------------------------
-
-.. code-block:: python
-
-    joblib.dump({
-        'tol'              : jabba.tol,
-        'scl'              : jabba.scl,
-        'd_norm'           : jabba.d_norm,           # (mean, std) if normalized
-        'recap_shape'      : jabba.recap_shape,      # for recast_shape()
-        'centers'          : jabba.parameters.centers,
-        'alphabets'        : jabba.parameters.alphabets,
-    }, 'jabba_complete_package.joblib')
-
-
-Summary – What You Really Need to Save
---------------------------------------
-
-Only these two objects are required for 100% lossless reconstruction:
-
-.. code-block:: text
-
-    jabba.parameters.centers      -> (K, 2) float64 # for QABBA, it is of integer type
-    jabba.parameters.alphabets    -> (K,) strings
-
-+ the original `tol` and `scl` values
-
-With just these, you can reconstruct the original time series perfectly in any language or environment (Python, C++, Java, MATLAB, etc.).
-
-You now have full control over JABBA's symbolic dictionary — ready for industrial deployment, cross-language use, paper reproducibility, and model sharing.
-
-Happy symbolizing!
+For ``fABBA(partition=k, n_jobs=p)``, chunks overlap at their shared endpoints,
+so every sample interval, including any remainder, is retained. Partitioning
+can change the approximation and should be included in reproducibility settings.
+``partition_rate`` derives a chunk count from ``exp(1/rate)`` and the worker
+count; an explicit positive ``partition`` is easier to reason about.
+``n_jobs=-1`` selects available CPUs. Use ``n_jobs=1`` for predictable small runs.

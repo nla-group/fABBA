@@ -1,11 +1,7 @@
 from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
 import numpy
-
-class CustomBuildExt(build_ext):
-    def run(self):
-        self.include_dirs.append(numpy.get_include())
-        super().run()
+import os
+from Cython.Build import cythonize
 
 ext_modules = [
     Extension("fABBA.extmod.chainApproximation_c",
@@ -37,6 +33,9 @@ ext_modules = [
 ]
 
 setup(
-    ext_modules=ext_modules,
-    cmdclass={"build_ext": CustomBuildExt},
+    ext_modules=([] if os.environ.get("FABBA_NO_EXTENSIONS") == "1" else
+                 cythonize(ext_modules, build_dir="build/cython",
+                           compiler_directives={"language_level": 3})),
+    include_dirs=[numpy.get_include()],
+    options={"build": {"build_base": "build/python" if os.environ.get("FABBA_NO_EXTENSIONS") == "1" else "build/compiled"}},
 )

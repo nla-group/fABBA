@@ -1,133 +1,57 @@
-# Copyright (c) 2021, 
-# Authors: Stefan Güttel, Xinye Chen
-
-# All rights reserved.
-
-
-
+"""Validated reconstruction shared by the public univariate APIs."""
 import numpy as np
+from ._validation import piece_array
 
 
 def inv_transform(strings, centers, alphabets, start=0):
-    """
-    Convert ABBA symbolic representation back to numeric time series representation.
-
-    Parameters
-    ----------
-    string - string
-        Time series in symbolic representation using unicode characters starting
-        with character 'a'.
-        
-    centers - numpy array
-        Centers of clusters from clustering algorithm. Each center corresponds
-        to character in string.
-
-    alphabets - list
-        Dictionary associated with labels and symbols.
-        
-    start - float
-        First element of original time series. Applies vertical shift in
-        reconstruction. If not specified, the default is 0.
-        
-    Returns
-    -------
-    times_series - list
-        Reconstruction of the time series.
-    """
-
+    """Decode symbols, realign lengths to the integer grid, and reconstruct."""
     pieces = inv_digitize(strings, centers, alphabets)
-
-    pieces = quantize(pieces)
-    time_series = inv_compress(pieces, start)
-    return time_series
-
+    return inv_compress(quantize(pieces), start)
 
 
 def inv_digitize(strings, centers, alphabets):
-    """
-    Convert symbolic representation back to compressed representation for reconstruction.
-
-    Parameters
-    ----------
-    string - string
-        Time series in symbolic representation using unicode characters starting
-        with character 'a'.
-
-    centers - numpy array
-        centers of clusters from clustering algorithm. Each centre corresponds
-        to character in string.
-
-        
-    Returns
-    -------
-    pieces - np.array
-        Time series in compressed format. See compression.
-    """
-
-    pieces = np.vstack([centers[alphabets.index(p)] for p in strings])
-    return pieces
-
+    """Return independent [length, increment] rows for a symbol sequence."""
+    centers = piece_array(centers)
+    if len(alphabets) != len(centers) or len(set(alphabets)) != len(alphabets):
+        raise ValueError("alphabets must have one unique symbol per center")
+    lookup = dict(zip(alphabets, range(len(alphabets))))
+    try:
+        indices = [lookup[symbol] for symbol in strings]
+    except (KeyError, TypeError) as exc:
+        raise ValueError(f"unknown or invalid symbol: {exc}") from exc
+    return centers[indices].copy()
 
 
 def quantize(pieces):
+    """Round cumulative lengths without mutating input; preserve total duration.
+
+    Ties round upward, so segments of length one cannot collapse at half-grid
+    boundaries. Every decoded segment has at least one interval. Empty sequences
+    are valid.
     """
-    Realign window lengths with integer grid.
-
-    Parameters
-    ----------
-    pieces: Time series in compressed representation.
-
-
-    Returns
-    -------
-    pieces: Time series in compressed representation with window length adjusted to integer grid.
-    """
-
-    if len(pieces) == 1:
-        pieces[0,0] = round(pieces[0,0])
-
-    else:
-        for p in range(len(pieces)-1):
-            corr = round(pieces[p,0]) - pieces[p,0]
-            pieces[p,0] = round(pieces[p,0] + corr)
-            pieces[p+1,0] = pieces[p+1,0] - corr
-            if pieces[p,0] == 0:
-                pieces[p,0] = 1
-                pieces[p+1,0] -= 1
-        pieces[-1,0] = round(pieces[-1,0],0)
-
-    return pieces
-
+    if np.asarray(pieces).size == 0:
+        return np.empty((0, 2), dtype=float)
+    result = piece_array(pieces)
+    ends = np.floor(np.cumsum(result[:, 0]) + 0.5)
+    result[:, 0] = np.diff(np.r_[0, ends])
+    return result
 
 
 def inv_compress(pieces, start):
+    """Reconstruct from [length, increment] rows and a finite starting value.
+
+    Lengths must be positive integers; use quantize for learned fractional lengths.
     """
-    Reconstruct time series from its first value `ts0` and its `pieces`.
-    `pieces` must have (at least) two columns, incremenent and window width, resp.
-    A window width w means that the piece ranges from s to s+w.
-    In particular, a window width of 1 is allowed.
-
-    Parameters
-    ----------
-    start - float
-        First element of original time series. Applies vertical shift in
-        reconstruction.
-
-    pieces - numpy array
-        Numpy array with three columns, each row contains increment, length,
-        error for the segment. Only the first two columns are required.
-
-    Returns
-    -------
-    time_series : Reconstructed time series
-    """
-
-    time_series = [start]
-    # stitch linear piece onto last
-    for j in range(0, len(pieces)):
-        x = np.arange(0,pieces[j,0]+1)/(pieces[j,0])*pieces[j,1]
-        y = time_series[-1] + x
-        time_series = time_series + y[1:].tolist()
-
-    return time_series
-
+    if not np.isscalar(start) or not np.isreal(start) or not np.isfinite(start):
+        raise ValueError("start must be a finite real scalar")
+    if np.asarray(pieces).size == 0:
+        return [float(start)]
+    pieces = piece_array(pieces)
+    if np.any(pieces[:, 0] != np.rint(pieces[:, 0])):
+        raise ValueError("segment lengths must be integers; call quantize first")
+    chunks = [np.array([float(start)])]
+    endpoint = float(start)
+    for length, increment in pieces:
+        chunks.append(endpoint + np.arange(1, int(length) + 1) * (increment / length))
+        endpoint += increment
+    return np.concatenate(chunks).tolist()

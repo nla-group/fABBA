@@ -18,7 +18,7 @@ from .fkmns import sampledKMeansInter
 
 from joblib import parallel_backend
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+
 try:
     # # %load_ext Cython
     # !python3 setup.py build_ext --inplace

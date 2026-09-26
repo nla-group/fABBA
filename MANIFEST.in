@@ -1,0 +1,10 @@
+include LICENSE README.md README.rst MAINTENANCE.md
+recursive-include fABBA *.pyx
+recursive-include tests *.py
+recursive-include tools *.py
+recursive-include ci *.txt
+recursive-include example *.py
+recursive-include doc *.rst *.py *.css *.png
+prune build
+prune exp
+global-exclude __pycache__ *.py[cod] *.so *.pyd

@@ -1,6 +1,2 @@
-cython
-numpy
-scipy>1.2.1
-pandas
-requests
-psutil
+# Runtime requirements are defined in pyproject.toml.
+-e .

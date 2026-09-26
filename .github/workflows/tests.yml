@@ -1,0 +1,56 @@
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.9', '3.12', '3.13', '3.14']
+        backend: [compiled, python]
+    runs-on: ${{ matrix.os }}
+    env:
+      FABBA_NO_EXTENSIONS: ${{ matrix.backend == 'python' && '1' || '0' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install build
+      - run: python -m build --outdir wheelhouse
+      - name: Install and test the built wheel outside the checkout
+        shell: bash
+        run: |
+          python -m pip install wheelhouse/*.whl
+          cp -R tests example tools "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          python -c "import fABBA.fabba as f; import os; assert f.compress.__module__.startswith('fABBA.extmod') == (os.environ['FABBA_NO_EXTENSIONS'] == '0')"
+          if [ "$FABBA_NO_EXTENSIONS" = "0" ]; then
+            python tools/check_wheel.py
+          else
+            python -m unittest discover -s tests -v
+            python example/toy_models.py
+            python example/export_codebook.py
+            python example/shared_codebook.py
+            python example/tolerance_sweep.py
+          fi
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install '.[docs]'
+      - run: python -m sphinx -W --keep-going -b html doc/source doc/_build/html
+      - run: python -m sphinx -W --keep-going -b doctest doc/source doc/_build/doctest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: doc/_build/html

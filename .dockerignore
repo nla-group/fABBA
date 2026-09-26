@@ -1,0 +1,9 @@
+.git
+build
+dist
+exp
+**/__pycache__
+**/*.so
+**/*.pyd
+.venv
+doc/_build

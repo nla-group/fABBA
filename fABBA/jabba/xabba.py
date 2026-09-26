@@ -17,7 +17,7 @@ from .fkmns import sampledKMeansInter
 from typing import List, Tuple, Any
 from joblib import parallel_backend
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+
 import platform
 
 try:

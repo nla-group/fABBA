@@ -6,6 +6,7 @@
 # Adaptive polygonal chain approximation
 
 import numpy as np
+from ._validation import series_array, nonnegative, max_length
 
 def compress(ts, tol=0.5, max_len=-1):
     """
@@ -27,6 +28,11 @@ def compress(ts, tol=0.5, max_len=-1):
     pieces - numpy array
         Numpy ndarray with three columns, each row contains length, increment, error for the segment.
     """
+    ts = series_array(ts)
+    if not np.isfinite(ts).all():
+        raise ValueError("ts must be finite; use fABBA.compress for missing-value filling")
+    tol = nonnegative(tol, "tol")
+    max_len = max_length(max_len)
     if max_len < 0:
         max_len = len(ts)
         

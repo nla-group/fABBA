@@ -486,6 +486,27 @@ def pad_or_trim_keep_ends(
     return np.asarray(out)
 
 
+def _prepare_series(series, fill_method):
+    """Copy and validate the numerical boundary before entering typed kernels."""
+    from ..fabba import fillna as fill_missing
+    raw = np.asarray(series)
+    if np.iscomplexobj(raw):
+        raise ValueError("series must contain real values")
+    array = np.array(raw, dtype=float, copy=True)
+    if array.ndim == 0 or array.size == 0 or np.isinf(array).any():
+        raise ValueError("series must be nonempty and must not contain infinity")
+    if array.ndim <= 2:
+        if array.shape[-1] < 2:
+            raise ValueError("each series needs at least two samples")
+        if array.ndim == 1:
+            array = fill_missing(array, fill_method)
+        else:
+            array = np.asarray([fill_missing(row, fill_method) for row in array])
+    elif not np.isfinite(array).all():
+        raise ValueError("fill missing values before passing higher-dimensional data")
+    return np.ascontiguousarray(array)
+
+
 class JABBA(object):
     """
     Parallel version of ABBA with fast implementation.
@@ -650,6 +671,10 @@ class JABBA(object):
         alphabet_set - int or list, default=0
             The list of alphabet letter. Here provide two different kinds of alphabet letters, namely 0 and 1.
         """
+        series = _prepare_series(series, self.fillna)
+        self.recap_shape = None
+        self.stack_multiple_channels = False
+        self.new_shape = None
         self.pieces = self.parallel_compress(series, n_jobs=n_jobs)
         self.string_ = self.digitize(series, self.pieces, alphabet_set, n_jobs)    
 
@@ -675,6 +700,8 @@ class JABBA(object):
         """
         
         len_ts = len(series)
+        if isinstance(n_jobs, bool) or not isinstance(n_jobs, (int, np.integer)) or n_jobs == 0:
+            raise ValueError("n_jobs must be a nonzero integer")
         n_jobs = self.n_jobs_init(n_jobs, _max=len_ts)     
         
         if isinstance(series, np.ndarray):
@@ -719,8 +746,10 @@ class JABBA(object):
                     
             # for i in range(partition,0,-1):
             #    if len_ts % i == 0:
-            interval = int(len_ts / partition)
-            series = np.vstack([series[i*interval : (i+1)*interval] for i in range(partition)])
+            # Each chunk is decoded from its own saved starting value.
+            # Keep remainder samples and ensure at least two samples per chunk.
+            partition = max(1, min(partition, len_ts // 2))
+            series = np.array_split(series, partition)
                     
             if self.verbose:
                 if partition != 1:
@@ -887,9 +916,11 @@ class JABBA(object):
 
         """
         
-        if series.dtype !=  'float64':
-            series = series.astype('float64')
-            
+        from ..fabba import NotFittedError
+        if not hasattr(self, "parameters"):
+            raise NotFittedError("Call fit before transforming with a shared codebook.")
+        series = _prepare_series(series, self.fillna)
+
         if isinstance(series, np.ndarray):
             if len(series.shape) == 1:
                 uni_dim = True
@@ -904,6 +935,8 @@ class JABBA(object):
         else:
             raise ValueError('Please enter time series with correct shape.')
             
+        if isinstance(n_jobs, bool) or not isinstance(n_jobs, (int, np.integer)) or n_jobs == 0:
+            raise ValueError("n_jobs must be a nonzero integer")
         n_jobs = self.n_jobs_init(n_jobs)
         
         shape_series = series.shape
@@ -914,10 +947,8 @@ class JABBA(object):
             self.return_series_univariate = True # means the series is univariate,
                                        # so the reconstruction can automatically 
                                        # determine if should return the univariate series.
-            for i in range(n_jobs,0,-1):
-                if len_ts % i == 0:
-                    interval = int(len_ts / n_jobs)
-                    series = np.vstack([series[i*interval : (i+1)*interval] for i in range(n_jobs)])
+            partition = max(1, min(n_jobs, len_ts // 2))
+            series = np.array_split(series, partition)
         else:
             self.return_series_univariate = False
             
@@ -999,9 +1030,14 @@ class JABBA(object):
             the machine allows.
         """
         
+        from ..fabba import NotFittedError
+        if not hasattr(self, "parameters"):
+            raise NotFittedError("Call fit before decoding.")
         if self.stack_multiple_channels and self.last_dim:
             string_sequences = flatten_list(string_sequences)
             
+        if isinstance(n_jobs, bool) or not isinstance(n_jobs, (int, np.integer)) or n_jobs == 0:
+            raise ValueError("n_jobs must be a nonzero integer")
         n_jobs = self.n_jobs_init(n_jobs)
         count = len(string_sequences)
         
@@ -1010,6 +1046,9 @@ class JABBA(object):
             if start_set is None:
                 raise ValueError('Please input valid start_set.')
         
+        if len(start_set) != count or not np.isfinite(np.asarray(start_set, dtype=float)).all():
+            raise ValueError("start_set must contain one finite starting value per sequence")
+
         inverse_sequences = list()
 
         if n_jobs != 1 and count != 1:

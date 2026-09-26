@@ -52,12 +52,12 @@ cpdef aggregate(double[:,:] data, str sorting, double tol=0.5):
     # cdef double[:] s1
     cdef double[:, :] cdata = np.empty((len_ind, fdim), dtype=np.float64)
     cdef double[:, :] U1, _  # = np.empty((len_ind, ), dtype=float)
-    cdef long long[:] ind # = np.empty((len_ind, ), dtype=int)
+    cdef np.intp_t[:] ind # = np.empty((len_ind, ), dtype=np.intp)
     cdef Py_ssize_t sp # starting point index
     cdef unsigned int lab=0, num_group #, nr_dist=0
     cdef double[:] clustc # starting point coordinates
     cdef double dist
-    cdef long[:] labels = np.full(len_ind, -1, dtype=int) 
+    cdef np.intp_t[:] labels = np.full(len_ind, -1, dtype=np.intp)
     cdef list splist = list() # list of starting points
     cdef Py_ssize_t i, ii, j, coord
     
@@ -157,7 +157,7 @@ cpdef aggregate_1d(double[:] data, double tol=0.5):
     cdef double[:] sort_vals = np.squeeze(data)
     cdef double dat, clustc
     cdef int len_ind = len(sort_vals)
-    cdef long[:] ind = np.argsort(sort_vals) # order by increasing size
+    cdef np.intp_t[:] ind = np.argsort(sort_vals) # order by increasing size
     
     cdef Py_ssize_t lab = 0
     cdef list labels = [-1]*len_ind
@@ -170,7 +170,7 @@ cpdef aggregate_1d(double[:] data, double tol=0.5):
             continue
         else:
             # clustc = data[sp]
-            if data[sp] < sort_vals[-1] - tol:
+            if data[sp] < sort_vals[len_ind - 1] - tol:
                 clustc = data[sp] + tol
             else:
                 clustc = data[sp]

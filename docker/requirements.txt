@@ -1,6 +1,3 @@
-cython
-numpy
-scipy>1.2.1
-pandas
-requests
-psutil
+# For an existing Python environment; Docker installs the project directly.
+-e .
+jupyter

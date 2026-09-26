@@ -1,31 +1,32 @@
 [build-system]
 requires = [
-    "setuptools>=65",
+    "setuptools>=77",
     "wheel",
-    "cython>=0.29",
-    "numpy>=1.20"
+    "cython>=3.1.3,<4",
+    "numpy>=2.0,<3"
 ]
 build-backend = "setuptools.build_meta"
 
 
 [project]
 name = "fABBA"
-version = "1.5.2"  # overwritten dynamically via setup.cfg's version-file
+dynamic = ["version"]
 description = "An efficient symbolic time series approximation with ABBA."
-readme = "README.rst"
-requires-python = ">=3.8"
-license = { text = "BSD-3-Clause" }
+readme = "README.md"
+requires-python = ">=3.9"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 authors = [
   {name = "Xinye Chen", email = "xinye.chen@manchester.ac.uk"},
   {name = "Stefan Güttel", email = "stefan.guettel@manchester.ac.uk"}
 ]
 
 dependencies = [
-    "numpy>=1.3.0",
-    "scipy>=0.7.0",
+    "numpy>=1.24,<3",
+    "scipy>=1.9",
     "requests",
     "pandas",
-    "scikit-learn",
+    "scikit-learn>=1.2",
     "joblib>=1.1.1",
     "matplotlib"
 ]
@@ -37,7 +38,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering",
     "Operating System :: Microsoft :: Windows",
-    "Operating System :: Unix"
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux"
 ]
 
 [tool.setuptools]
@@ -50,4 +53,39 @@ include = ["fABBA*"]
 fABBA = ["jabba/data/*.npy", "jabba/data/*.arff"]
 
 [tool.setuptools.dynamic]
-version = {file = "fABBA/__init__.py"}
+version = {attr = "fABBA.__version__"}
+
+[project.urls]
+Homepage = "https://github.com/nla-group/fABBA"
+Documentation = "https://fabba.readthedocs.io/"
+Issues = "https://github.com/nla-group/fABBA/issues"
+
+[project.optional-dependencies]
+test = ["pytest>=7", "build>=1"]
+docs = ["sphinx>=7", "sphinx-rtd-theme>=2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# Publish regular CPython wheels only; new ABIs must be explicitly validated.
+[tool.cibuildwheel]
+build = "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+skip = "*-musllinux_* *-win32 *-win_arm64"
+# Windows ARM64 is enabled by a platform-specific override below.
+test-sources = ["tests", "example", "tools/check_wheel.py"]
+test-command = "python tools/check_wheel.py"
+environment = { FABBA_NO_EXTENSIONS = "0", PYTHONDONTWRITEBYTECODE = "1", PIP_ONLY_BINARY = ":all:" }
+build-verbosity = 1
+
+[tool.cibuildwheel.linux]
+archs = ["auto64"]
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+
+[tool.cibuildwheel.macos]
+archs = ["auto"]
+environment = { FABBA_NO_EXTENSIONS = "0", PYTHONDONTWRITEBYTECODE = "1", PIP_ONLY_BINARY = ":all:", MACOSX_DEPLOYMENT_TARGET = "11.0" }
+
+[tool.cibuildwheel.windows]
+archs = ["auto64"]
+skip = "*-win32 cp39-win_arm64 cp310-win_arm64 cp311-win_arm64"

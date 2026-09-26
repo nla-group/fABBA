@@ -56,12 +56,12 @@ cpdef aggregate(np.ndarray[np.float64_t, ndim=2] data, str sorting, double tol=0
     # cdef double[:] s1
     cdef np.ndarray[np.float64_t, ndim=2] cdata = np.empty((len_ind, 2), dtype=np.float64)
     cdef np.ndarray[np.float64_t, ndim=2] U1, _  # = np.empty((len_ind, ), dtype=float)
-    cdef np.ndarray[np.int64_t, ndim=1] ind # = np.empty((len_ind, ), dtype=int)
+    cdef np.ndarray[np.intp_t, ndim=1] ind # = np.empty((len_ind, ), dtype=np.intp)
     cdef Py_ssize_t sp # starting point index
     cdef unsigned int lab=0, num_group # , nr_dist=0
     cdef np.ndarray[np.float64_t, ndim=1] clustc # starting point coordinates
     cdef double dist
-    cdef np.ndarray[np.int64_t, ndim=1] labels = np.full(len_ind, -1, dtype=int) 
+    cdef np.ndarray[np.intp_t, ndim=1] labels = np.full(len_ind, -1, dtype=np.intp)
     cdef list splist = list() # list of starting points
     cdef Py_ssize_t i, ii, j
     

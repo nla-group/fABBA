@@ -2,15 +2,53 @@
 ## fABBA:  An efficient symbolic time series approximation method
 
 
-![Static Badge](https://img.shields.io/badge/Compiler-8A2BE2?label=Cython-Accelerated)
-[![!pypi](https://img.shields.io/pypi/v/fABBA?color=cyan)](https://pypi.org/project/fABBA/)
-[![Build Status](https://app.travis-ci.com/nla-group/fABBA.svg?branch=master)](https://app.travis-ci.com/github/nla-group/fABBA)
-[![!azure](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/fabba-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=16216&branchName=main)
-[![Documentation Status](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/en/latest/?badge=latest)
-[![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.python.org/pypi/fABBA/)
-[![Download Status](https://img.shields.io/pypi/dm/fABBA.svg?label=PyPI%20downloads)](https://pypi.org/project/fABBA/)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/license.svg)](https://anaconda.org/conda-forge/fabba)
+[![Tests](https://github.com/nla-group/fABBA/actions/workflows/tests.yml/badge.svg)](https://github.com/nla-group/fABBA/actions/workflows/tests.yml)
+[![PyPI](https://img.shields.io/pypi/v/fABBA?color=2563eb)](https://pypi.org/project/fABBA/)
+[![Python](https://img.shields.io/pypi/pyversions/fABBA)](https://pypi.org/project/fABBA/)
+[![Documentation](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/)
+[![License: BSD-3-Clause](https://img.shields.io/badge/license-BSD--3--Clause-059669)](LICENSE)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
+
+> **Start here:** [Quickstart](doc/source/quickstart.rst) · [Runnable examples](doc/source/examples.rst) · [Parameter guide](doc/source/parameters.rst) · [Codebook export](doc/source/serialization.rst) · [Architecture](doc/source/architecture.rst)
+
+### Native installation and releases
+
+The [installation guide](doc/source/installation.rst) explains precompiled
+wheels, source builds and Cython diagnostics. The [release workflow](doc/source/releasing.rst)
+requires 33 wheels across macOS Intel/Apple Silicon, Linux x86_64/ARM64 and
+Windows x64/ARM64. It validates every extension and NumPy ABI compatibility
+before assembling a complete PyPI candidate. These are release gates; local
+configuration alone does not certify that every remote platform has passed.
+
+### A complete numerical roundtrip
+
+```python
+import numpy as np
+from fABBA import fABBA
+
+x = 5 + np.sin(np.linspace(0, 4 * np.pi, 200))
+model = fABBA(tol=0.01, alpha=0.1, verbose=0)
+symbols = model.fit_transform(x)
+y = np.asarray(model.inverse_transform(symbols, start=x[0]))
+print("symbols:", symbols)
+print("RMSE:", np.sqrt(np.mean((x - y) ** 2)))
+print("centers [length, increment]:", model.parameters.centers)
+codebook = model.parameters.to_dict()  # JSON-compatible; retain symbols and start too
+```
+
+Symbolization is lossy. `tol` bounds polygonal compression error; it is not a
+bound on final symbolic reconstruction RMSE. Symbol meanings belong to their
+codebook. Use `JABBA` to encode several series with one shared codebook.
+
+After installing this checkout, run the self-contained examples:
+
+```bash
+python example/toy_models.py        # constant, linear, periodic, step, noisy signals
+python example/export_codebook.py   # JSON export and an independent decoder
+python example/tolerance_sweep.py   # polygonal versus symbolic error
+python example/shared_codebook.py   # train/test features with JABBA
+```
+
 
 The ABBA methods provide a fast and accurate symbolic approximation of temporal data, making them well-suited for tasks such as compression, clustering, and classification. The ``fABBA`` library is a Python-based implementation designed to efficiently apply ABBA methods. It achieves this by first approximating a time series using a polygonal chain representation and then aggregating these polygonal segments into symbolic groups.
 
@@ -23,17 +61,10 @@ The ``fABBA`` library supports multiple ABBA variants, including the original AB
  
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/fabba/badges/platforms.svg)](https://anaconda.org/conda-forge/fabba)
 
-fABBA has the following essential dependencies for its functionality:
-
-    * cython (>= 0.29.7)
-    * numpy (>= 1.19.5)
-    * scipy (>=1.2.1)
-    * requests
-    * scikit-learn (>=0.17.1)
-    * threadpoolctl (>= 2.0.0)
-    * matplotlib
-
-#### To ensure successful Cython compiling, please update your NumPy to the latest version>= 1.22.0.
+This checkout requires Python >= 3.9. Runtime and build dependencies are declared
+in `pyproject.toml`. When pip builds from source, Cython and a C compiler are
+required. For a compiler-free source build, set `FABBA_NO_EXTENSIONS=1` before
+installation; see the [testing guide](doc/source/testing.rst).
 
 To install the current release via PIP use:
 
@@ -110,12 +141,12 @@ Similarly, the digitization can be implemented after compression step as below:
 
 ```python
 from fABBA import digitize
-from fABBA import inverse_digitize
+from fABBA import inverse_digitize, quantize
 string, parameters = digitize(pieces, alpha=0.1, sorting='2-norm', scl=1) # compression of the polygon
 print(''.join(string))                                 # prints aBbCbCbCbCbCbCbCA
 
 inverse_pieces = inverse_digitize(string, parameters)
-inverse_ts = inverse_compress(inverse_pieces, ts[0])   # numerical time series reconstruction
+inverse_ts = inverse_compress(quantize(inverse_pieces), ts[0])   # numerical time series reconstruction
 ```
 
 
@@ -263,7 +294,7 @@ There are a number of dependencies listed below. Most of these modules, except p
 
 `os,  csv, time, pickle, numpy, warnings, matplotlib, math, collections, copy, sklearn, pandas, tqdm, tslearn`
 
-Please ensure that these modules are available before running the codes. A `numpy` version newer than 1.19.0 and less than 1.20 is required.
+These archived experiments used NumPy >= 1.19 and < 1.20. Reproduce them in a separate historical environment; do not apply that constraint to the current package. The tested examples above use the current dependency requirements.
 
 It is necessary to compile the Cython files in the experiments folder (though this is already compiled in the main module, the experiments code is separated). To compile the Cython extension in ["src"](https://github.com/nla-group/fABBA/tree/master/exp/src) use:
 ```
@@ -281,15 +312,7 @@ python setup.py build_ext --inplace
 We also provide C++ implementation for fABBA in the repository [``cabba``](https://github.com/nla-group/cabba), it would be nice to give a shot!
  
  
-Run example:
-
-```
-git clone https://github.com/nla-group/fABBA.git
-cd fABBA/cpp
-g++ -o test runtime.cpp
-./test
-```
-
+Follow the build instructions in the [cabba repository](https://github.com/nla-group/cabba) for the C++ implementation.
 
 ## :paperclip: Citation
 If you use this repository, please kindly cite the corresponding method(s).  
@@ -362,3 +385,15 @@ This project is licensed under the terms of the [![License](https://img.shields.
 
 
 
+
+## Development and validation
+
+```bash
+python -m pip install -e ".[test,docs]"
+python -m unittest discover -s tests -v
+python -m sphinx -W --keep-going -b html doc/source doc/_build/html
+```
+
+See [testing and convergence contracts](doc/source/testing.rst) and
+[local maintenance notes](MAINTENANCE.md). The badge points to the Tests workflow;
+new local changes are not reflected in remote status until pushed.

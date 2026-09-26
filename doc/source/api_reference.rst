@@ -1,102 +1,69 @@
-.. _api-reference:
+Public API reference
+====================
 
-API Reference
-=============
+This reference covers the workflows in the executable user guide. Internal
+Cython functions and research-only helpers are not stable public interfaces.
 
-fABBA
------
+Univariate estimator
+--------------------
 
-The ``fABBA`` class provides the original FABBA algorithm for symbolic representation of univariate time series.
+.. code-block:: python
 
-.. autoclass:: fABBA.fABBA
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   fABBA(tol=0.1, alpha=0.5, sorting="2-norm", scl=1, verbose=1,
+         partition_rate=None, partition=None, fillna="ffill", max_len=-1,
+         return_list=False, n_jobs=1)
 
-ABBAbase
---------
+* ``fit(series, fillm='bfill', alphabet_set=0) -> self``: learn a new codebook.
+* ``fit_transform(...) -> str | ndarray``: learn and return symbols.
+* ``compress(series, fillm='bfill')``: return length/increment/error pieces.
+* ``digitize(pieces, alphabet_set=0)``: return symbols and a codebook.
+* ``inverse_transform(string, start=0, parameters=None) -> list``: decode with
+  fitted or supplied parameters. An empty sequence returns ``[start]``.
+* ``print_parameters()``: print the learned symbol-to-center mapping.
+* ``dump(file=None)`` / ``load(file=None, replace=False)``: legacy trusted-pickle
+  codebook persistence. Default path is ``parameters``.
 
-Base class shared by fABBA and JABBA.
+``alphabet_set`` can select a built-in ordering (0 or 1) or supply a list of
+unique single-character strings with enough capacity. Codes are Unicode.
+``parameters.centers`` has shape ``(n_symbols, 2)`` and columns length/increment.
+``parameters.alphabets[i]`` labels center row ``i``. Additional fitted attributes
+are ``string_``, ``pieces_``, ``start_`` and ``n_samples_``.
 
-.. autoclass:: fABBA.ABBAbase
-   :members:
-   :private-members:
+Portable codebook
+-----------------
 
-JABBA
------
+.. autoclass:: fABBA.Model
+   :members: to_dict, from_dict
 
-``JABBA`` is an extended and highly optimized version that supports:
-- Univariate and multivariate time series
-- Multiple clustering backends (including GPU-accelerated)
-- Memory-efficient and parallel aggregation
+Functional pipeline
+-------------------
 
-.. autoclass:: fABBA.JABBA
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. code-block:: python
 
-Core Transformation Methods
-===========================
+   compress(series, tol=0.5, max_len=-1, fillm='bfill')
+   digitize(pieces, alpha=0.5, sorting='norm', scl=1, alphabet_set=0)
+   inverse_digitize(strings, parameters)
+   quantize(pieces)
+   inverse_compress(pieces, start)
+   fillna(series, method='zero')
 
-These functions/methods are the building blocks used internally and can also be used directly.
+The standalone ``compress`` and ``digitize`` defaults differ from the estimator's
+``tol`` and ``sorting`` defaults. Pass these explicitly when comparing APIs.
+``digitize`` returns ``(symbol_array, Model)``. ``inverse_digitize`` returns a
+copy of the center rows. ``inverse_compress`` expects integer segment lengths;
+use ``quantize`` on fractional learned lengths. See :doc:`main_comp` for the
+complete composition.
 
-compress
---------
+Other supported workflows
+-------------------------
 
-Perform piecewise linear aggregation (tolerance-based chain approximation).
+``ABBA(tol=0.1, k=2, scl=1, verbose=1, max_len=-1)`` selects k-means instead of
+radius grouping. ``ABBAbase(clustering, ...)`` allows a compatible clustering
+object. These estimators expose fit, fit_transform and inverse_transform.
 
-.. automethod:: fABBA.chainApproximation.compress
+For JABBA, :doc:`multivariate` documents the two-dimensional input convention,
+training/transform return types, starting values and reconstruction. Its
+``parameters`` type differs from ``Model`` above.
 
-inverse_compress
-----------------
-
-Reconstruct time series from compressed piecewise aggregates.
-
-.. autofunction:: fABBA.inverse_compress
-
-digitize
---------
-
-Convert piecewise linear segments into symbolic representation (SAX-like).
-
-.. automethod:: fABBA.digitization.digitize
-
-inverse_digitize
-----------------
-
-Reconstruct approximate time series from symbolic string and centers.
-
-.. autofunction:: fABBA.inverse_digitize
-
-Image Compression Utilities
-===========================
-
-Convenient APIs for compressing 2D arrays/images using fABBA.
-
-image_compress
---------------
-
-Compress a 2D image/array into a symbolic string using block-wise fABBA.
-
-.. autofunction:: fABBA.image_compress
-
-image_decompress
-----------------
-
-Decompress a symbolic string back into an image/array.
-
-.. autofunction:: fABBA.image_decompress
-
-Dataset Loading Utilities
-==========================
-
-.. autofunction:: fABBA.load_datasets.load_ucr_dataset
-
-.. autofunction:: fABBA.load_datasets.load_uea_dataset
-
-Other Utilities
-===============
-
-.. autofunction:: fABBA.fabba_agg.fabba_agg
-
-.. autofunction:: fABBA.fabba_agg.inverse_fabba_agg
+For image-specific helpers, see :doc:`extension`. Dataset loaders are optional
+convenience functions; the main tutorials do not rely on external datasets.

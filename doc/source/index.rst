@@ -1,182 +1,67 @@
-.. CLASSIX documentation
+fABBA: symbolic approximation of time series
+============================================
 
-Welcome to fABBA's documentation!
-===================================
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-   :target: https://github.com/yourname/fABBA/blob/main/LICENSE
-   :alt: License: MIT
-
-.. image:: https://img.shields.io/pypi/v/fABBA?color=blue
+.. image:: https://img.shields.io/pypi/v/fABBA?color=2563eb
    :target: https://pypi.org/project/fABBA/
    :alt: PyPI version
 
-.. image:: https://readthedocs.org/projects/fabba/badge/?version=latest
-   :target: https://fabba.readthedocs.io/
-   :alt: Documentation Status
+.. image:: https://img.shields.io/badge/license-BSD--3--Clause-059669
+   :target: https://github.com/nla-group/fABBA/blob/master/LICENSE
+   :alt: BSD 3-Clause license
 
-fABBA — Fast and Accurate Symbolic Representation for Time Series
-==================================================================
+fABBA converts numerical time series into sequences of symbols. Each symbol
+represents a learned segment described by its duration and change in value.
+The sequence and its codebook can reconstruct a **lossy approximation** of the
+original data. Applications include compact representations, exploratory pattern
+analysis and features for downstream learning.
 
-**fABBA** (fast ABBA) is a state-of-the-art, highly optimized symbolic aggregate approximation method for univariate and multivariate time series. It achieves extremely high compression ratios (often > 100–1000×) while remaining fully reversible and providing tight error bounds.
+Start with :doc:`quickstart` for one series, :doc:`examples` for complete runnable
+programs, and :doc:`multivariate` when several series must share a codebook.
+The :doc:`parameters` guide explains how accuracy, alphabet size and segment
+length interact. :doc:`serialization` explains exactly what to retain for decoding.
 
-The method consists of two core steps:
+What the library does
+---------------------
 
-1. **Lossy piecewise linear compression** (tolerance-driven polygonal chain approximation)
-2. **Mean-based clustering of segments -> symbolic representation** (fully automated, no need to pre-specify alphabet size)
+1. Approximate a sampled signal with a continuous polygonal chain.
+2. Group the chain's ``[length, increment]`` pieces after feature scaling.
+3. Assign a symbol to each group and retain its mean piece as a codebook entry.
+4. Decode symbols, round segment lengths to the sample grid, and integrate
+   increments from the saved starting value.
 
-Because the resulting representation is symbolic, it naturally leads to:
-
-- Strong noise smoothing
-- Drastic dimensionality reduction
-- Ultra-fast distance computations (via lookup tables)
-- Seamless integration with classic data mining algorithms (motif discovery, anomaly detection, classification, clustering, indexing, etc.)
-
-fABBA significantly outperforms the original ABBA [1]_ in speed (often 10–100× faster) while producing nearly identical or even better symbolic sequences.
-
-.. figure:: images/abba.png
-   :width: 720
-   :align: center
-   :alt: Illustration of the ABBA/fABBA symbolization process
-
-   Visualization of the fABBA transformation process (source: Stefan Güttel, Turing–Manchester presentation, 2021).
-
-Key Advantages of fABBA
------------------------
-
-=============  ===================================================================
-Feature        Description
-=============  ===================================================================
-Fully automatic      No need to specify number of symbols (α) — purely tolerance-driven
-Extremely fast       Sorting + early abandoning + incremental aggregation -> O(n log n) typical
-Reversible           Perfect reconstruction via ``inverse_transform``
-Multivariate support Unified alphabet across all dimensions (JABBA subclass)
-GPU & parallel       Built-in OpenMP and optional CUDA k-means backends
-Image compression    Direct 2D block-wise compression with ``image_compress()``
-=============  ===================================================================
-
-**Core Methods & Variants**
-
-- ``fABBA.fABBA``           -> Original fast single-series implementation (pure Python + Cython)
-- ``fABBA.JABBA``           -> Next-generation engine supporting:
-    - Univariate & multivariate series
-    - Custom clustering backends (k-means, hierarchical, GPU, etc.)
-    - Memory-optimized streaming aggregation
-- ``fABBA.image_compress`` / ``image_decompress`` -> Turn any 2D array/image into a short string and back
-
-Applications
-------------
-
-fABBA has demonstrated superior performance in numerous domains:
-
-- Time-series classification & clustering (UCR/UEA archives)
-- Extreme compression of sensor data (IoT, wearables, finance)
-- Motif & discord discovery at massive scale
-- Anomaly detection with symbolic distance measures
-- Lossy but reconstructible storage of medical signals (ECG, EEG)
-- Image and video frame compression via block-wise symbolization
-
-Quick Example
--------------
-
-.. code-block:: python
-
-   from fABBA import fABBA
-   import numpy as np
-   import matplotlib.pyplot as plt
-
-   ts = np.load("example_series.npy")
-   fabba = fABBA(tol=0.1, alpha=0.01, method='agg')
-   string, centers = fabba.fit_transform(ts)
-
-   print(f"Original length : {len(ts)}")
-   print(f"Compressed to   : {len(string)} symbols  ->  compression ratio {(len(ts)/len(string)):.1f}×")
-   print(f"Symbolic string : {string}")
-
-   reconstructed = fabba.inverse_transform(string, centers)
-
-   plt.plot(ts, label="Original")
-   plt.plot(reconstructed, "--", label="Reconstructed")
-   plt.legend(); plt.show()
-
-References
-----------
-
-.. [1] Chen, X. and Güttel, S., 2024. fABBA: A Python library for the fast symbolic approximation of time series.  
-   *Journal of Open Source Software* 9(95), 6294.  
-   DOI: `10.21105/joss.06294 <https://doi.org/10.21105/joss.06294>`__  
-   *(Official software paper describing the fABBA Python package — the foundation of this repository.)*
-
-.. [2] Chen, X., 2024. Joint symbolic aggregate approximation of time series.  
-   Preprint arXiv:2401.00109 [cs.DS].  
-   https://arxiv.org/abs/2401.00109  
-   *(Latest theoretical advance: joint symbolization of multivariate time series with shared alphabet. Fully implemented in the ``JABBA`` class of this package.)*
-
-.. [3] Chen, X. and Güttel, S., 2023. An Efficient Aggregation Method for the Symbolic Representation of Temporal Data.  
-   *ACM Transactions on Knowledge Discovery from Data* 17(1), Article 5 (22 pages).  
-   DOI: `10.1145/3532622 <https://doi.org/10.1145/3532622>`__  
-   *(Core fABBA algorithm paper: introduces sorting-based aggregation, tolerance-driven symbolization, and image compression capabilities.)*
-
-.. [4] Elsworth, S. and Güttel, S., 2020. ABBA: Aggregate Brownian bridge-based aggregation for time series compression and symbolization.  
-   *Data Mining and Knowledge Discovery* 34, 1175–1200.  
-   DOI: `10.1007/s10618-020-00687-9 <https://doi.org/10.1007/s10618-020-00687-9>`__  
-   *(Original ABBA method using k-means clustering on piecewise linear segments.)*
-
-.. [5] Original ABBA implementation (2020):  
-   https://github.com/nla-group/ABBA
-
-.. [6] This repository — fABBA + JABBA + latest extensions (2023–2025, actively maintained):  
-   https://github.com/nla-group/fABBA  
-   *(Includes Multithreading/Cython speedups, GPU-accelerated backends, streaming aggregation, full joint/multivariate support, image utilities, and more. Recommended for all use cases.)*
-
-Getting Started
----------------
-
-.. code-block:: bash
-
-   pip install fABBA          # includes pre-compiled wheels for Linux/macOS/Windows
-
-Full documentation: https://fabba.readthedocs.io
-
-We welcome contributions! Whether it's new clustering backends, performance improvements, or better documentation — feel free to open issues or pull requests.
-
-Enjoy ultra-fast symbolic time-series analysis with fABBA!
-    
-Guide
--------------
+Symbol strings are meaningful only with their associated codebooks. Independently
+fitted models can assign different meanings to the same character. fABBA does
+not make arbitrary symbolic edit distances equivalent to numerical distances.
+Compression ratios in samples per symbol are not byte-level storage ratios.
 
 .. toctree::
    :maxdepth: 2
-   
+   :caption: User guide
+
+   installation
    quickstart
+   examples
+   parameters
+   serialization
    main_comp
    multivariate
-   parameters
    extension
-   
 
-API Reference
--------------
 .. toctree::
    :maxdepth: 2
+   :caption: Reference and development
 
    api_reference
-
-
-Others
--------------
-.. toctree::
-   :maxdepth: 2
-   
+   architecture
+   testing
+   releasing
    license
    contact
 
+Citation
+--------
 
-Indices and Tables
--------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-.. image:: images/nla_group.png
-    :width: 360
+X. Chen and S. Güttel, *fABBA: A Python library for the fast symbolic
+approximation of time series*, Journal of Open Source Software 9(95), 6294 (2024).
+`doi:10.21105/joss.06294 <https://doi.org/10.21105/joss.06294>`_.
+See the repository's ``CITATION.bib`` for additional publications.
