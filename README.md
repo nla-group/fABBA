@@ -5,7 +5,6 @@
 [![Tests](https://github.com/nla-group/fABBA/actions/workflows/tests.yml/badge.svg)](https://github.com/nla-group/fABBA/actions/workflows/tests.yml)
 [![PyPI](https://img.shields.io/pypi/v/fABBA?color=2563eb)](https://pypi.org/project/fABBA/)
 [![Download Status](https://static.pepy.tech/badge/fABBA)](https://pypi.org/project/fABBA/)
-[![Download Status](https://img.shields.io/pypi/dm/fABBA.svg?label=PyPI%20downloads)](https://pypi.org/project/fABBA/)
 [![Documentation](https://readthedocs.org/projects/fabba/badge/?version=latest)](https://fabba.readthedocs.io/)
 [![License: BSD-3-Clause](https://img.shields.io/badge/license-BSD--3--Clause-059669)](LICENSE)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06294/status.svg)](https://doi.org/10.21105/joss.06294)
